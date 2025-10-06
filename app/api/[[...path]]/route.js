@@ -253,47 +253,222 @@ async function handleRoute(request, { params }) {
   try {
     const db = await connectToMongo()
 
+    // Initialize collections on first request
+    await initializeCollections(db)
+
     // Root endpoint - GET /api/root (since /api/ is not accessible with catch-all)
     if (route === '/root' && method === 'GET') {
-      return handleCORS(NextResponse.json({ message: "Hello World" }))
+      return handleCORS(NextResponse.json({ message: "Intelligent Rubrics-Based Evaluator API" }))
     }
     // Root endpoint - GET /api/root (since /api/ is not accessible with catch-all)
     if (route === '/' && method === 'GET') {
-      return handleCORS(NextResponse.json({ message: "Hello World" }))
+      return handleCORS(NextResponse.json({ message: "Intelligent Rubrics-Based Evaluator API" }))
     }
 
-    // Status endpoints - POST /api/status
-    if (route === '/status' && method === 'POST') {
+    // ===== SUBMISSIONS API =====
+    
+    // Create new submission - POST /api/submissions
+    if (route === '/submissions' && method === 'POST') {
       const body = await request.json()
       
-      if (!body.client_name) {
+      // Validate required fields
+      const requiredFields = ['studentName', 'assignmentTitle', 'submissionType']
+      for (const field of requiredFields) {
+        if (!body[field]) {
+          return handleCORS(NextResponse.json(
+            { error: `${field} is required` }, 
+            { status: 400 }
+          ))
+        }
+      }
+
+      if (!['flowchart', 'algorithm', 'pseudocode'].includes(body.submissionType)) {
         return handleCORS(NextResponse.json(
-          { error: "client_name is required" }, 
+          { error: 'submissionType must be flowchart, algorithm, or pseudocode' }, 
           { status: 400 }
         ))
       }
 
-      const statusObj = {
-        id: uuidv4(),
-        client_name: body.client_name,
-        timestamp: new Date()
+      if (body.submissionType === 'flowchart' && !body.imageData) {
+        return handleCORS(NextResponse.json(
+          { error: 'imageData is required for flowchart submissions' }, 
+          { status: 400 }
+        ))
       }
 
-      await db.collection('status_checks').insertOne(statusObj)
-      return handleCORS(NextResponse.json(statusObj))
+      if ((body.submissionType === 'algorithm' || body.submissionType === 'pseudocode') && !body.textContent) {
+        return handleCORS(NextResponse.json(
+          { error: 'textContent is required for algorithm/pseudocode submissions' }, 
+          { status: 400 }
+        ))
+      }
+
+      // Create submission object
+      const submission = createSubmission({
+        userId: body.userId || 'anonymous',
+        studentName: body.studentName,
+        assignmentTitle: body.assignmentTitle,
+        submissionType: body.submissionType,
+        textContent: body.textContent,
+        imageUrl: body.imageData, // For now, store base64 directly
+        fileName: body.fileName,
+        rubricId: body.rubricId
+      })
+
+      await db.collection('submissions').insertOne(submission)
+
+      // Start AI evaluation asynchronously if rubric is provided
+      if (body.rubricId) {
+        // Get the rubric
+        const rubric = await db.collection('rubrics').findOne({ rubricId: body.rubricId })
+        if (rubric) {
+          // Update submission status to evaluating
+          await db.collection('submissions').updateOne(
+            { submissionId: submission.submissionId },
+            { $set: { status: 'evaluating', updatedAt: new Date() } }
+          )
+
+          try {
+            // Evaluate with Gemini AI
+            const aiResult = await evaluateWithGemini(
+              submission.submissionType,
+              submission.content,
+              rubric
+            )
+
+            // Create evaluation record
+            const evaluation = createEvaluation(
+              submission.submissionId,
+              aiResult,
+              aiResult.scores
+            )
+
+            await db.collection('evaluations').insertOne(evaluation)
+
+            // Update submission status to completed
+            await db.collection('submissions').updateOne(
+              { submissionId: submission.submissionId },
+              { $set: { status: 'completed', updatedAt: new Date() } }
+            )
+          } catch (evalError) {
+            console.error('Evaluation error:', evalError)
+            await db.collection('submissions').updateOne(
+              { submissionId: submission.submissionId },
+              { $set: { status: 'error', updatedAt: new Date() } }
+            )
+          }
+        }
+      }
+
+      // Remove MongoDB's _id field from response
+      const { _id, ...cleanedSubmission } = submission
+      return handleCORS(NextResponse.json(cleanedSubmission))
     }
 
-    // Status endpoints - GET /api/status
-    if (route === '/status' && method === 'GET') {
-      const statusChecks = await db.collection('status_checks')
-        .find({})
-        .limit(1000)
+    // Get submissions - GET /api/submissions?userId=xxx
+    if (route === '/submissions' && method === 'GET') {
+      const url = new URL(request.url)
+      const userId = url.searchParams.get('userId')
+      
+      let query = {}
+      if (userId) {
+        query.userId = userId
+      }
+
+      const submissions = await db.collection('submissions')
+        .find(query)
+        .sort({ createdAt: -1 })
+        .limit(100)
         .toArray()
 
       // Remove MongoDB's _id field from response
-      const cleanedStatusChecks = statusChecks.map(({ _id, ...rest }) => rest)
+      const cleanedSubmissions = submissions.map(({ _id, ...rest }) => rest)
       
-      return handleCORS(NextResponse.json(cleanedStatusChecks))
+      return handleCORS(NextResponse.json(cleanedSubmissions))
+    }
+
+    // Get specific submission - GET /api/submissions/{id}
+    if (route.startsWith('/submissions/') && method === 'GET') {
+      const submissionId = route.split('/')[2]
+      
+      const submission = await db.collection('submissions').findOne({ submissionId })
+      if (!submission) {
+        return handleCORS(NextResponse.json(
+          { error: 'Submission not found' }, 
+          { status: 404 }
+        ))
+      }
+
+      // Get evaluation if it exists
+      const evaluation = await db.collection('evaluations').findOne({ submissionId })
+
+      const { _id, ...cleanedSubmission } = submission
+      const result = {
+        ...cleanedSubmission,
+        evaluation: evaluation ? (() => {
+          const { _id, ...cleanedEval } = evaluation
+          return cleanedEval
+        })() : null
+      }
+      
+      return handleCORS(NextResponse.json(result))
+    }
+
+    // ===== RUBRICS API =====
+    
+    // Create default rubric - POST /api/rubrics/default
+    if (route === '/rubrics/default' && method === 'POST') {
+      const body = await request.json()
+      
+      const rubric = createRubric({
+        title: body.title || 'Default Evaluation Rubric',
+        description: body.description || 'Standard rubric for evaluating algorithms, pseudocode, and flowcharts',
+        submissionType: body.submissionType || 'any',
+        createdBy: body.createdBy || 'system'
+      })
+
+      await db.collection('rubrics').insertOne(rubric)
+
+      const { _id, ...cleanedRubric } = rubric
+      return handleCORS(NextResponse.json(cleanedRubric))
+    }
+
+    // Get rubrics - GET /api/rubrics
+    if (route === '/rubrics' && method === 'GET') {
+      const rubrics = await db.collection('rubrics')
+        .find({ isActive: true })
+        .sort({ createdAt: -1 })
+        .toArray()
+
+      const cleanedRubrics = rubrics.map(({ _id, ...rest }) => rest)
+      return handleCORS(NextResponse.json(cleanedRubrics))
+    }
+
+    // ===== TEST ENDPOINTS =====
+    
+    // Test Gemini connection - GET /api/test/gemini
+    if (route === '/test/gemini' && method === 'GET') {
+      try {
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" })
+        const result = await model.generateContent("Hello, this is a test. Please respond with 'Gemini AI is working correctly!'")
+        const response = await result.response
+        const text = response.text()
+        
+        return handleCORS(NextResponse.json({ 
+          status: 'success', 
+          message: 'Gemini AI connection successful',
+          geminiResponse: text 
+        }))
+      } catch (error) {
+        return handleCORS(NextResponse.json(
+          { 
+            status: 'error', 
+            message: 'Gemini AI connection failed',
+            error: error.message 
+          }, 
+          { status: 500 }
+        ))
+      }
     }
 
     // Route not found
