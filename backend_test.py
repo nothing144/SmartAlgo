@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for Form Submission Fix Verification
-Testing the UUID field mapping fix for rubric selection
+Backend Testing for Intelligent Rubrics-Based Evaluator
+Testing bug fixes for:
+1. Syntax Error Detection in AI evaluation
+2. Loading State Bug - submission status transitions
 """
 
 import requests
 import json
 import time
-from datetime import datetime
+import sys
+from typing import Dict, Any, List
 
 # Configuration
 BASE_URL = "https://minor-fix-needed.preview.emergentagent.com/api"
-HEADERS = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-}
+HEADERS = {"Content-Type": "application/json"}
 
-class FormSubmissionTester:
+class BackendTester:
     def __init__(self):
         self.base_url = BASE_URL
         self.headers = HEADERS
