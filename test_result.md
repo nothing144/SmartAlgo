@@ -294,6 +294,12 @@
       - working: true
         agent: "main"
         comment: "Detailed results component with scoring breakdown, AI analysis, and suggestions"
+      - working: false
+        agent: "user"
+        comment: "User reported: After submission, results page gets stuck on loading screen. But when going back to home, recent submissions show as completed. Loading state issue."
+      - working: true
+        agent: "main"
+        comment: "FIXED: Updated polling logic to check for all non-completed statuses (submitted, evaluating) instead of only 'evaluating'. Added 500ms initial delay before first fetch. Reduced polling interval to 2s. Results now load properly after submission."
 
 ## metadata:
   created_by: "main_agent"
