@@ -48,6 +48,9 @@ function transformSubmission(submission) {
   
   const transformed = transformToCamelCase(submission)
   
+  // Map id to submissionId for frontend compatibility  
+  transformed.submissionId = transformed.id
+  
   // Special handling for content field based on submission type
   if (transformed.submissionType === 'flowchart' && transformed.imageUrl) {
     transformed.content = {
