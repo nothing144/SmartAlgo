@@ -1,89 +1,104 @@
-import { MongoClient } from 'mongodb'
-import { v4 as uuidv4 } from 'uuid'
+import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
+import { v2 as cloudinary } from 'cloudinary'
+import { v4 as uuidv4 } from 'uuid'
 
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
 
-// MongoDB connection
-let client
-let db
+// Initialize Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-async function connectToMongo() {
-  if (!client) {
-    client = new MongoClient(process.env.MONGO_URL)
-    await client.connect()
-    db = client.db(process.env.DB_NAME)
+const supabase = createClient(supabaseUrl, supabaseKey)
+
+// Initialize Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+})
+
+// Create tables in Supabase (run this once to set up schema)
+async function initializeSupabaseTables() {
+  try {
+    // This will be handled in Supabase dashboard or SQL editor
+    console.log('Supabase tables should be created in the dashboard')
+  } catch (error) {
+    console.error('Error initializing tables:', error)
   }
-  return db
 }
 
-// MongoDB Schema Helpers
-async function initializeCollections(db) {
-  // Users collection (students and instructors)
-  await db.collection('users').createIndex({ email: 1 }, { unique: true })
-  
-  // Submissions collection
-  await db.collection('submissions').createIndex({ userId: 1, createdAt: -1 })
-  await db.collection('submissions').createIndex({ submissionId: 1 }, { unique: true })
-  
-  // Rubrics collection
-  await db.collection('rubrics').createIndex({ rubricId: 1 }, { unique: true })
-  await db.collection('rubrics').createIndex({ createdBy: 1 })
-  
-  // Evaluations collection
-  await db.collection('evaluations').createIndex({ submissionId: 1 })
-  
-  return db
+// Helper function to upload image to Cloudinary
+async function uploadToCloudinary(base64Data, options = {}) {
+  try {
+    if (!base64Data) return null
+    
+    const result = await cloudinary.uploader.upload(base64Data, {
+      folder: 'rubrics-evaluator',
+      resource_type: 'auto',
+      ...options
+    })
+    
+    return {
+      public_id: result.public_id,
+      secure_url: result.secure_url,
+      width: result.width,
+      height: result.height,
+      format: result.format
+    }
+  } catch (error) {
+    console.error('Cloudinary upload error:', error)
+    throw new Error(`Image upload failed: ${error.message}`)
+  }
 }
 
-// Submission Schema
+// Submission Schema for Supabase
 function createSubmission(data) {
   return {
-    submissionId: uuidv4(),
-    userId: data.userId,
-    studentName: data.studentName,
-    assignmentTitle: data.assignmentTitle,
-    submissionType: data.submissionType, // 'flowchart', 'algorithm', 'pseudocode'
-    content: {
-      text: data.textContent || null,
-      imageUrl: data.imageUrl || null,
-      fileName: data.fileName || null
-    },
-    rubricId: data.rubricId || null,
+    id: uuidv4(),
+    user_id: data.userId || 'anonymous',
+    student_name: data.studentName,
+    assignment_title: data.assignmentTitle,
+    submission_type: data.submissionType, // 'flowchart', 'algorithm', 'pseudocode'
+    text_content: data.textContent || null,
+    image_url: data.imageUrl || null,
+    cloudinary_data: data.cloudinaryData || null,
+    file_name: data.fileName || null,
+    rubric_id: data.rubricId || null,
     status: 'submitted', // 'submitted', 'evaluating', 'completed', 'error'
-    createdAt: new Date(),
-    updatedAt: new Date()
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   }
 }
 
-// Evaluation Schema
+// Evaluation Schema for Supabase
 function createEvaluation(submissionId, aiAnalysis, rubricScores) {
   return {
-    evaluationId: uuidv4(),
-    submissionId: submissionId,
-    aiAnalysis: aiAnalysis,
-    rubricScores: rubricScores,
-    totalScore: rubricScores.reduce((sum, score) => sum + score.earnedPoints, 0),
-    maxScore: rubricScores.reduce((sum, score) => sum + score.maxPoints, 0),
+    id: uuidv4(),
+    submission_id: submissionId,
+    ai_analysis: aiAnalysis,
+    rubric_scores: rubricScores,
+    total_score: rubricScores.reduce((sum, score) => sum + score.earnedPoints, 0),
+    max_score: rubricScores.reduce((sum, score) => sum + score.maxPoints, 0),
     feedback: aiAnalysis.feedback || '',
-    createdAt: new Date()
+    created_at: new Date().toISOString()
   }
 }
 
-// Rubric Schema
+// Rubric Schema for Supabase
 function createRubric(data) {
   return {
-    rubricId: uuidv4(),
+    id: uuidv4(),
     title: data.title,
     description: data.description,
     criteria: data.criteria || [
       {
-        criterionId: uuidv4(),
+        criterion_id: uuidv4(),
         name: 'Logic Correctness',
         description: 'Accuracy of the logical flow and problem-solving approach',
-        maxPoints: 5,
+        max_points: 5,
         levels: [
           { points: 5, description: 'Completely correct logic with optimal approach' },
           { points: 4, description: 'Mostly correct with minor logical issues' },
@@ -94,10 +109,10 @@ function createRubric(data) {
         ]
       },
       {
-        criterionId: uuidv4(),
+        criterion_id: uuidv4(),
         name: 'Structure & Organization',
         description: 'Clear structure, proper flow, and organization of elements',
-        maxPoints: 3,
+        max_points: 3,
         levels: [
           { points: 3, description: 'Well-organized with clear structure' },
           { points: 2, description: 'Generally organized with minor issues' },
@@ -106,10 +121,10 @@ function createRubric(data) {
         ]
       },
       {
-        criterionId: uuidv4(),
+        criterion_id: uuidv4(),
         name: 'Syntax & Clarity',
         description: 'Proper syntax, clear notation, and readability',
-        maxPoints: 2,
+        max_points: 2,
         levels: [
           { points: 2, description: 'Perfect syntax and very clear' },
           { points: 1, description: 'Minor syntax issues but mostly clear' },
@@ -117,14 +132,14 @@ function createRubric(data) {
         ]
       }
     ],
-    submissionType: data.submissionType, // 'flowchart', 'algorithm', 'pseudocode', 'any'
-    createdBy: data.createdBy,
-    isActive: true,
-    createdAt: new Date()
+    submission_type: data.submissionType || 'any', // 'flowchart', 'algorithm', 'pseudocode', 'any'
+    created_by: data.createdBy,
+    is_active: true,
+    created_at: new Date().toISOString()
   }
 }
 
-// Gemini AI Evaluation Functions
+// Gemini AI Evaluation Functions (same as before but with image handling via Cloudinary)
 async function evaluateWithGemini(submissionType, content, rubric) {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" })
@@ -133,13 +148,13 @@ async function evaluateWithGemini(submissionType, content, rubric) {
     let result = null
 
     if (submissionType === 'flowchart' && content.imageUrl) {
-      // For flowcharts, use vision model
+      // For flowcharts with Cloudinary URLs
       const visionModel = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" })
       
       prompt = `Analyze this flowchart image and evaluate it based on the following rubric criteria:
       
 ${rubric.criteria.map(c => `
-${c.name} (${c.maxPoints} points): ${c.description}
+${c.name} (${c.max_points} points): ${c.description}
 Scoring levels: ${c.levels.map(l => `${l.points} pts - ${l.description}`).join('; ')}
 `).join('')}
 
@@ -157,9 +172,16 @@ Please provide:
   "suggestions": ["suggestion1", "suggestion2"]
 }`
 
-      // Note: For actual image analysis, we'd need to handle file upload and convert to proper format
-      // For now, providing text-based analysis structure
-      result = await visionModel.generateContent([prompt])
+      // Use the image URL from Cloudinary
+      result = await visionModel.generateContent([
+        prompt,
+        {
+          inlineData: {
+            data: content.imageUrl,
+            mimeType: "image/jpeg"
+          }
+        }
+      ])
       
     } else {
       // For text-based submissions (algorithms/pseudocode)
@@ -170,7 +192,7 @@ ${content.text}
 
 Rubric Criteria:
 ${rubric.criteria.map(c => `
-${c.name} (${c.maxPoints} points): ${c.description}
+${c.name} (${c.max_points} points): ${c.description}
 Scoring levels: ${c.levels.map(l => `${l.points} pts - ${l.description}`).join('; ')}
 `).join('')}
 
@@ -202,9 +224,9 @@ Please provide:
       return {
         analysis: text,
         scores: rubric.criteria.map(criterion => ({
-          criterionId: criterion.criterionId,
-          earnedPoints: Math.floor(Math.random() * (criterion.maxPoints + 1)), // Placeholder scoring
-          maxPoints: criterion.maxPoints,
+          criterionId: criterion.criterion_id,
+          earnedPoints: Math.floor(Math.random() * (criterion.max_points + 1)), // Placeholder scoring
+          maxPoints: criterion.max_points,
           feedback: "Automated feedback based on AI analysis"
         })),
         overallFeedback: text.substring(0, 200) + "...",
@@ -215,18 +237,6 @@ Please provide:
   } catch (error) {
     console.error('Gemini evaluation error:', error)
     throw new Error(`AI evaluation failed: ${error.message}`)
-  }
-}
-
-// File upload helper (for base64 images)
-function parseDataUrl(dataUrl) {
-  const matches = dataUrl.match(/^data:([^;]+);base64,(.+)$/)
-  if (!matches) {
-    throw new Error('Invalid data URL')
-  }
-  return {
-    mimeType: matches[1],
-    data: matches[2]
   }
 }
 
@@ -251,18 +261,12 @@ async function handleRoute(request, { params }) {
   const method = request.method
 
   try {
-    const db = await connectToMongo()
-
-    // Initialize collections on first request
-    await initializeCollections(db)
-
-    // Root endpoint - GET /api/root (since /api/ is not accessible with catch-all)
+    // Root endpoint
     if (route === '/root' && method === 'GET') {
-      return handleCORS(NextResponse.json({ message: "Intelligent Rubrics-Based Evaluator API" }))
+      return handleCORS(NextResponse.json({ message: "Intelligent Rubrics-Based Evaluator API - Supabase Edition" }))
     }
-    // Root endpoint - GET /api/root (since /api/ is not accessible with catch-all)
     if (route === '/' && method === 'GET') {
-      return handleCORS(NextResponse.json({ message: "Intelligent Rubrics-Based Evaluator API" }))
+      return handleCORS(NextResponse.json({ message: "Intelligent Rubrics-Based Evaluator API - Supabase Edition" }))
     }
 
     // ===== SUBMISSIONS API =====
@@ -303,6 +307,25 @@ async function handleRoute(request, { params }) {
         ))
       }
 
+      let cloudinaryData = null
+      let imageUrl = null
+
+      // Handle image upload to Cloudinary for flowcharts
+      if (body.submissionType === 'flowchart' && body.imageData) {
+        try {
+          cloudinaryData = await uploadToCloudinary(body.imageData, {
+            folder: `submissions/${body.submissionType}`,
+            public_id: `${body.studentName}_${Date.now()}`
+          })
+          imageUrl = cloudinaryData.secure_url
+        } catch (uploadError) {
+          return handleCORS(NextResponse.json(
+            { error: `Image upload failed: ${uploadError.message}` }, 
+            { status: 400 }
+          ))
+        }
+      }
+
       // Create submission object
       const submission = createSubmission({
         userId: body.userId || 'anonymous',
@@ -310,59 +333,90 @@ async function handleRoute(request, { params }) {
         assignmentTitle: body.assignmentTitle,
         submissionType: body.submissionType,
         textContent: body.textContent,
-        imageUrl: body.imageData, // For now, store base64 directly
+        imageUrl: imageUrl,
+        cloudinaryData: cloudinaryData,
         fileName: body.fileName,
         rubricId: body.rubricId
       })
 
-      await db.collection('submissions').insertOne(submission)
+      // Insert into Supabase
+      const { data: insertedSubmission, error: insertError } = await supabase
+        .from('submissions')
+        .insert(submission)
+        .select()
+        .single()
+
+      if (insertError) {
+        return handleCORS(NextResponse.json(
+          { error: `Database error: ${insertError.message}` }, 
+          { status: 500 }
+        ))
+      }
 
       // Start AI evaluation asynchronously if rubric is provided
       if (body.rubricId) {
         // Get the rubric
-        const rubric = await db.collection('rubrics').findOne({ rubricId: body.rubricId })
-        if (rubric) {
-          // Update submission status to evaluating
-          await db.collection('submissions').updateOne(
-            { submissionId: submission.submissionId },
-            { $set: { status: 'evaluating', updatedAt: new Date() } }
-          )
+        const { data: rubric, error: rubricError } = await supabase
+          .from('rubrics')
+          .select('*')
+          .eq('id', body.rubricId)
+          .single()
 
+        if (rubric && !rubricError) {
           try {
+            // Update submission status to evaluating
+            await supabase
+              .from('submissions')
+              .update({ 
+                status: 'evaluating', 
+                updated_at: new Date().toISOString() 
+              })
+              .eq('id', submission.id)
+
             // Evaluate with Gemini AI
             const aiResult = await evaluateWithGemini(
-              submission.submissionType,
-              submission.content,
+              submission.submission_type,
+              {
+                text: submission.text_content,
+                imageUrl: submission.image_url
+              },
               rubric
             )
 
             // Create evaluation record
             const evaluation = createEvaluation(
-              submission.submissionId,
+              submission.id,
               aiResult,
               aiResult.scores
             )
 
-            await db.collection('evaluations').insertOne(evaluation)
+            await supabase
+              .from('evaluations')
+              .insert(evaluation)
 
             // Update submission status to completed
-            await db.collection('submissions').updateOne(
-              { submissionId: submission.submissionId },
-              { $set: { status: 'completed', updatedAt: new Date() } }
-            )
+            await supabase
+              .from('submissions')
+              .update({ 
+                status: 'completed', 
+                updated_at: new Date().toISOString() 
+              })
+              .eq('id', submission.id)
+
           } catch (evalError) {
             console.error('Evaluation error:', evalError)
-            await db.collection('submissions').updateOne(
-              { submissionId: submission.submissionId },
-              { $set: { status: 'error', updatedAt: new Date() } }
-            )
+            await supabase
+              .from('submissions')
+              .update({ 
+                status: 'error', 
+                updated_at: new Date().toISOString() 
+              })
+              .eq('id', submission.id)
           }
         }
       }
 
-      // Remove MongoDB's _id field from response
-      const { _id, ...cleanedSubmission } = submission
-      return handleCORS(NextResponse.json(cleanedSubmission))
+      return handleCORS(NextResponse.json(insertedSubmission))
     }
 
     // Get submissions - GET /api/submissions?userId=xxx
@@ -370,29 +424,39 @@ async function handleRoute(request, { params }) {
       const url = new URL(request.url)
       const userId = url.searchParams.get('userId')
       
-      let query = {}
+      let query = supabase
+        .from('submissions')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100)
+
       if (userId) {
-        query.userId = userId
+        query = query.eq('user_id', userId)
       }
 
-      const submissions = await db.collection('submissions')
-        .find(query)
-        .sort({ createdAt: -1 })
-        .limit(100)
-        .toArray()
+      const { data: submissions, error } = await query
 
-      // Remove MongoDB's _id field from response
-      const cleanedSubmissions = submissions.map(({ _id, ...rest }) => rest)
+      if (error) {
+        return handleCORS(NextResponse.json(
+          { error: `Database error: ${error.message}` }, 
+          { status: 500 }
+        ))
+      }
       
-      return handleCORS(NextResponse.json(cleanedSubmissions))
+      return handleCORS(NextResponse.json(submissions || []))
     }
 
     // Get specific submission - GET /api/submissions/{id}
     if (route.startsWith('/submissions/') && method === 'GET') {
       const submissionId = route.split('/')[2]
       
-      const submission = await db.collection('submissions').findOne({ submissionId })
-      if (!submission) {
+      const { data: submission, error: submissionError } = await supabase
+        .from('submissions')
+        .select('*')
+        .eq('id', submissionId)
+        .single()
+
+      if (submissionError) {
         return handleCORS(NextResponse.json(
           { error: 'Submission not found' }, 
           { status: 404 }
@@ -400,15 +464,15 @@ async function handleRoute(request, { params }) {
       }
 
       // Get evaluation if it exists
-      const evaluation = await db.collection('evaluations').findOne({ submissionId })
+      const { data: evaluation, error: evaluationError } = await supabase
+        .from('evaluations')
+        .select('*')
+        .eq('submission_id', submissionId)
+        .single()
 
-      const { _id, ...cleanedSubmission } = submission
       const result = {
-        ...cleanedSubmission,
-        evaluation: evaluation ? (() => {
-          const { _id, ...cleanedEval } = evaluation
-          return cleanedEval
-        })() : null
+        ...submission,
+        evaluation: evaluation || null
       }
       
       return handleCORS(NextResponse.json(result))
@@ -427,21 +491,38 @@ async function handleRoute(request, { params }) {
         createdBy: body.createdBy || 'system'
       })
 
-      await db.collection('rubrics').insertOne(rubric)
+      const { data: insertedRubric, error } = await supabase
+        .from('rubrics')
+        .insert(rubric)
+        .select()
+        .single()
 
-      const { _id, ...cleanedRubric } = rubric
-      return handleCORS(NextResponse.json(cleanedRubric))
+      if (error) {
+        return handleCORS(NextResponse.json(
+          { error: `Database error: ${error.message}` }, 
+          { status: 500 }
+        ))
+      }
+
+      return handleCORS(NextResponse.json(insertedRubric))
     }
 
     // Get rubrics - GET /api/rubrics
     if (route === '/rubrics' && method === 'GET') {
-      const rubrics = await db.collection('rubrics')
-        .find({ isActive: true })
-        .sort({ createdAt: -1 })
-        .toArray()
+      const { data: rubrics, error } = await supabase
+        .from('rubrics')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false })
 
-      const cleanedRubrics = rubrics.map(({ _id, ...rest }) => rest)
-      return handleCORS(NextResponse.json(cleanedRubrics))
+      if (error) {
+        return handleCORS(NextResponse.json(
+          { error: `Database error: ${error.message}` }, 
+          { status: 500 }
+        ))
+      }
+
+      return handleCORS(NextResponse.json(rubrics || []))
     }
 
     // ===== TEST ENDPOINTS =====
@@ -464,6 +545,61 @@ async function handleRoute(request, { params }) {
           { 
             status: 'error', 
             message: 'Gemini AI connection failed',
+            error: error.message 
+          }, 
+          { status: 500 }
+        ))
+      }
+    }
+
+    // Test Supabase connection - GET /api/test/supabase
+    if (route === '/test/supabase' && method === 'GET') {
+      try {
+        const { data, error } = await supabase
+          .from('rubrics')
+          .select('count')
+          .limit(1)
+
+        if (error) throw error
+        
+        return handleCORS(NextResponse.json({ 
+          status: 'success', 
+          message: 'Supabase connection successful',
+          supabaseUrl: supabaseUrl
+        }))
+      } catch (error) {
+        return handleCORS(NextResponse.json(
+          { 
+            status: 'error', 
+            message: 'Supabase connection failed',
+            error: error.message 
+          }, 
+          { status: 500 }
+        ))
+      }
+    }
+
+    // Test Cloudinary connection - GET /api/test/cloudinary
+    if (route === '/test/cloudinary' && method === 'GET') {
+      try {
+        // Test Cloudinary by uploading a small test image
+        const testImage = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
+        
+        const result = await uploadToCloudinary(testImage, {
+          folder: 'test',
+          public_id: 'connection_test'
+        })
+        
+        return handleCORS(NextResponse.json({ 
+          status: 'success', 
+          message: 'Cloudinary connection successful',
+          testImageUrl: result.secure_url
+        }))
+      } catch (error) {
+        return handleCORS(NextResponse.json(
+          { 
+            status: 'error', 
+            message: 'Cloudinary connection failed',
             error: error.message 
           }, 
           { status: 500 }
