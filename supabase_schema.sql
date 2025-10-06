@@ -81,7 +81,7 @@ INSERT INTO public.rubrics (title, description, criteria, submission_type, creat
     'Standard rubric for evaluating algorithms, pseudocode, and flowcharts',
     '[
         {
-            "criterion_id": "' || uuid_generate_v4() || '",
+            "criterion_id": "logic_correctness_001",
             "name": "Logic Correctness",
             "description": "Accuracy of the logical flow and problem-solving approach",
             "max_points": 5,
@@ -95,7 +95,7 @@ INSERT INTO public.rubrics (title, description, criteria, submission_type, creat
             ]
         },
         {
-            "criterion_id": "' || uuid_generate_v4() || '",
+            "criterion_id": "structure_organization_001",
             "name": "Structure & Organization", 
             "description": "Clear structure, proper flow, and organization of elements",
             "max_points": 3,
@@ -107,7 +107,7 @@ INSERT INTO public.rubrics (title, description, criteria, submission_type, creat
             ]
         },
         {
-            "criterion_id": "' || uuid_generate_v4() || '",
+            "criterion_id": "syntax_clarity_001",
             "name": "Syntax & Clarity",
             "description": "Proper syntax, clear notation, and readability", 
             "max_points": 2,
