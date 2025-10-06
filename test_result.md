@@ -264,11 +264,12 @@
 
 ## test_plan:
   current_focus:
-    - "Gemini Integration Setup"
-    - "File Upload API"
+    - "Submissions API"
+    - "AI Evaluation Engine"
     - "Student Submission Portal UI"
+    - "File Upload Component"
   stuck_tasks: []
-  test_all: false
+  test_all: true
   test_priority: "high_first"
 
 ## agent_communication:
