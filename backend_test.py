@@ -373,21 +373,15 @@ END
             return False
 
 if __name__ == "__main__":
-        """Test Gemini AI connectivity"""
-        try:
-            response = requests.get(f"{self.base_url}/test/gemini", headers=self.headers, timeout=30)
-            
-            if response.status_code == 200:
-                data = response.json()
-                if data.get('status') == 'success' and 'geminiResponse' in data:
-                    self.log_test(
-                        "Gemini AI Connection", 
-                        True, 
-                        "Gemini AI is working correctly",
-                        f"Response: {data.get('geminiResponse', '')[:100]}..."
-                    )
-                    return True
-                else:
+    tester = FormSubmissionTester()
+    success = tester.run_form_submission_tests()
+    
+    if success:
+        print("\n🎉 FORM SUBMISSION FIX VERIFICATION: SUCCESS")
+        exit(0)
+    else:
+        print("\n❌ FORM SUBMISSION FIX VERIFICATION: FAILED")
+        exit(1)
                     self.log_test(
                         "Gemini AI Connection", 
                         False, 
