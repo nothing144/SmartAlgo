@@ -102,6 +102,187 @@ class FormSubmissionTester:
             self.log_test("Rubrics API Test", False, f"Exception: {str(e)}")
             return False
     
+    def test_submission_with_valid_rubric_id(self):
+        """Test 2: Test submission with valid rubric UUID (the fix)"""
+        print("\n=== TEST 2: Testing Submission with Valid Rubric UUID ===")
+        
+        if not self.rubric_id:
+            self.log_test("Submission Test Setup", False, "No rubric ID available for testing")
+            return False
+        
+        test_cases = [
+            {
+                "name": "Algorithm Submission",
+                "data": {
+                    "studentName": "Alice Johnson",
+                    "assignmentTitle": "Bubble Sort Algorithm",
+                    "submissionType": "algorithm",
+                    "textContent": """
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+    return arr
+
+# Test the function
+numbers = [64, 34, 25, 12, 22, 11, 90]
+sorted_numbers = bubble_sort(numbers)
+print("Sorted array:", sorted_numbers)
+                    """,
+                    "rubricId": self.rubric_id
+                }
+            },
+            {
+                "name": "Pseudocode Submission", 
+                "data": {
+                    "studentName": "Bob Smith",
+                    "assignmentTitle": "Binary Search Pseudocode",
+                    "submissionType": "pseudocode",
+                    "textContent": """
+ALGORITHM BinarySearch
+INPUT: sorted_array, target_value
+OUTPUT: index of target_value or -1 if not found
+
+BEGIN
+    left = 0
+    right = length(sorted_array) - 1
+    
+    WHILE left <= right DO
+        mid = (left + right) / 2
+        
+        IF sorted_array[mid] = target_value THEN
+            RETURN mid
+        ELSE IF sorted_array[mid] < target_value THEN
+            left = mid + 1
+        ELSE
+            right = mid - 1
+        END IF
+    END WHILE
+    
+    RETURN -1
+END
+                    """,
+                    "rubricId": self.rubric_id
+                }
+            },
+            {
+                "name": "Flowchart Submission",
+                "data": {
+                    "studentName": "Carol Davis",
+                    "assignmentTitle": "Simple Calculator Flowchart",
+                    "submissionType": "flowchart",
+                    "imageData": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+                    "fileName": "calculator_flowchart.png",
+                    "rubricId": self.rubric_id
+                }
+            }
+        ]
+        
+        success_count = 0
+        
+        for test_case in test_cases:
+            try:
+                print(f"\nTesting {test_case['name']}...")
+                
+                response = requests.post(f"{self.base_url}/submissions", 
+                    json=test_case['data'],
+                    headers=self.headers,
+                    timeout=60
+                )
+                
+                if response.status_code in [200, 201]:
+                    submission = response.json()
+                    submission_id = submission.get('id')
+                    
+                    if submission_id:
+                        self.submission_ids.append(submission_id)
+                        
+                        # Verify rubric_id is properly stored
+                        stored_rubric_id = submission.get('rubric_id')
+                        
+                        if stored_rubric_id == self.rubric_id:
+                            self.log_test(f"{test_case['name']} - UUID Storage", True, 
+                                        f"Rubric UUID correctly stored: {stored_rubric_id}")
+                            success_count += 1
+                        else:
+                            self.log_test(f"{test_case['name']} - UUID Storage", False, 
+                                        f"Expected: {self.rubric_id}, Got: {stored_rubric_id}")
+                        
+                        self.log_test(f"{test_case['name']} - Creation", True, 
+                                    f"Submission created with ID: {submission_id}")
+                    else:
+                        self.log_test(f"{test_case['name']} - Creation", False, 
+                                    "No submission ID in response")
+                        
+                else:
+                    error_text = response.text
+                    self.log_test(f"{test_case['name']} - Creation", False, 
+                                f"HTTP {response.status_code}: {error_text}")
+                    
+                    # Check for the specific UUID error we're testing for
+                    if "invalid input syntax for type uuid" in error_text:
+                        self.log_test("UUID Error Detection", False, 
+                                    "❌ CRITICAL: The original UUID error is still occurring!")
+                        print(f"ERROR DETAILS: {error_text}")
+                        
+            except Exception as e:
+                self.log_test(f"{test_case['name']} - Creation", False, f"Exception: {str(e)}")
+        
+        return success_count == len(test_cases)
+    
+    def test_submission_retrieval(self):
+        """Test 3: Verify submission retrieval and evaluation status"""
+        print("\n=== TEST 3: Testing Submission Retrieval ===")
+        
+        if not self.submission_ids:
+            self.log_test("Submission Retrieval Setup", False, "No submission IDs to test")
+            return False
+        
+        success_count = 0
+        
+        for submission_id in self.submission_ids:
+            try:
+                # Wait a bit for potential AI evaluation
+                time.sleep(2)
+                
+                response = requests.get(f"{self.base_url}/submissions/{submission_id}", 
+                                      headers=self.headers, timeout=30)
+                
+                if response.status_code == 200:
+                    submission = response.json()
+                    
+                    # Verify submission data
+                    status = submission.get('status', 'unknown')
+                    student_name = submission.get('studentName', 'N/A')
+                    
+                    self.log_test(f"Retrieve Submission ({student_name})", True, 
+                                f"Status: {status}, ID: {submission_id[:8]}...")
+                    
+                    # Check evaluation if present
+                    evaluation = submission.get('evaluation')
+                    if evaluation:
+                        total_score = evaluation.get('totalScore', 0)
+                        max_score = evaluation.get('maxScore', 0)
+                        self.log_test(f"AI Evaluation ({student_name})", True, 
+                                    f"Score: {total_score}/{max_score}")
+                    else:
+                        self.log_test(f"AI Evaluation ({student_name})", True, 
+                                    "Evaluation in progress or not started")
+                    
+                    success_count += 1
+                    
+                else:
+                    self.log_test(f"Retrieve Submission {submission_id[:8]}...", False, 
+                                f"HTTP {response.status_code}: {response.text}")
+                    
+            except Exception as e:
+                self.log_test(f"Retrieve Submission {submission_id[:8]}...", False, 
+                            f"Exception: {str(e)}")
+        
+        return success_count == len(self.submission_ids)
+    
     def test_supabase_connection(self):
         """Test Supabase database connectivity"""
         try:
