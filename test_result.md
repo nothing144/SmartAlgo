@@ -218,6 +218,9 @@
       - working: true
         agent: "testing"
         comment: "TESTED: AI Evaluation Engine working excellently. Gemini AI successfully evaluates all submission types with rubric-based scoring. Async evaluation process working correctly. Submissions get evaluated and scored automatically with detailed feedback. Scores range properly (e.g., 6/10, 3/10, 7/10 observed in tests)."
+      - working: true
+        agent: "main"
+        comment: "IMPROVEMENT: Fixed AI analysis displaying as JSON. Added markdown code block cleanup (```json) and proper text extraction from Gemini responses. Analysis now shows as clean, readable text instead of JSON format."
 
 ## frontend:
   - task: "Student Submission Portal UI"
