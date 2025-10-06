@@ -12,7 +12,7 @@ import os
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://autograde-flow.preview.emergentagent.com/api"
+BASE_URL = "https://migrate-supanary.preview.emergentagent.com/api"
 HEADERS = {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
