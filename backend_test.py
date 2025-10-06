@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Comprehensive Backend API Tests for Intelligent Rubrics-Based Evaluator
-Tests all backend endpoints including Gemini AI integration, Submissions API, and Rubrics API
+Tests Supabase and Cloudinary migration including all backend endpoints
 """
 
 import requests
