@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { CheckCircle, Clock, AlertCircle, Eye, Star, BookOpen } from 'lucide-react'
 
 const SubmissionResults = ({ submissionId }) => {
