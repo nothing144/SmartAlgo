@@ -211,8 +211,8 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               {rubrics.map((rubric) => (
-                <option key={rubric.rubricId} value={rubric.rubricId}>
-                  {rubric.title} ({rubric.submissionType})
+                <option key={rubric.id} value={rubric.id}>
+                  {rubric.title} ({rubric.submission_type})
                 </option>
               ))}
             </select>
