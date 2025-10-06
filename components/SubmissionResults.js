@@ -25,6 +25,23 @@ const SubmissionResults = ({ submissionId }) => {
     }
   }
 
+  useEffect(() => {
+    if (submissionId) {
+      fetchSubmission()
+    }
+  }, [submissionId, fetchSubmission])
+  
+  useEffect(() => {
+    // Set up polling for evaluation updates
+    const interval = setInterval(() => {
+      if (submission?.status === 'evaluating') {
+        fetchSubmission()
+      }
+    }, 3000)
+    
+    return () => clearInterval(interval)
+  }, [submission?.status, fetchSubmission])
+
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
