@@ -521,9 +521,13 @@ async function handleRoute(request, { params }) {
         .eq('submission_id', submissionId)
         .single()
 
+      // Transform to camelCase for frontend compatibility
+      const transformedSubmission = transformSubmission(submission)
+      const transformedEvaluation = transformEvaluation(evaluation)
+
       const result = {
-        ...submission,
-        evaluation: evaluation || null
+        ...transformedSubmission,
+        evaluation: transformedEvaluation
       }
       
       return handleCORS(NextResponse.json(result))
