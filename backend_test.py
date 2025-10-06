@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend API Tests for Intelligent Rubrics-Based Evaluator
-Tests Supabase and Cloudinary migration including all backend endpoints
+Backend API Testing for Form Submission Fix Verification
+Testing the UUID field mapping fix for rubric selection
 """
 
 import requests
