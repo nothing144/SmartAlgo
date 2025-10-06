@@ -249,16 +249,17 @@ Scoring levels: ${c.levels.map(l => `${l.points} pts - ${l.description}`).join('
 
 Please provide:
 1. Detailed analysis of the code's logic, structure, and clarity
-2. Score for each criterion with specific reasoning
-3. Overall feedback with suggestions for improvement
-4. Return the response in JSON format:
+2. Identify any syntax errors, logical flaws, or issues
+3. Score for each criterion with specific reasoning
+4. Overall feedback with actionable suggestions for improvement
+5. Return the response in JSON format:
 {
-  "analysis": "detailed analysis text",
+  "analysis": "detailed analysis text including any syntax errors found",
   "scores": [
     {"criterionId": "id", "earnedPoints": number, "maxPoints": number, "feedback": "specific feedback"}
   ],
   "overallFeedback": "summary feedback",
-  "suggestions": ["suggestion1", "suggestion2"]
+  "suggestions": ["specific suggestion 1", "specific suggestion 2", "specific suggestion 3"]
 }`
 
       result = await model.generateContent(prompt)
