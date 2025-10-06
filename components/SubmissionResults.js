@@ -27,7 +27,11 @@ const SubmissionResults = ({ submissionId }) => {
 
   useEffect(() => {
     if (submissionId) {
-      fetchSubmission()
+      // Small delay to let backend start evaluation
+      const timer = setTimeout(() => {
+        fetchSubmission()
+      }, 500)
+      return () => clearTimeout(timer)
     }
   }, [submissionId, fetchSubmission])
   
