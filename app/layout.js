@@ -1,8 +1,8 @@
 import './globals.css'
 
 export const metadata = {
-  title: 'Next.js MongoDB Template',
-  description: 'A simple template with App Router, MongoDB, and shadcn/ui',
+  title: 'Smart Evaluator - AI-Powered Rubrics-Based Assessment',
+  description: 'Intelligent evaluation system for flowcharts, algorithms, and pseudocode using Gemini AI',
 }
 
 export default function RootLayout({ children }) {
