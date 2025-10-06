@@ -200,26 +200,6 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
           </div>
         </div>
 
-        {/* Rubric Selection */}
-        {rubrics.length > 0 && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Evaluation Rubric
-            </label>
-            <select
-              value={selectedRubric}
-              onChange={(e) => setSelectedRubric(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              {rubrics.map((rubric) => (
-                <option key={rubric.id} value={rubric.id}>
-                  {rubric.title} ({rubric.submission_type})
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
         {/* Content Input */}
         <div>
           {formData.submissionType === 'flowchart' ? (
