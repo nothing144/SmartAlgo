@@ -325,29 +325,52 @@ END
             )
             return False
 
-    def test_cloudinary_connection(self):
-        """Test Cloudinary image service connectivity"""
-        try:
-            response = requests.get(f"{self.base_url}/test/cloudinary", headers=self.headers, timeout=30)
-            
-            if response.status_code == 200:
-                data = response.json()
-                if data.get('status') == 'success' and 'testImageUrl' in data:
-                    self.log_test(
-                        "Cloudinary Connection", 
-                        True, 
-                        "Cloudinary image upload service working",
-                        f"Test image URL: {data.get('testImageUrl', '')[:50]}..."
-                    )
-                    return True
-                else:
-                    self.log_test(
-                        "Cloudinary Connection", 
-                        False, 
-                        "Unexpected response format",
-                        data
-                    )
-                    return False
+    def run_form_submission_tests(self):
+        """Main test execution for form submission fix verification"""
+        print("🧪 FORM SUBMISSION FIX VERIFICATION")
+        print("=" * 80)
+        print(f"Testing API at: {self.base_url}")
+        print(f"Test Focus: Verifying UUID field mapping fix for rubric selection")
+        print(f"Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print("=" * 80)
+        
+        # Test 1: Verify rubric API field structure
+        if not self.test_rubrics_field_structure():
+            print("❌ Cannot proceed - Rubric API structure test failed")
+            return False
+        
+        # Test 2: Test submissions with valid rubric UUID
+        if not self.test_submission_with_valid_rubric_id():
+            print("❌ Form submission test failed")
+            return False
+        
+        # Test 3: Verify submission retrieval
+        if not self.test_submission_retrieval():
+            print("❌ Submission retrieval test failed")
+            return False
+        
+        # Summary
+        print("\n" + "=" * 80)
+        print("🏁 FORM SUBMISSION FIX VERIFICATION COMPLETED")
+        print("=" * 80)
+        
+        passed_tests = sum(1 for result in self.test_results if result['success'])
+        total_tests = len(self.test_results)
+        
+        print(f"✅ Tests Passed: {passed_tests}/{total_tests}")
+        
+        if passed_tests == total_tests:
+            print("🎉 ALL TESTS PASSED - Form submission fix is working correctly!")
+            print("✅ No UUID errors detected")
+            print("✅ Rubric IDs are properly mapped and stored")
+            print("✅ All submission types working with valid rubric UUIDs")
+            return True
+        else:
+            print("❌ Some tests failed - Form submission fix needs attention")
+            failed_tests = [r for r in self.test_results if not r['success']]
+            for test in failed_tests:
+                print(f"   - {test['test']}: {test['message']}")
+            return False
             else:
                 self.log_test(
                     "Cloudinary Connection", 
