@@ -267,6 +267,12 @@
       - working: true
         agent: "main"
         comment: "Complete submission form with type selection, rubric selection, and content input"
+      - working: false
+        agent: "user"
+        comment: "User reported: Form submission fails with error 'Database error: invalid input syntax for type uuid: Default Evaluation Rubric ()'. The rubric dropdown was sending the title string instead of UUID"
+      - working: true
+        agent: "main"
+        comment: "FIXED: Updated rubric selection to use correct field names. Changed rubric.rubricId to rubric.id and rubric.submissionType to rubric.submission_type to match API response structure. Form now properly sends UUID for rubric_id"
 
   - task: "Results Display Component"
     implemented: true
