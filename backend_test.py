@@ -224,7 +224,7 @@ class BackendTester:
             return False
     
     def test_list_rubrics(self):
-        """Test listing available rubrics"""
+        """Test listing available rubrics from Supabase"""
         try:
             response = requests.get(f"{self.base_url}/rubrics", headers=self.headers, timeout=15)
             
@@ -232,18 +232,18 @@ class BackendTester:
                 data = response.json()
                 if isinstance(data, list):
                     rubric_count = len(data)
-                    has_test_rubric = any(r.get('rubricId') == self.created_rubric_id for r in data)
+                    has_test_rubric = any(r.get('id') == self.created_rubric_id for r in data)
                     
                     self.log_test(
-                        "List Rubrics", 
+                        "List Rubrics (Supabase)", 
                         True, 
-                        f"Retrieved {rubric_count} rubrics, test rubric found: {has_test_rubric}",
+                        f"Retrieved {rubric_count} rubrics from PostgreSQL, test rubric found: {has_test_rubric}",
                         f"Rubrics: {[r.get('title', 'No title') for r in data[:3]]}"
                     )
                     return True
                 else:
                     self.log_test(
-                        "List Rubrics", 
+                        "List Rubrics (Supabase)", 
                         False, 
                         "Response is not a list",
                         data
@@ -251,7 +251,7 @@ class BackendTester:
                     return False
             else:
                 self.log_test(
-                    "List Rubrics", 
+                    "List Rubrics (Supabase)", 
                     False, 
                     f"HTTP {response.status_code}",
                     response.text
@@ -260,7 +260,7 @@ class BackendTester:
                 
         except Exception as e:
             self.log_test(
-                "List Rubrics", 
+                "List Rubrics (Supabase)", 
                 False, 
                 f"Request error: {str(e)}",
                 None
