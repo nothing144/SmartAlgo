@@ -166,13 +166,13 @@ class BackendTester:
             return False
     
     def test_create_default_rubric(self):
-        """Test creating default rubric"""
+        """Test creating default rubric in Supabase"""
         try:
-            print("\n=== Testing Rubrics API ===")
+            print("\n=== Testing Supabase Database Operations ===")
             
             rubric_data = {
-                "title": "Test Evaluation Rubric",
-                "description": "Test rubric for automated evaluation",
+                "title": "Test Evaluation Rubric - Supabase",
+                "description": "Test rubric for Supabase migration evaluation",
                 "submissionType": "any",
                 "createdBy": "test_system"
             }
@@ -186,19 +186,20 @@ class BackendTester:
             
             if response.status_code == 200:
                 data = response.json()
-                if 'rubricId' in data and 'criteria' in data:
-                    self.created_rubric_id = data['rubricId']
+                # Updated to match Supabase response format (id instead of rubricId)
+                if 'id' in data and 'criteria' in data:
+                    self.created_rubric_id = data['id']
                     criteria_count = len(data.get('criteria', []))
                     self.log_test(
-                        "Create Default Rubric", 
+                        "Create Default Rubric (Supabase)", 
                         True, 
-                        f"Rubric created with {criteria_count} criteria",
+                        f"Rubric created in PostgreSQL with {criteria_count} criteria",
                         f"Rubric ID: {self.created_rubric_id}"
                     )
                     return True
                 else:
                     self.log_test(
-                        "Create Default Rubric", 
+                        "Create Default Rubric (Supabase)", 
                         False, 
                         "Missing required fields in response",
                         data
@@ -206,7 +207,7 @@ class BackendTester:
                     return False
             else:
                 self.log_test(
-                    "Create Default Rubric", 
+                    "Create Default Rubric (Supabase)", 
                     False, 
                     f"HTTP {response.status_code}",
                     response.text
@@ -215,7 +216,7 @@ class BackendTester:
                 
         except Exception as e:
             self.log_test(
-                "Create Default Rubric", 
+                "Create Default Rubric (Supabase)", 
                 False, 
                 f"Request error: {str(e)}",
                 None
