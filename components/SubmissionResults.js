@@ -34,10 +34,11 @@ const SubmissionResults = ({ submissionId }) => {
   useEffect(() => {
     // Set up polling for evaluation updates
     const interval = setInterval(() => {
-      if (submission?.status === 'evaluating') {
+      // Poll if submission is not yet completed
+      if (submission?.status && submission.status !== 'completed' && submission.status !== 'error') {
         fetchSubmission()
       }
-    }, 3000)
+    }, 2000) // Poll every 2 seconds
     
     return () => clearInterval(interval)
   }, [submission?.status, fetchSubmission])
