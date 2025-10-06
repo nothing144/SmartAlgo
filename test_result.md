@@ -294,8 +294,7 @@
 
 ## test_plan:
   current_focus:
-    - "Student Submission Portal UI"
-    - "File Upload Component"
+    - "Submission Form Component"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
