@@ -265,11 +265,19 @@ Please provide:
     }
 
     const response = await result.response
-    const text = response.text()
+    let text = response.text()
+    
+    // Clean up markdown code blocks if present (```json ... ```)
+    text = text.replace(/```json\s*/g, '').replace(/```\s*$/g, '').trim()
     
     // Try to parse JSON response, fallback to structured text if needed
     try {
-      return JSON.parse(text)
+      const parsed = JSON.parse(text)
+      // Ensure analysis field is clean text, not nested JSON
+      if (parsed.analysis && typeof parsed.analysis === 'string') {
+        parsed.analysis = parsed.analysis.trim()
+      }
+      return parsed
     } catch (parseError) {
       // Fallback: create structured response from text
       return {
