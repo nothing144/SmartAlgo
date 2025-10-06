@@ -268,34 +268,46 @@ class BackendTester:
             return False
     
     def test_algorithm_submission(self):
-        """Test algorithm submission with AI evaluation"""
+        """Test algorithm submission with Supabase storage and AI evaluation"""
         try:
-            print("\n=== Testing Submissions API ===")
+            print("\n=== Testing Submissions API with Supabase ===")
             
             algorithm_code = """
-def binary_search(arr, target):
-    left, right = 0, len(arr) - 1
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
     
-    while left <= right:
-        mid = (left + right) // 2
-        if arr[mid] == target:
-            return mid
-        elif arr[mid] < target:
-            left = mid + 1
-        else:
-            right = mid - 1
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
     
-    return -1
+    return merge(left, right)
 
-# Example usage
-numbers = [1, 3, 5, 7, 9, 11, 13, 15]
-result = binary_search(numbers, 7)
-print(f"Found at index: {result}")
+def merge(left, right):
+    result = []
+    i = j = 0
+    
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+    
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result
+
+# Test the algorithm
+numbers = [64, 34, 25, 12, 22, 11, 90]
+sorted_numbers = merge_sort(numbers)
+print(f"Sorted array: {sorted_numbers}")
 """
             
             submission_data = {
                 "studentName": "Alice Johnson",
-                "assignmentTitle": "Binary Search Implementation",
+                "assignmentTitle": "Merge Sort Algorithm - Supabase Test",
                 "submissionType": "algorithm",
                 "textContent": algorithm_code,
                 "userId": "student_001",
@@ -311,31 +323,32 @@ print(f"Found at index: {result}")
             
             if response.status_code == 200:
                 data = response.json()
-                if 'submissionId' in data:
-                    submission_id = data['submissionId']
+                # Updated to match Supabase response format (id instead of submissionId)
+                if 'id' in data:
+                    submission_id = data['id']
                     self.created_submission_ids.append(submission_id)
                     
                     # Wait a moment for AI evaluation to process
                     time.sleep(3)
                     
                     self.log_test(
-                        "Algorithm Submission", 
+                        "Algorithm Submission (Supabase)", 
                         True, 
-                        f"Algorithm submitted successfully, status: {data.get('status', 'unknown')}",
+                        f"Algorithm stored in PostgreSQL, status: {data.get('status', 'unknown')}",
                         f"Submission ID: {submission_id}"
                     )
                     return submission_id
                 else:
                     self.log_test(
-                        "Algorithm Submission", 
+                        "Algorithm Submission (Supabase)", 
                         False, 
-                        "Missing submissionId in response",
+                        "Missing id in response",
                         data
                     )
                     return None
             else:
                 self.log_test(
-                    "Algorithm Submission", 
+                    "Algorithm Submission (Supabase)", 
                     False, 
                     f"HTTP {response.status_code}",
                     response.text
@@ -344,7 +357,7 @@ print(f"Found at index: {result}")
                 
         except Exception as e:
             self.log_test(
-                "Algorithm Submission", 
+                "Algorithm Submission (Supabase)", 
                 False, 
                 f"Request error: {str(e)}",
                 None
