@@ -371,25 +371,8 @@ END
             for test in failed_tests:
                 print(f"   - {test['test']}: {test['message']}")
             return False
-            else:
-                self.log_test(
-                    "Cloudinary Connection", 
-                    False, 
-                    f"HTTP {response.status_code}",
-                    response.text
-                )
-                return False
-                
-        except Exception as e:
-            self.log_test(
-                "Cloudinary Connection", 
-                False, 
-                f"Connection error: {str(e)}",
-                None
-            )
-            return False
 
-    def test_gemini_connection(self):
+if __name__ == "__main__":
         """Test Gemini AI connectivity"""
         try:
             response = requests.get(f"{self.base_url}/test/gemini", headers=self.headers, timeout=30)
