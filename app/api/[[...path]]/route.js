@@ -20,6 +20,54 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 })
 
+// Helper function to convert snake_case to camelCase
+function toCamelCase(str) {
+  return str.replace(/_([a-z])/g, (match, letter) => letter.toUpperCase())
+}
+
+// Helper function to transform object keys from snake_case to camelCase
+function transformToCamelCase(obj) {
+  if (obj === null || obj === undefined) return obj
+  if (Array.isArray(obj)) {
+    return obj.map(transformToCamelCase)
+  }
+  if (typeof obj === 'object') {
+    const transformed = {}
+    Object.keys(obj).forEach(key => {
+      const camelKey = toCamelCase(key)
+      transformed[camelKey] = transformToCamelCase(obj[key])
+    })
+    return transformed
+  }
+  return obj
+}
+
+// Transform submission data for frontend
+function transformSubmission(submission) {
+  if (!submission) return null
+  
+  const transformed = transformToCamelCase(submission)
+  
+  // Special handling for content field based on submission type
+  if (transformed.submissionType === 'flowchart' && transformed.imageUrl) {
+    transformed.content = {
+      imageUrl: transformed.imageUrl
+    }
+  } else if (transformed.textContent) {
+    transformed.content = {
+      text: transformed.textContent
+    }
+  }
+  
+  return transformed
+}
+
+// Transform evaluation data for frontend  
+function transformEvaluation(evaluation) {
+  if (!evaluation) return null
+  return transformToCamelCase(evaluation)
+}
+
 // Create tables in Supabase (run this once to set up schema)
 async function initializeSupabaseTables() {
   try {
