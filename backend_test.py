@@ -41,10 +41,92 @@ class BackendTester:
         if details and not success:
             print(f"   Details: {details}")
     
+    def test_supabase_connection(self):
+        """Test Supabase database connectivity"""
+        try:
+            print("\n=== Testing Service Connections ===")
+            response = requests.get(f"{self.base_url}/test/supabase", headers=self.headers, timeout=30)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('status') == 'success':
+                    self.log_test(
+                        "Supabase Connection", 
+                        True, 
+                        "Supabase PostgreSQL connection successful",
+                        f"URL: {data.get('supabaseUrl', 'N/A')}"
+                    )
+                    return True
+                else:
+                    self.log_test(
+                        "Supabase Connection", 
+                        False, 
+                        "Unexpected response format",
+                        data
+                    )
+                    return False
+            else:
+                self.log_test(
+                    "Supabase Connection", 
+                    False, 
+                    f"HTTP {response.status_code}",
+                    response.text
+                )
+                return False
+                
+        except Exception as e:
+            self.log_test(
+                "Supabase Connection", 
+                False, 
+                f"Connection error: {str(e)}",
+                None
+            )
+            return False
+
+    def test_cloudinary_connection(self):
+        """Test Cloudinary image service connectivity"""
+        try:
+            response = requests.get(f"{self.base_url}/test/cloudinary", headers=self.headers, timeout=30)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('status') == 'success' and 'testImageUrl' in data:
+                    self.log_test(
+                        "Cloudinary Connection", 
+                        True, 
+                        "Cloudinary image upload service working",
+                        f"Test image URL: {data.get('testImageUrl', '')[:50]}..."
+                    )
+                    return True
+                else:
+                    self.log_test(
+                        "Cloudinary Connection", 
+                        False, 
+                        "Unexpected response format",
+                        data
+                    )
+                    return False
+            else:
+                self.log_test(
+                    "Cloudinary Connection", 
+                    False, 
+                    f"HTTP {response.status_code}",
+                    response.text
+                )
+                return False
+                
+        except Exception as e:
+            self.log_test(
+                "Cloudinary Connection", 
+                False, 
+                f"Connection error: {str(e)}",
+                None
+            )
+            return False
+
     def test_gemini_connection(self):
         """Test Gemini AI connectivity"""
         try:
-            print("\n=== Testing Gemini AI Integration ===")
             response = requests.get(f"{self.base_url}/test/gemini", headers=self.headers, timeout=30)
             
             if response.status_code == 200:
