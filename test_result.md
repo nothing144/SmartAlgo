@@ -101,3 +101,110 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+## user_problem_statement: |
+  Build an Intelligent Rubrics-Based Evaluator for Flowcharts, Algorithms, and Pseudocode.
+  
+  Key Features:
+  - Student submission portal (upload flowcharts, algorithms, pseudocode)
+  - AI-powered evaluation using Gemini for analyzing submissions
+  - Rubric-based scoring system with instant feedback
+  - Instructor dashboard for managing rubrics and viewing results
+  - LMS integration capabilities
+  
+  Tech Stack: Next.js + MongoDB + Gemini AI
+  Priority: Start with Student Submission Portal
+  API: Gemini with provided key
+
+## backend:
+  - task: "MongoDB Schema Design"
+    implemented: false
+    working: "NA"
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Need to design schemas for submissions, rubrics, users, evaluations"
+
+  - task: "Gemini Integration Setup"
+    implemented: false
+    working: "NA"
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Need to integrate Gemini API for AI evaluation"
+
+  - task: "File Upload API"
+    implemented: false
+    working: "NA"
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "API endpoints for uploading flowchart images and text submissions"
+
+  - task: "Submissions API"
+    implemented: false
+    working: "NA"
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "CRUD operations for managing student submissions"
+
+## frontend:
+  - task: "Student Submission Portal UI"
+    implemented: false
+    working: "NA"
+    file: "/app/app/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Interface for students to upload flowcharts and submit code/pseudocode"
+
+  - task: "File Upload Component"
+    implemented: false
+    working: "NA"
+    file: "/app/components/"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Drag-drop file upload with preview for images and text editor for code"
+
+## metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+## test_plan:
+  current_focus:
+    - "Gemini Integration Setup"
+    - "File Upload API"
+    - "Student Submission Portal UI"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+## agent_communication:
+  - agent: "main"
+    message: "Starting project with Next.js + MongoDB setup. User wants to begin with Student Submission Portal. Need to integrate Gemini AI for evaluation engine."
