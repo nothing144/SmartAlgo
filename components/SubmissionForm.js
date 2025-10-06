@@ -28,8 +28,9 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
       if (response.ok) {
         const data = await response.json()
         setRubrics(data)
+        // Make sure we're using the correct ID field from the API
         if (data.length > 0) {
-          setSelectedRubric(data[0].id)
+          setSelectedRubric(data[0].id) // Rubrics use 'id' field
         }
       }
     } catch (error) {
