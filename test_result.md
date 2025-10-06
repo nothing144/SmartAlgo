@@ -274,6 +274,9 @@
         agent: "main"
         comment: "FIXED: Updated rubric selection to use correct field names. Changed rubric.rubricId to rubric.id and rubric.submissionType to rubric.submission_type to match API response structure. Form now properly sends UUID for rubric_id"
       - working: true
+        agent: "main"
+        comment: "IMPROVEMENT: Removed rubric selection dropdown per user request. Form now automatically selects the default rubric (prioritizes rubric with 'Default' in title). Cleaner UI with one less field for students to worry about."
+      - working: true
         agent: "testing"
         comment: "TESTED: Form submission fix verified successfully. All 14 tests passed (100% success rate). Confirmed rubric API returns correct field structure (id, submission_type). Tested all 3 submission types (algorithm, pseudocode, flowchart) with valid rubric UUIDs. No UUID errors detected. Rubric IDs properly mapped and stored. AI evaluation working for algorithm/pseudocode submissions. Fix is working correctly."
 
