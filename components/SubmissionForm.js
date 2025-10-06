@@ -29,7 +29,7 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
         const data = await response.json()
         setRubrics(data)
         if (data.length > 0) {
-          setSelectedRubric(data[0].rubricId)
+          setSelectedRubric(data[0].id)
         }
       }
     } catch (error) {
