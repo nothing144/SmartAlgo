@@ -11,16 +11,19 @@ const SubmissionResults = ({ submissionId }) => {
   useEffect(() => {
     if (submissionId) {
       fetchSubmission()
-      // Set up polling for evaluation updates
-      const interval = setInterval(() => {
-        if (submission?.status === 'evaluating') {
-          fetchSubmission()
-        }
-      }, 3000)
-      
-      return () => clearInterval(interval)
     }
   }, [submissionId])
+  
+  useEffect(() => {
+    // Set up polling for evaluation updates
+    const interval = setInterval(() => {
+      if (submission?.status === 'evaluating') {
+        fetchSubmission()
+      }
+    }, 3000)
+    
+    return () => clearInterval(interval)
+  }, [submission?.status])
 
   const fetchSubmission = async () => {
     try {
