@@ -365,41 +365,50 @@ print(f"Sorted array: {sorted_numbers}")
             return None
     
     def test_pseudocode_submission(self):
-        """Test pseudocode submission"""
+        """Test pseudocode submission with Supabase storage"""
         try:
             pseudocode_content = """
-ALGORITHM: QuickSort
-INPUT: Array A, low index, high index
-OUTPUT: Sorted array
+ALGORITHM: Heap Sort
+INPUT: Array A of size n
+OUTPUT: Sorted array in ascending order
 
 BEGIN
-    IF low < high THEN
-        pivot_index = PARTITION(A, low, high)
-        QUICKSORT(A, low, pivot_index - 1)
-        QUICKSORT(A, pivot_index + 1, high)
-    END IF
-END
-
-FUNCTION PARTITION(A, low, high)
-BEGIN
-    pivot = A[high]
-    i = low - 1
-    
-    FOR j = low TO high - 1 DO
-        IF A[j] <= pivot THEN
-            i = i + 1
-            SWAP A[i] WITH A[j]
-        END IF
+    // Build max heap
+    FOR i = n/2 - 1 DOWN TO 0 DO
+        HEAPIFY(A, n, i)
     END FOR
     
-    SWAP A[i + 1] WITH A[high]
-    RETURN i + 1
+    // Extract elements from heap one by one
+    FOR i = n - 1 DOWN TO 1 DO
+        SWAP A[0] WITH A[i]
+        HEAPIFY(A, i, 0)
+    END FOR
+END
+
+FUNCTION HEAPIFY(A, n, root)
+BEGIN
+    largest = root
+    left = 2 * root + 1
+    right = 2 * root + 2
+    
+    IF left < n AND A[left] > A[largest] THEN
+        largest = left
+    END IF
+    
+    IF right < n AND A[right] > A[largest] THEN
+        largest = right
+    END IF
+    
+    IF largest != root THEN
+        SWAP A[root] WITH A[largest]
+        HEAPIFY(A, n, largest)
+    END IF
 END
 """
             
             submission_data = {
                 "studentName": "Bob Smith",
-                "assignmentTitle": "QuickSort Pseudocode",
+                "assignmentTitle": "Heap Sort Pseudocode - Supabase Test",
                 "submissionType": "pseudocode",
                 "textContent": pseudocode_content,
                 "userId": "student_002",
@@ -415,31 +424,31 @@ END
             
             if response.status_code == 200:
                 data = response.json()
-                if 'submissionId' in data:
-                    submission_id = data['submissionId']
+                if 'id' in data:
+                    submission_id = data['id']
                     self.created_submission_ids.append(submission_id)
                     
                     # Wait for AI evaluation
                     time.sleep(3)
                     
                     self.log_test(
-                        "Pseudocode Submission", 
+                        "Pseudocode Submission (Supabase)", 
                         True, 
-                        f"Pseudocode submitted successfully, status: {data.get('status', 'unknown')}",
+                        f"Pseudocode stored in PostgreSQL, status: {data.get('status', 'unknown')}",
                         f"Submission ID: {submission_id}"
                     )
                     return submission_id
                 else:
                     self.log_test(
-                        "Pseudocode Submission", 
+                        "Pseudocode Submission (Supabase)", 
                         False, 
-                        "Missing submissionId in response",
+                        "Missing id in response",
                         data
                     )
                     return None
             else:
                 self.log_test(
-                    "Pseudocode Submission", 
+                    "Pseudocode Submission (Supabase)", 
                     False, 
                     f"HTTP {response.status_code}",
                     response.text
@@ -448,7 +457,7 @@ END
                 
         except Exception as e:
             self.log_test(
-                "Pseudocode Submission", 
+                "Pseudocode Submission (Supabase)", 
                 False, 
                 f"Request error: {str(e)}",
                 None
