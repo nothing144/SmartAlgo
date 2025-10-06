@@ -15,6 +15,111 @@ async function connectToMongo() {
   return db
 }
 
+// MongoDB Schema Helpers
+async function initializeCollections(db) {
+  // Users collection (students and instructors)
+  await db.collection('users').createIndex({ email: 1 }, { unique: true })
+  
+  // Submissions collection
+  await db.collection('submissions').createIndex({ userId: 1, createdAt: -1 })
+  await db.collection('submissions').createIndex({ submissionId: 1 }, { unique: true })
+  
+  // Rubrics collection
+  await db.collection('rubrics').createIndex({ rubricId: 1 }, { unique: true })
+  await db.collection('rubrics').createIndex({ createdBy: 1 })
+  
+  // Evaluations collection
+  await db.collection('evaluations').createIndex({ submissionId: 1 })
+  
+  return db
+}
+
+// Submission Schema
+function createSubmission(data) {
+  return {
+    submissionId: uuidv4(),
+    userId: data.userId,
+    studentName: data.studentName,
+    assignmentTitle: data.assignmentTitle,
+    submissionType: data.submissionType, // 'flowchart', 'algorithm', 'pseudocode'
+    content: {
+      text: data.textContent || null,
+      imageUrl: data.imageUrl || null,
+      fileName: data.fileName || null
+    },
+    rubricId: data.rubricId || null,
+    status: 'submitted', // 'submitted', 'evaluating', 'completed', 'error'
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
+}
+
+// Evaluation Schema
+function createEvaluation(submissionId, aiAnalysis, rubricScores) {
+  return {
+    evaluationId: uuidv4(),
+    submissionId: submissionId,
+    aiAnalysis: aiAnalysis,
+    rubricScores: rubricScores,
+    totalScore: rubricScores.reduce((sum, score) => sum + score.earnedPoints, 0),
+    maxScore: rubricScores.reduce((sum, score) => sum + score.maxPoints, 0),
+    feedback: aiAnalysis.feedback || '',
+    createdAt: new Date()
+  }
+}
+
+// Rubric Schema
+function createRubric(data) {
+  return {
+    rubricId: uuidv4(),
+    title: data.title,
+    description: data.description,
+    criteria: data.criteria || [
+      {
+        criterionId: uuidv4(),
+        name: 'Logic Correctness',
+        description: 'Accuracy of the logical flow and problem-solving approach',
+        maxPoints: 5,
+        levels: [
+          { points: 5, description: 'Completely correct logic with optimal approach' },
+          { points: 4, description: 'Mostly correct with minor logical issues' },
+          { points: 3, description: 'Partially correct with some logical flaws' },
+          { points: 2, description: 'Major logical issues but shows understanding' },
+          { points: 1, description: 'Significant logical errors' },
+          { points: 0, description: 'No logical structure or completely incorrect' }
+        ]
+      },
+      {
+        criterionId: uuidv4(),
+        name: 'Structure & Organization',
+        description: 'Clear structure, proper flow, and organization of elements',
+        maxPoints: 3,
+        levels: [
+          { points: 3, description: 'Well-organized with clear structure' },
+          { points: 2, description: 'Generally organized with minor issues' },
+          { points: 1, description: 'Some organization but lacks clarity' },
+          { points: 0, description: 'Poor organization and unclear structure' }
+        ]
+      },
+      {
+        criterionId: uuidv4(),
+        name: 'Syntax & Clarity',
+        description: 'Proper syntax, clear notation, and readability',
+        maxPoints: 2,
+        levels: [
+          { points: 2, description: 'Perfect syntax and very clear' },
+          { points: 1, description: 'Minor syntax issues but mostly clear' },
+          { points: 0, description: 'Major syntax errors or unclear notation' }
+        ]
+      }
+    ],
+    submissionType: data.submissionType, // 'flowchart', 'algorithm', 'pseudocode', 'any'
+    createdBy: data.createdBy,
+    isActive: true,
+    createdAt: new Date()
+  }
+}
+
 // Helper function to handle CORS
 function handleCORS(response) {
   response.headers.set('Access-Control-Allow-Origin', process.env.CORS_ORIGINS || '*')
