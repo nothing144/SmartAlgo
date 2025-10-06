@@ -222,9 +222,9 @@
 ## frontend:
   - task: "Student Submission Portal UI"
     implemented: true
-    working: true
+    working: false
     file: "/app/app/page.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: true
     status_history:
@@ -234,6 +234,9 @@
       - working: true
         agent: "main"
         comment: "Built complete student portal with submission form, results display, and navigation"
+      - working: false
+        agent: "user"
+        comment: "User reported: Recent issue tap gets stuck on loading and UI shows invalid date. Issue is field name mismatch between backend snake_case (created_at, student_name) and frontend camelCase (createdAt, studentName)"
 
   - task: "File Upload Component"
     implemented: true
