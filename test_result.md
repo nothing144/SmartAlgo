@@ -306,3 +306,5 @@
     message: "Phase 1 Complete: Built comprehensive backend API with MongoDB schemas, Gemini AI integration, and full submission/evaluation system. Created complete frontend with submission form, file upload, results display. Ready for testing."
   - agent: "testing"
     message: "BACKEND TESTING COMPLETE: All 13 backend tests passed (100% success rate). Tested Gemini AI integration, Rubrics API, Submissions API (all 3 types), AI evaluation engine, error handling, and database operations. All core backend functionality is working perfectly. Ready for main agent to summarize and finish."
+  - agent: "main"
+    message: "Bug Fix: Fixed form submission error. Issue was rubric field name mismatch between backend (snake_case: id, submission_type) and frontend (camelCase: rubricId, submissionType). Updated SubmissionForm.js to use correct field names. Form now properly sends UUID instead of title string. Ready for backend testing to verify the fix works end-to-end."
