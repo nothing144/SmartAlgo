@@ -18,13 +18,13 @@ HEADERS = {
     'Accept': 'application/json'
 }
 
-class BackendTester:
+class FormSubmissionTester:
     def __init__(self):
         self.base_url = BASE_URL
         self.headers = HEADERS
         self.test_results = []
-        self.created_rubric_id = None
-        self.created_submission_ids = []
+        self.rubric_id = None
+        self.submission_ids = []
         
     def log_test(self, test_name, success, message, details=None):
         """Log test results"""
@@ -40,6 +40,67 @@ class BackendTester:
         print(f"{status}: {test_name} - {message}")
         if details and not success:
             print(f"   Details: {details}")
+    
+    def test_rubrics_field_structure(self):
+        """Test 1: Verify Rubric API returns correct field names (id, submission_type)"""
+        print("\n=== TEST 1: Verifying Rubric API Field Structure ===")
+        try:
+            # First ensure we have a rubric
+            create_response = requests.post(f"{self.base_url}/rubrics/default", 
+                json={
+                    "title": "Form Test Rubric",
+                    "description": "Testing rubric for form submission fix",
+                    "submissionType": "any",
+                    "createdBy": "form_test"
+                },
+                headers=self.headers,
+                timeout=30
+            )
+            
+            # Get rubrics to verify field structure
+            response = requests.get(f"{self.base_url}/rubrics", headers=self.headers, timeout=30)
+            
+            if response.status_code == 200:
+                rubrics = response.json()
+                
+                if not rubrics:
+                    self.log_test("Rubrics API Response", False, "No rubrics found in database")
+                    return False
+                
+                rubric = rubrics[0]
+                self.rubric_id = rubric.get('id')
+                
+                # Check for required fields that frontend expects
+                required_fields = ['id', 'submission_type']
+                missing_fields = [field for field in required_fields if field not in rubric]
+                
+                if missing_fields:
+                    self.log_test("Rubric Field Structure", False, 
+                                f"Missing required fields: {missing_fields}",
+                                f"Available fields: {list(rubric.keys())}")
+                    return False
+                
+                # Verify field types
+                if not isinstance(rubric['id'], str) or len(rubric['id']) < 30:
+                    self.log_test("Rubric ID Format", False, 
+                                f"ID should be UUID string, got: {rubric['id']}")
+                    return False
+                
+                self.log_test("Rubric Field Structure", True, 
+                            f"All required fields present: {required_fields}")
+                self.log_test("Rubric ID Format", True, 
+                            f"Valid UUID format: {rubric['id']}")
+                
+                return True
+                
+            else:
+                self.log_test("Rubrics API Response", False, 
+                            f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Rubrics API Test", False, f"Exception: {str(e)}")
+            return False
     
     def test_supabase_connection(self):
         """Test Supabase database connectivity"""
