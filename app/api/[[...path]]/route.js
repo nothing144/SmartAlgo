@@ -491,7 +491,10 @@ async function handleRoute(request, { params }) {
         ))
       }
       
-      return handleCORS(NextResponse.json(submissions || []))
+      // Transform submissions to camelCase for frontend compatibility
+      const transformedSubmissions = (submissions || []).map(transformSubmission)
+      
+      return handleCORS(NextResponse.json(transformedSubmissions))
     }
 
     // Get specific submission - GET /api/submissions/{id}
