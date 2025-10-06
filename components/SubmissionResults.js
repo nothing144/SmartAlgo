@@ -8,7 +8,7 @@ const SubmissionResults = ({ submissionId }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  const fetchSubmission = async () => {
+  const fetchSubmission = useCallback(async () => {
     try {
       const response = await fetch(`/api/submissions/${submissionId}`)
       if (response.ok) {
@@ -23,7 +23,7 @@ const SubmissionResults = ({ submissionId }) => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [submissionId])
 
   useEffect(() => {
     if (submissionId) {
