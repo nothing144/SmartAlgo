@@ -118,52 +118,88 @@
 
 ## backend:
   - task: "MongoDB Schema Design"
-    implemented: false
-    working: "NA"
+    implemented: true
+    working: true
     file: "/app/app/api/[[...path]]/route.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Need to design schemas for submissions, rubrics, users, evaluations"
+      - working: true
+        agent: "main"
+        comment: "Implemented schemas for submissions, rubrics, evaluations with proper indexing"
 
   - task: "Gemini Integration Setup"
-    implemented: false
-    working: "NA"
+    implemented: true
+    working: true
     file: "/app/app/api/[[...path]]/route.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Need to integrate Gemini API for AI evaluation"
+      - working: true
+        agent: "main"
+        comment: "Integrated Gemini AI using @google/generative-ai package, test endpoint working"
 
   - task: "File Upload API"
-    implemented: false
-    working: "NA"
+    implemented: true
+    working: true
     file: "/app/app/api/[[...path]]/route.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
         comment: "API endpoints for uploading flowchart images and text submissions"
+      - working: true
+        agent: "main"
+        comment: "Implemented submission API with support for base64 image data and text content"
 
   - task: "Submissions API"
-    implemented: false
-    working: "NA"
+    implemented: true
+    working: true
     file: "/app/app/api/[[...path]]/route.js"
     stuck_count: 0
-    priority: "medium"
-    needs_retesting: false
+    priority: "high"
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
         comment: "CRUD operations for managing student submissions"
+      - working: true
+        agent: "main"
+        comment: "Implemented full CRUD API with async AI evaluation using Gemini"
+
+  - task: "Rubrics API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Created rubrics API with default rubric creation and listing"
+
+  - task: "AI Evaluation Engine"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Implemented Gemini-powered evaluation for text and image analysis with rubric-based scoring"
 
 ## frontend:
   - task: "Student Submission Portal UI"
