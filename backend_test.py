@@ -12,7 +12,7 @@ import os
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://tap-loader-fix.preview.emergentagent.com/api"
+BASE_URL = "https://minor-fix-needed.preview.emergentagent.com/api"
 HEADERS = {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
