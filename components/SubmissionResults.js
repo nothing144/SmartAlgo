@@ -8,23 +8,6 @@ const SubmissionResults = ({ submissionId }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  useEffect(() => {
-    if (submissionId) {
-      fetchSubmission()
-    }
-  }, [submissionId])
-  
-  useEffect(() => {
-    // Set up polling for evaluation updates
-    const interval = setInterval(() => {
-      if (submission?.status === 'evaluating') {
-        fetchSubmission()
-      }
-    }, 3000)
-    
-    return () => clearInterval(interval)
-  }, [submission?.status])
-
   const fetchSubmission = async () => {
     try {
       const response = await fetch(`/api/submissions/${submissionId}`)
