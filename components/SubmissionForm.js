@@ -28,9 +28,10 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
       if (response.ok) {
         const data = await response.json()
         setRubrics(data)
-        // Make sure we're using the correct ID field from the API
+        // Auto-select default rubric (prefer one with "Default" in title, otherwise use first)
         if (data.length > 0) {
-          setSelectedRubric(data[0].id) // Rubrics use 'id' field
+          const defaultRubric = data.find(r => r.title.toLowerCase().includes('default')) || data[0]
+          setSelectedRubric(defaultRubric.id)
         }
       }
     } catch (error) {
