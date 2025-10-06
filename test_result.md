@@ -221,6 +221,9 @@
       - working: true
         agent: "main"
         comment: "IMPROVEMENT: Fixed AI analysis displaying as JSON. Added markdown code block cleanup (```json) and proper text extraction from Gemini responses. Analysis now shows as clean, readable text instead of JSON format."
+      - working: true
+        agent: "main"
+        comment: "ENHANCEMENT: Updated AI prompts to explicitly request syntax error detection and specific actionable suggestions. AI now provides better feedback on code issues and improvement areas."
 
 ## frontend:
   - task: "Student Submission Portal UI"
