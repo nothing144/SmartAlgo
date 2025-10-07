@@ -475,12 +475,15 @@ async function handleRoute(request, { params }) {
               .eq('id', submission.id)
 
           } catch (evalError) {
-            console.error('Evaluation error:', evalError)
+            console.error('Evaluation error for submission', submission.id, ':', evalError)
+            console.error('Error stack:', evalError.stack)
+            
+            // Try to save error details to submission for debugging
             await supabase
               .from('submissions')
               .update({ 
                 status: 'error', 
-                updated_at: new Date().toISOString() 
+                updated_at: new Date().toISOString()
               })
               .eq('id', submission.id)
           }
