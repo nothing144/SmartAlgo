@@ -468,9 +468,20 @@ async function handleRoute(request, { params }) {
               aiResult.scores
             )
 
-            await supabase
+            console.log(`Creating evaluation record for submission ${submission.id}:`, JSON.stringify(evaluation, null, 2))
+
+            const { data: insertedEvaluation, error: evaluationError } = await supabase
               .from('evaluations')
               .insert(evaluation)
+              .select()
+              .single()
+
+            if (evaluationError) {
+              console.error(`Error inserting evaluation for submission ${submission.id}:`, evaluationError)
+              throw evaluationError
+            }
+
+            console.log(`Evaluation inserted successfully for submission ${submission.id}`)
 
             // Update submission status to completed
             await supabase
@@ -480,6 +491,8 @@ async function handleRoute(request, { params }) {
                 updated_at: new Date().toISOString() 
               })
               .eq('id', submission.id)
+              
+            console.log(`Updated submission ${submission.id} status to completed`)
 
           } catch (evalError) {
             console.error('Evaluation error for submission', submission.id, ':', evalError)
