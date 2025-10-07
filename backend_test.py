@@ -21,20 +21,24 @@ class AIEvaluationTester:
         self.created_submissions = []
         self.created_rubrics = []
         
-    def log_test(self, test_name, success, message, details=None):
-        """Log test results"""
+    def log_result(self, test_name, success, details="", error_details=""):
+        """Log test results with detailed information"""
         result = {
-            'test': test_name,
-            'success': success,
-            'message': message,
-            'timestamp': datetime.now().isoformat(),
-            'details': details
+            "test": test_name,
+            "success": success,
+            "details": details,
+            "error_details": error_details,
+            "timestamp": datetime.now().isoformat()
         }
         self.test_results.append(result)
+        
         status = "✅ PASS" if success else "❌ FAIL"
-        print(f"{status}: {test_name} - {message}")
-        if details and not success:
+        print(f"{status}: {test_name}")
+        if details:
             print(f"   Details: {details}")
+        if error_details:
+            print(f"   Error: {error_details}")
+        print()
     
     def test_rubrics_field_structure(self):
         """Test 1: Verify Rubric API returns correct field names (id, submission_type)"""
