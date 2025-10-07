@@ -331,7 +331,7 @@
     file: "/app/components/SubmissionResults.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
@@ -342,6 +342,12 @@
       - working: true
         agent: "main"
         comment: "FIXED: Updated polling logic to check for all non-completed statuses (submitted, evaluating) instead of only 'evaluating'. Added 500ms initial delay before first fetch. Reduced polling interval to 2s. Results now load properly after submission."
+      - working: false
+        agent: "user"
+        comment: "User reported: After submitting for evaluation and clicking OK on 'AI is evaluating' message, gets redirected to submission but page shows blank. Issue occurs on all submission types. Submissions show as 'completed' in All Submissions list."
+      - working: true
+        agent: "main"
+        comment: "FIXED: Root cause was POST /api/submissions returning raw database object without transformSubmission() function. This meant 'submissionId' field was missing (only 'id' was present), causing SubmissionResults component to not render. Applied transformSubmission() to POST response in route.js line 536. Backend testing confirms submissionId now properly returned."
 
 ## metadata:
   created_by: "main_agent"
