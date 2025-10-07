@@ -116,136 +116,136 @@ class AIEvaluationTester:
         except Exception as e:
             self.log_result("Create Test Rubric", False, error_details=str(e))
             return None
-    
-    def test_submission_with_valid_rubric_id(self):
-        """Test 2: Test submission with valid rubric UUID (the fix)"""
-        print("\n=== TEST 2: Testing Submission with Valid Rubric UUID ===")
-        
-        if not self.rubric_id:
-            self.log_test("Submission Test Setup", False, "No rubric ID available for testing")
-            return False
-        
-        test_cases = [
-            {
-                "name": "Algorithm Submission",
-                "data": {
-                    "studentName": "Alice Johnson",
-                    "assignmentTitle": "Bubble Sort Algorithm",
-                    "submissionType": "algorithm",
-                    "textContent": """
-def bubble_sort(arr):
-    n = len(arr)
-    for i in range(n):
-        for j in range(0, n-i-1):
-            if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]
-    return arr
+
+    def test_algorithm_submission_evaluation(self, rubric_id):
+        """Test algorithm submission with AI evaluation"""
+        try:
+            # Create algorithm submission with intentional syntax errors for testing
+            submission_data = {
+                "studentName": "Test Student Algorithm",
+                "assignmentTitle": f"Algorithm Test {datetime.now().strftime('%H:%M:%S')}",
+                "submissionType": "algorithm",
+                "textContent": """
+def fibonacci(n):
+    if n <= 1
+        return n  # Missing colon after if statement
+    else:
+        return fibonacci(n-1) + fibonacci(n-2)
 
 # Test the function
-numbers = [64, 34, 25, 12, 22, 11, 90]
-sorted_numbers = bubble_sort(numbers)
-print("Sorted array:", sorted_numbers)
-                    """,
-                    "rubricId": self.rubric_id
-                }
-            },
-            {
-                "name": "Pseudocode Submission", 
-                "data": {
-                    "studentName": "Bob Smith",
-                    "assignmentTitle": "Binary Search Pseudocode",
-                    "submissionType": "pseudocode",
-                    "textContent": """
-ALGORITHM BinarySearch
-INPUT: sorted_array, target_value
-OUTPUT: index of target_value or -1 if not found
-
-BEGIN
-    left = 0
-    right = length(sorted_array) - 1
-    
-    WHILE left <= right DO
-        mid = (left + right) / 2
-        
-        IF sorted_array[mid] = target_value THEN
-            RETURN mid
-        ELSE IF sorted_array[mid] < target_value THEN
-            left = mid + 1
-        ELSE
-            right = mid - 1
-        END IF
-    END WHILE
-    
-    RETURN -1
-END
-                    """,
-                    "rubricId": self.rubric_id
-                }
-            },
-            {
-                "name": "Flowchart Submission",
-                "data": {
-                    "studentName": "Carol Davis",
-                    "assignmentTitle": "Simple Calculator Flowchart",
-                    "submissionType": "flowchart",
-                    "imageData": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
-                    "fileName": "calculator_flowchart.png",
-                    "rubricId": self.rubric_id
-                }
+result = fibonacci(10)
+print(f"Fibonacci of 10 is: {result}")
+print(f"Undefined variable: {undefined_var}")  # Undefined variable error
+                """.strip(),
+                "rubricId": rubric_id
             }
-        ]
-        
-        success_count = 0
-        
-        for test_case in test_cases:
-            try:
-                print(f"\nTesting {test_case['name']}...")
-                
-                response = requests.post(f"{self.base_url}/submissions", 
-                    json=test_case['data'],
-                    headers=self.headers,
-                    timeout=60
-                )
-                
-                if response.status_code in [200, 201]:
-                    submission = response.json()
-                    submission_id = submission.get('id')
-                    
-                    if submission_id:
-                        self.submission_ids.append(submission_id)
-                        
-                        # Verify rubric_id is properly stored
-                        stored_rubric_id = submission.get('rubric_id')
-                        
-                        if stored_rubric_id == self.rubric_id:
-                            self.log_test(f"{test_case['name']} - UUID Storage", True, 
-                                        f"Rubric UUID correctly stored: {stored_rubric_id}")
-                            success_count += 1
-                        else:
-                            self.log_test(f"{test_case['name']} - UUID Storage", False, 
-                                        f"Expected: {self.rubric_id}, Got: {stored_rubric_id}")
-                        
-                        self.log_test(f"{test_case['name']} - Creation", True, 
-                                    f"Submission created with ID: {submission_id}")
-                    else:
-                        self.log_test(f"{test_case['name']} - Creation", False, 
-                                    "No submission ID in response")
-                        
-                else:
-                    error_text = response.text
-                    self.log_test(f"{test_case['name']} - Creation", False, 
-                                f"HTTP {response.status_code}: {error_text}")
-                    
-                    # Check for the specific UUID error we're testing for
-                    if "invalid input syntax for type uuid" in error_text:
-                        self.log_test("UUID Error Detection", False, 
-                                    "❌ CRITICAL: The original UUID error is still occurring!")
-                        print(f"ERROR DETAILS: {error_text}")
-                        
-            except Exception as e:
-                self.log_test(f"{test_case['name']} - Creation", False, f"Exception: {str(e)}")
-        
-        return success_count == len(test_cases)
+            
+            print(f"Creating algorithm submission with rubric {rubric_id}...")
+            response = requests.post(f"{self.base_url}/submissions", 
+                                   json=submission_data, timeout=30)
+            
+            if response.status_code != 200:
+                self.log_result("Algorithm Submission Creation", False, 
+                              f"Status: {response.status_code}", response.text)
+                return None
+            
+            submission = response.json()
+            submission_id = submission['id']
+            self.created_submissions.append(submission_id)
+            
+            print(f"Algorithm submission created: {submission_id}")
+            print(f"Initial status: {submission.get('status', 'unknown')}")
+            
+            # Monitor evaluation process
+            return self.monitor_evaluation_process(submission_id, "Algorithm Submission Evaluation")
+            
+        except Exception as e:
+            self.log_result("Algorithm Submission Evaluation", False, error_details=str(e))
+            return None
+
+    def test_pseudocode_submission_evaluation(self, rubric_id):
+        """Test pseudocode submission with AI evaluation"""
+        try:
+            submission_data = {
+                "studentName": "Test Student Pseudocode",
+                "assignmentTitle": f"Pseudocode Test {datetime.now().strftime('%H:%M:%S')}",
+                "submissionType": "pseudocode",
+                "textContent": """
+BEGIN BubbleSort
+    INPUT: array A of n elements
+    FOR i = 0 to n-2
+        FOR j = 0 to n-2-i
+            IF A[j] > A[j+1] THEN
+                SWAP A[j] and A[j+1]
+            END IF
+        END FOR
+    END FOR
+    OUTPUT: sorted array A
+END BubbleSort
+                """.strip(),
+                "rubricId": rubric_id
+            }
+            
+            print(f"Creating pseudocode submission with rubric {rubric_id}...")
+            response = requests.post(f"{self.base_url}/submissions", 
+                                   json=submission_data, timeout=30)
+            
+            if response.status_code != 200:
+                self.log_result("Pseudocode Submission Creation", False, 
+                              f"Status: {response.status_code}", response.text)
+                return None
+            
+            submission = response.json()
+            submission_id = submission['id']
+            self.created_submissions.append(submission_id)
+            
+            print(f"Pseudocode submission created: {submission_id}")
+            print(f"Initial status: {submission.get('status', 'unknown')}")
+            
+            # Monitor evaluation process
+            return self.monitor_evaluation_process(submission_id, "Pseudocode Submission Evaluation")
+            
+        except Exception as e:
+            self.log_result("Pseudocode Submission Evaluation", False, error_details=str(e))
+            return None
+
+    def test_flowchart_submission_evaluation(self, rubric_id):
+        """Test flowchart submission with AI evaluation"""
+        try:
+            # Create a simple test image (1x1 pixel PNG)
+            test_image_base64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+            
+            submission_data = {
+                "studentName": "Test Student Flowchart",
+                "assignmentTitle": f"Flowchart Test {datetime.now().strftime('%H:%M:%S')}",
+                "submissionType": "flowchart",
+                "imageData": test_image_base64,
+                "fileName": "test_flowchart.png",
+                "rubricId": rubric_id
+            }
+            
+            print(f"Creating flowchart submission with rubric {rubric_id}...")
+            response = requests.post(f"{self.base_url}/submissions", 
+                                   json=submission_data, timeout=30)
+            
+            if response.status_code != 200:
+                self.log_result("Flowchart Submission Creation", False, 
+                              f"Status: {response.status_code}", response.text)
+                return None
+            
+            submission = response.json()
+            submission_id = submission['id']
+            self.created_submissions.append(submission_id)
+            
+            print(f"Flowchart submission created: {submission_id}")
+            print(f"Initial status: {submission.get('status', 'unknown')}")
+            
+            # Monitor evaluation process
+            return self.monitor_evaluation_process(submission_id, "Flowchart Submission Evaluation")
+            
+        except Exception as e:
+            self.log_result("Flowchart Submission Evaluation", False, error_details=str(e))
+            return None
     
     def test_submission_retrieval(self):
         """Test 3: Verify submission retrieval and evaluation status"""
