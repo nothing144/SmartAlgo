@@ -265,11 +265,17 @@ const SubmissionResults = ({ submissionId }) => {
         </div>
       ) : submission.status === 'error' ? (
         <div className="bg-white rounded-xl shadow-lg p-6">
-          <div className="flex items-center justify-center py-8 text-red-600">
-            <AlertCircle className="w-8 h-8 mr-3" />
-            <div>
-              <h3 className="text-lg font-medium">Evaluation Failed</h3>
-              <p className="text-gray-600">There was an error processing your submission. Please try again.</p>
+          <div className="flex items-center justify-center py-8">
+            <AlertCircle className="w-8 h-8 mr-3 text-orange-500" />
+            <div className="text-center">
+              <h3 className="text-lg font-medium text-gray-900">Historical Evaluation Issue</h3>
+              <p className="text-gray-600 mt-2">
+                This submission experienced an evaluation error during a previous system issue. 
+                The evaluation system has since been fixed and is working properly.
+              </p>
+              <p className="text-sm text-gray-500 mt-2">
+                You can resubmit your work for a fresh evaluation if needed.
+              </p>
             </div>
           </div>
         </div>
