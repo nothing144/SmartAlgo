@@ -163,7 +163,7 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
 
         {/* Submission Type */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
             Submission Type *
           </label>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -176,8 +176,8 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
                 key={value}
                 className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-colors ${
                   formData.submissionType === value
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30'
+                    : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
                 }`}
               >
                 <input
@@ -189,10 +189,10 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
                   className="sr-only"
                 />
                 <div className="flex items-center space-x-3">
-                  <Icon className="w-5 h-5 text-gray-600" />
+                  <Icon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                   <div>
-                    <div className="font-medium text-gray-900">{label}</div>
-                    <div className="text-xs text-gray-500">{desc}</div>
+                    <div className="font-medium text-gray-900 dark:text-gray-100">{label}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">{desc}</div>
                   </div>
                 </div>
               </label>
