@@ -100,24 +100,24 @@ const FileUpload = ({ onFileSelect, accept = "image/*", maxSize = 5 * 1024 * 102
       {...getRootProps()}
       className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors
         ${isDragActive 
-          ? 'border-blue-400 bg-blue-50' 
-          : 'border-gray-300 hover:border-gray-400'
+          ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/30 dark:border-blue-500' 
+          : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
         }`}
     >
       <input {...getInputProps()} />
       <div className="flex flex-col items-center space-y-4">
-        <div className="p-3 bg-gray-100 rounded-full">
-          <Upload className="w-8 h-8 text-gray-600" />
+        <div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-full">
+          <Upload className="w-8 h-8 text-gray-600 dark:text-gray-400" />
         </div>
         
         <div>
-          <p className="text-lg font-medium text-gray-900">
+          <p className="text-lg font-medium text-gray-900 dark:text-gray-100">
             {isDragActive ? 'Drop your file here' : 'Upload your flowchart'}
           </p>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             Drag and drop or click to browse
           </p>
-          <p className="text-xs text-gray-400 mt-2">
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
             Supports: JPG, PNG, PDF (max {Math.round(maxSize / (1024 * 1024))}MB)
           </p>
         </div>
