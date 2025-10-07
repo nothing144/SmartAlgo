@@ -1,20 +1,18 @@
 #!/usr/bin/env python3
 """
-Backend Testing for Intelligent Rubrics-Based Evaluator
-Testing bug fixes for:
-1. Syntax Error Detection in AI evaluation
-2. Loading State Bug - submission status transitions
+Backend Testing Script for AI Evaluation System
+Focus: Investigating AI evaluation failures and submission process issues
 """
 
 import requests
 import json
 import time
+import base64
+from datetime import datetime
 import sys
-from typing import Dict, Any, List
 
 # Configuration
 BASE_URL = "https://submit-repair-1.preview.emergentagent.com/api"
-HEADERS = {"Content-Type": "application/json"}
 
 class BackendTester:
     def __init__(self):
