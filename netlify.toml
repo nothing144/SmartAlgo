@@ -1,29 +1,17 @@
 [build]
   command = "yarn build"
-  publish = "out"
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "18"
 
-# Enable Next.js on Netlify
-[functions]
-  directory = ".netlify/functions"
-
-# API routes handling
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/nextjs/api/:splat"
-  status = 200
-
-# Handle Next.js pages
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/nextjs/:splat"
-  status = 200
+# Next.js on Netlify plugin will handle this automatically
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 [[headers]]
   for = "/api/*"
   [headers.values]
     Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"  
     Access-Control-Allow-Headers = "Content-Type, Authorization"
