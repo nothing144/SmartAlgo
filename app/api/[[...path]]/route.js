@@ -435,6 +435,8 @@ async function handleRoute(request, { params }) {
 
         if (rubric && !rubricError) {
           try {
+            console.log(`Starting evaluation for submission ${submission.id} with rubric ${rubric.id}`)
+            
             // Update submission status to evaluating
             await supabase
               .from('submissions')
@@ -444,7 +446,10 @@ async function handleRoute(request, { params }) {
               })
               .eq('id', submission.id)
 
+            console.log(`Updated submission ${submission.id} status to evaluating`)
+
             // Evaluate with Gemini AI
+            console.log(`Calling Gemini AI for submission ${submission.id}, type: ${submission.submission_type}`)
             const aiResult = await evaluateWithGemini(
               submission.submission_type,
               {
@@ -453,6 +458,8 @@ async function handleRoute(request, { params }) {
               },
               rubric
             )
+            
+            console.log(`Gemini AI evaluation completed for submission ${submission.id}:`, JSON.stringify(aiResult, null, 2))
 
             // Create evaluation record
             const evaluation = createEvaluation(
