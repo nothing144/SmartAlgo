@@ -18,7 +18,8 @@ from datetime import datetime
 from typing import Dict, Any, List
 
 # Configuration
-BASE_URL = "https://code-submit-fix.preview.emergentagent.com/api"
+import os
+BASE_URL = os.environ.get('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000') + '/api'
 HEADERS = {"Content-Type": "application/json"}
 
 class EvaluationEngineTester:
