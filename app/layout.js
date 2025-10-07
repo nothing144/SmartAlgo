@@ -1,4 +1,5 @@
 import './globals.css'
+import { ThemeProvider } from '../components/ThemeProvider'
 
 export const metadata = {
   title: 'Smart Evaluator - AI-Powered Rubrics-Based Assessment',
@@ -9,7 +10,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )
