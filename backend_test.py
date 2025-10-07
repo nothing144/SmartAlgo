@@ -52,6 +52,7 @@ def test_submission_creation_response_structure():
         algorithm_payload = {
             "submissionType": "algorithm",
             "studentName": "Test Student Algorithm",
+            "assignmentTitle": "Fibonacci Algorithm Test",
             "textContent": "def fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)",
             "rubricId": rubric_id
         }
