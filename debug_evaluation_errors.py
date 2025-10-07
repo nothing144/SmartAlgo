@@ -8,7 +8,8 @@ import json
 import time
 from datetime import datetime
 
-BASE_URL = "https://code-submit-fix.preview.emergentagent.com/api"
+import os
+BASE_URL = os.environ.get('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000') + '/api'
 
 def test_specific_error_case():
     """Test the specific case that's causing errors"""
