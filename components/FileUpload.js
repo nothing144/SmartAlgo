@@ -65,18 +65,18 @@ const FileUpload = ({ onFileSelect, accept = "image/*", maxSize = 5 * 1024 * 102
 
   if (uploadedFile) {
     return (
-      <div className="border-2 border-dashed border-green-300 rounded-lg p-6 bg-green-50">
+      <div className="border-2 border-dashed border-green-300 dark:border-green-600 rounded-lg p-6 bg-green-50 dark:bg-green-900/20">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <CheckCircle className="w-8 h-8 text-green-600" />
+            <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
             <div>
-              <p className="text-sm font-medium text-green-800">{uploadedFile.name}</p>
-              <p className="text-xs text-green-600">{formatFileSize(uploadedFile.size)}</p>
+              <p className="text-sm font-medium text-green-800 dark:text-green-300">{uploadedFile.name}</p>
+              <p className="text-xs text-green-600 dark:text-green-400">{formatFileSize(uploadedFile.size)}</p>
             </div>
           </div>
           <button
             onClick={removeFile}
-            className="text-red-500 hover:text-red-700"
+            className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
           >
             <X className="w-5 h-5" />
           </button>
@@ -87,7 +87,7 @@ const FileUpload = ({ onFileSelect, accept = "image/*", maxSize = 5 * 1024 * 102
             <img 
               src={preview} 
               alt="Preview" 
-              className="max-w-full h-48 object-contain border rounded-md"
+              className="max-w-full h-48 object-contain border border-gray-200 dark:border-gray-600 rounded-md"
             />
           </div>
         )}
