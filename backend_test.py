@@ -11,9 +11,9 @@ import base64
 from datetime import datetime
 import sys
 
-# Configuration
+# Configuration - Testing Netlify Deployment
 import os
-BASE_URL = os.environ.get('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000') + '/api'
+BASE_URL = 'https://smartalgo.netlify.app/api'  # Direct Netlify deployment URL
 
 class AIEvaluationTester:
     def __init__(self):
