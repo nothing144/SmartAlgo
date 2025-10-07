@@ -216,6 +216,7 @@ def test_transformation_functions():
                 "payload": {
                     "submissionType": "pseudocode",
                     "studentName": "Test Student Pseudocode",
+                    "assignmentTitle": "Sum Algorithm Pseudocode Test",
                     "textContent": "BEGIN\n  INPUT n\n  SET sum = 0\n  FOR i = 1 TO n\n    SET sum = sum + i\n  END FOR\n  OUTPUT sum\nEND",
                     "rubricId": rubric_id
                 }
@@ -225,6 +226,7 @@ def test_transformation_functions():
                 "payload": {
                     "submissionType": "flowchart",
                     "studentName": "Test Student Flowchart",
+                    "assignmentTitle": "Flowchart Algorithm Test",
                     "imageUrl": "https://res.cloudinary.com/dkmsvlhpz/image/upload/v1728290234/flowchart_example.png",
                     "rubricId": rubric_id
                 }
