@@ -539,9 +539,9 @@ END LinearSearch
         except Exception as e:
             self.log_result("Check Recent Submissions", False, error_details=str(e))
     def run_comprehensive_test(self):
-        """Run comprehensive AI evaluation testing"""
+        """Run comprehensive AI evaluation testing with focus on Netlify synchronous fix"""
         print("=" * 60)
-        print("AI EVALUATION SYSTEM COMPREHENSIVE TEST")
+        print("NETLIFY SYNCHRONOUS EVALUATION FIX TESTING")
         print("=" * 60)
         print()
         
@@ -568,8 +568,15 @@ END LinearSearch
         print(f"Using test rubric: {rubric_id}")
         print()
         
-        # Test each submission type with AI evaluation
-        print("Testing AI evaluation for each submission type...")
+        # PRIMARY TEST: Synchronous evaluation behavior (Netlify fix)
+        print("🎯 PRIORITY: Testing synchronous evaluation behavior for Netlify deployment...")
+        self.test_synchronous_evaluation_behavior(rubric_id)
+        
+        # Wait between test phases
+        time.sleep(5)
+        
+        # SECONDARY TESTS: Individual submission type verification
+        print("\n📋 VERIFICATION: Testing individual submission types...")
         print()
         
         # Test algorithm evaluation
