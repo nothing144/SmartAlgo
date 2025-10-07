@@ -28,7 +28,7 @@ const HomePage = () => {
           // If same status, sort by creation date (newest first)
           return new Date(b.createdAt) - new Date(a.createdAt)
         })
-        setRecentSubmissions(sortedData.slice(0, 5)) // Show top 5 submissions
+        setRecentSubmissions(sortedData) // Show ALL submissions
       }
     } catch (error) {
       console.error('Error fetching submissions:', error)
