@@ -19,7 +19,16 @@ const HomePage = () => {
       const response = await fetch('/api/submissions')
       if (response.ok) {
         const data = await response.json()
-        setRecentSubmissions(data.slice(0, 5)) // Show last 5 submissions
+        // Filter and prioritize submissions: completed first, then evaluating, error submissions last
+        const sortedData = data.sort((a, b) => {
+          const statusPriority = { completed: 0, evaluating: 1, submitted: 2, error: 3 }
+          const aPriority = statusPriority[a.status] || 3
+          const bPriority = statusPriority[b.status] || 3
+          if (aPriority !== bPriority) return aPriority - bPriority
+          // If same status, sort by creation date (newest first)
+          return new Date(b.createdAt) - new Date(a.createdAt)
+        })
+        setRecentSubmissions(sortedData.slice(0, 5)) // Show top 5 submissions
       }
     } catch (error) {
       console.error('Error fetching submissions:', error)
