@@ -8,7 +8,7 @@ import requests
 import json
 from datetime import datetime
 
-BASE_URL = "https://neteval-debug.preview.emergentagent.com/api"
+BASE_URL = "https://flowchart-grader.preview.emergentagent.com/api"
 
 def test_table_access(table_name, description):
     """Test if we can access a specific table"""
