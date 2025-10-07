@@ -580,37 +580,7 @@ def test_transformation_functions():
         log_test("Transformation Functions Test", "FAIL", f"Exception: {str(e)}")
         return False
 
-def main():
-    """Run all tests for submission creation fix"""
-    print("🧪 BACKEND TESTING: Submission Creation Fix")
-    print("Testing the fix for blank results page issue")
-    print("Focus: POST /api/submissions should return 'submissionId' field")
-    print()
-    
-    start_time = time.time()
-    
-    # Test 1: Create submission and verify response structure
-    submission_id = test_submission_creation_response_structure()
-    if not submission_id:
-        print("❌ CRITICAL: Submission creation test failed - cannot continue")
-        return
-    
-    # Test 2: Verify individual submission retrieval
-    test_individual_submission_retrieval(submission_id)
-    
-    # Test 3: Verify submissions list response
-    test_submissions_list_response()
-    
-    # Test 4: Test transformation functions for different types
-    test_transformation_functions()
-    
-    end_time = time.time()
-    duration = end_time - start_time
-    
-    print("=" * 80)
-    print("🏁 TESTING COMPLETE")
-    print(f"⏱️  Total Duration: {duration:.2f} seconds")
-    print("=" * 80)
-
 if __name__ == "__main__":
-    main()
+    tester = BackendTester()
+    success = tester.run_all_tests()
+    exit(0 if success else 1)
