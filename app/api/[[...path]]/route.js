@@ -533,7 +533,10 @@ async function handleRoute(request, { params }) {
         .eq('id', insertedSubmission.id)
         .single()
 
-      return handleCORS(NextResponse.json(updatedSubmission || insertedSubmission))
+      // Transform to camelCase and add submissionId for frontend compatibility
+      const transformedSubmission = transformSubmission(updatedSubmission || insertedSubmission)
+      
+      return handleCORS(NextResponse.json(transformedSubmission))
     }
 
     // Get submissions - GET /api/submissions?userId=xxx
