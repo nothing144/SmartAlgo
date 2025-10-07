@@ -29,11 +29,21 @@ const SubmissionResults = ({ submissionId }) => {
 
   useEffect(() => {
     if (submissionId) {
+      // Reset state when submissionId changes  
+      setSubmission(null)
+      setLoading(true)
+      setError(null)
+      
       // Small delay to let backend start evaluation
       const timer = setTimeout(() => {
         fetchSubmission()
       }, 500)
       return () => clearTimeout(timer)
+    } else {
+      // Clear state if no submissionId
+      setSubmission(null)
+      setLoading(false)
+      setError(null)
     }
   }, [submissionId, fetchSubmission])
   
