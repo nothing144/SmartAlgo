@@ -213,20 +213,29 @@ const HomePage = () => {
               {recentSubmissions.map((submission) => (
                 <div 
                   key={submission.submissionId}
-                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                  className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer transition-colors ${
+                    submission.status === 'error' 
+                      ? 'border-red-200 bg-red-50 hover:bg-red-100 opacity-75' 
+                      : 'border-gray-200 hover:bg-gray-50'
+                  }`}
                   onClick={() => handleViewSubmission(submission.submissionId)}
                 >
                   <div className="flex items-center space-x-4">
                     <div className={`w-3 h-3 rounded-full ${
                       submission.status === 'completed' ? 'bg-green-500' :
-                      submission.status === 'evaluating' ? 'bg-blue-500' :
+                      submission.status === 'evaluating' ? 'bg-blue-500 animate-pulse' :
                       submission.status === 'error' ? 'bg-red-500' : 'bg-gray-500'
                     }`}></div>
                     <div>
-                      <p className="font-medium text-gray-900">{submission.assignmentTitle}</p>
-                      <p className="text-sm text-gray-600">
+                      <p className={`font-medium ${submission.status === 'error' ? 'text-gray-700' : 'text-gray-900'}`}>
+                        {submission.assignmentTitle}
+                      </p>
+                      <p className={`text-sm ${submission.status === 'error' ? 'text-gray-500' : 'text-gray-600'}`}>
                         {submission.studentName} • {submission.submissionType} • {new Date(submission.createdAt).toLocaleDateString()}
                       </p>
+                      {submission.status === 'error' && (
+                        <p className="text-xs text-red-600 mt-1">Evaluation failed - historical issue</p>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -235,9 +244,9 @@ const HomePage = () => {
                       submission.status === 'evaluating' ? 'bg-blue-100 text-blue-800' :
                       submission.status === 'error' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
                     }`}>
-                      {submission.status}
+                      {submission.status === 'error' ? 'failed' : submission.status}
                     </span>
-                    <ArrowRight className="w-4 h-4 text-gray-400" />
+                    <ArrowRight className={`w-4 h-4 ${submission.status === 'error' ? 'text-gray-300' : 'text-gray-400'}`} />
                   </div>
                 </div>
               ))}
