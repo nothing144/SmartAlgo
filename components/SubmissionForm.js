@@ -215,7 +215,7 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
             </div>
           ) : (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 Enter Your {formData.submissionType === 'algorithm' ? 'Algorithm' : 'Pseudocode'} *
               </label>
               <CodeEditor
