@@ -25,6 +25,7 @@ CORS_ORIGINS=*
 - **Build Command**: `yarn build`
 - **Publish Directory**: `.next`
 - **Node Version**: 18.x
+- **Required Plugin**: Install `@netlify/plugin-nextjs` (automatically handled by netlify.toml)
 
 ## Deployment Steps
 
