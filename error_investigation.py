@@ -8,7 +8,8 @@ import requests
 import json
 from datetime import datetime
 
-BASE_URL = "https://code-submit-fix.preview.emergentagent.com/api"
+import os
+BASE_URL = os.environ.get('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000') + '/api'
 
 def investigate_error_submissions():
     """Investigate submissions with error status"""
