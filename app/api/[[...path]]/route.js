@@ -513,16 +513,27 @@ async function handleRoute(request, { params }) {
         ))
       }
 
-      // Start AI evaluation asynchronously if rubric is provided
+      // Start AI evaluation synchronously if rubric is provided (for Netlify compatibility)
       if (body.rubricId) {
-        // Start async evaluation process (don't wait for completion to avoid timeouts)
-        processEvaluationAsync(insertedSubmission.id, body.rubricId)
-          .catch(error => {
-            console.error('Async evaluation failed:', error)
-          })
+        try {
+          // Wait for evaluation to complete to prevent Netlify serverless context termination
+          await processEvaluationAsync(insertedSubmission.id, body.rubricId)
+          console.log(`Evaluation completed successfully for submission ${insertedSubmission.id}`)
+        } catch (error) {
+          console.error('Evaluation failed:', error)
+          // Continue and return submission even if evaluation fails
+          // The submission status will be marked as 'error' by processEvaluationAsync
+        }
       }
 
-      return handleCORS(NextResponse.json(insertedSubmission))
+      // Fetch the updated submission with its current status
+      const { data: updatedSubmission } = await supabase
+        .from('submissions')
+        .select('*')
+        .eq('id', insertedSubmission.id)
+        .single()
+
+      return handleCORS(NextResponse.json(updatedSubmission || insertedSubmission))
     }
 
     // Get submissions - GET /api/submissions?userId=xxx
