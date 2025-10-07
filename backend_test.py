@@ -247,6 +247,182 @@ END BubbleSort
         except Exception as e:
             self.log_result("Flowchart Submission Evaluation", False, error_details=str(e))
             return None
+
+    def test_synchronous_evaluation_behavior(self, rubric_id):
+        """Test the synchronous evaluation behavior for Netlify deployment fix"""
+        try:
+            print("=" * 60)
+            print("TESTING SYNCHRONOUS EVALUATION BEHAVIOR (NETLIFY FIX)")
+            print("=" * 60)
+            
+            # Test all 3 submission types for synchronous behavior
+            test_cases = [
+                {
+                    "type": "algorithm",
+                    "data": {
+                        "studentName": "Sync Test Algorithm",
+                        "assignmentTitle": f"Sync Algorithm Test {datetime.now().strftime('%H:%M:%S')}",
+                        "submissionType": "algorithm",
+                        "textContent": """
+def quick_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quick_sort(left) + middle + quick_sort(right)
+
+# Test the function
+test_array = [3, 6, 8, 10, 1, 2, 1]
+sorted_array = quick_sort(test_array)
+print(f"Sorted array: {sorted_array}")
+                        """.strip(),
+                        "rubricId": rubric_id
+                    }
+                },
+                {
+                    "type": "pseudocode", 
+                    "data": {
+                        "studentName": "Sync Test Pseudocode",
+                        "assignmentTitle": f"Sync Pseudocode Test {datetime.now().strftime('%H:%M:%S')}",
+                        "submissionType": "pseudocode",
+                        "textContent": """
+BEGIN LinearSearch
+    INPUT: array A of n elements, target value x
+    FOR i = 0 to n-1
+        IF A[i] = x THEN
+            RETURN i
+        END IF
+    END FOR
+    RETURN -1  // Element not found
+END LinearSearch
+                        """.strip(),
+                        "rubricId": rubric_id
+                    }
+                },
+                {
+                    "type": "flowchart",
+                    "data": {
+                        "studentName": "Sync Test Flowchart", 
+                        "assignmentTitle": f"Sync Flowchart Test {datetime.now().strftime('%H:%M:%S')}",
+                        "submissionType": "flowchart",
+                        "imageData": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+                        "fileName": "sync_test_flowchart.png",
+                        "rubricId": rubric_id
+                    }
+                }
+            ]
+            
+            sync_test_results = []
+            
+            for test_case in test_cases:
+                print(f"\nTesting synchronous evaluation for {test_case['type']}...")
+                
+                # Record start time
+                start_time = time.time()
+                
+                # Make the submission request
+                print(f"Sending POST request for {test_case['type']} submission...")
+                response = requests.post(f"{self.base_url}/submissions", 
+                                       json=test_case['data'], timeout=60)
+                
+                # Record response time
+                response_time = time.time() - start_time
+                
+                if response.status_code != 200:
+                    sync_test_results.append({
+                        'type': test_case['type'],
+                        'success': False,
+                        'error': f"HTTP {response.status_code}: {response.text}",
+                        'response_time': response_time
+                    })
+                    continue
+                
+                submission = response.json()
+                submission_id = submission['id']
+                self.created_submissions.append(submission_id)
+                
+                # Check the status in the response
+                response_status = submission.get('status', 'unknown')
+                
+                print(f"Response received after {response_time:.2f}s")
+                print(f"Submission ID: {submission_id}")
+                print(f"Status in response: {response_status}")
+                
+                # Verify synchronous behavior expectations
+                is_synchronous = False
+                evaluation_present = False
+                
+                # For synchronous evaluation, we expect:
+                # 1. Response time should be longer (3-5s) as it waits for evaluation
+                # 2. Status should be 'completed' or 'evaluating' (not 'submitted')
+                # 3. If completed, evaluation data should be present
+                
+                if response_time >= 2.0:  # Should take time for evaluation
+                    print(f"✅ Response time indicates synchronous processing: {response_time:.2f}s")
+                    is_synchronous = True
+                else:
+                    print(f"⚠️  Response time too fast for synchronous evaluation: {response_time:.2f}s")
+                
+                if response_status in ['completed', 'evaluating']:
+                    print(f"✅ Status indicates evaluation started/completed: {response_status}")
+                elif response_status == 'submitted':
+                    print(f"❌ Status is 'submitted' - indicates async behavior (old pattern)")
+                    is_synchronous = False
+                else:
+                    print(f"⚠️  Unexpected status: {response_status}")
+                
+                # Check if evaluation data is immediately available
+                if response_status == 'completed':
+                    # Fetch the submission to check for evaluation data
+                    detail_response = requests.get(f"{self.base_url}/submissions/{submission_id}", timeout=10)
+                    if detail_response.status_code == 200:
+                        detail_data = detail_response.json()
+                        evaluation = detail_data.get('evaluation')
+                        if evaluation:
+                            print(f"✅ Evaluation data immediately available")
+                            evaluation_present = True
+                        else:
+                            print(f"❌ Status is 'completed' but no evaluation data found")
+                
+                sync_test_results.append({
+                    'type': test_case['type'],
+                    'success': is_synchronous and (response_status != 'submitted'),
+                    'response_time': response_time,
+                    'status': response_status,
+                    'evaluation_present': evaluation_present,
+                    'submission_id': submission_id
+                })
+                
+                # Wait between tests
+                time.sleep(3)
+            
+            # Analyze results
+            successful_sync_tests = sum(1 for result in sync_test_results if result['success'])
+            total_sync_tests = len(sync_test_results)
+            
+            print(f"\n" + "=" * 60)
+            print("SYNCHRONOUS EVALUATION TEST RESULTS")
+            print("=" * 60)
+            
+            for result in sync_test_results:
+                status_icon = "✅" if result['success'] else "❌"
+                print(f"{status_icon} {result['type'].upper()}: {result['response_time']:.2f}s, status={result['status']}")
+                if 'error' in result:
+                    print(f"   Error: {result['error']}")
+            
+            overall_success = successful_sync_tests == total_sync_tests
+            
+            self.log_result("Synchronous Evaluation Behavior", overall_success,
+                          f"Passed {successful_sync_tests}/{total_sync_tests} synchronous tests. " +
+                          f"Average response time: {sum(r['response_time'] for r in sync_test_results)/len(sync_test_results):.2f}s")
+            
+            return overall_success
+            
+        except Exception as e:
+            self.log_result("Synchronous Evaluation Behavior", False, error_details=str(e))
+            return False
     def monitor_evaluation_process(self, submission_id, test_name, max_wait_time=120):
         """Monitor the evaluation process for a submission"""
         start_time = time.time()
