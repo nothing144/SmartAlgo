@@ -246,57 +246,121 @@ END BubbleSort
         except Exception as e:
             self.log_result("Flowchart Submission Evaluation", False, error_details=str(e))
             return None
-    
-    def test_submission_retrieval(self):
-        """Test 3: Verify submission retrieval and evaluation status"""
-        print("\n=== TEST 3: Testing Submission Retrieval ===")
+    def monitor_evaluation_process(self, submission_id, test_name, max_wait_time=120):
+        """Monitor the evaluation process for a submission"""
+        start_time = time.time()
+        last_status = None
+        status_changes = []
         
-        if not self.submission_ids:
-            self.log_test("Submission Retrieval Setup", False, "No submission IDs to test")
-            return False
+        print(f"Monitoring evaluation for submission {submission_id}...")
         
-        success_count = 0
-        
-        for submission_id in self.submission_ids:
+        while time.time() - start_time < max_wait_time:
             try:
-                # Wait a bit for potential AI evaluation
-                time.sleep(2)
+                response = requests.get(f"{self.base_url}/submissions/{submission_id}", timeout=10)
                 
-                response = requests.get(f"{self.base_url}/submissions/{submission_id}", 
-                                      headers=self.headers, timeout=30)
+                if response.status_code != 200:
+                    print(f"Error fetching submission: {response.status_code}")
+                    time.sleep(2)
+                    continue
                 
-                if response.status_code == 200:
-                    submission = response.json()
-                    
-                    # Verify submission data
-                    status = submission.get('status', 'unknown')
-                    student_name = submission.get('studentName', 'N/A')
-                    
-                    self.log_test(f"Retrieve Submission ({student_name})", True, 
-                                f"Status: {status}, ID: {submission_id[:8]}...")
-                    
-                    # Check evaluation if present
-                    evaluation = submission.get('evaluation')
+                data = response.json()
+                current_status = data.get('status', 'unknown')
+                
+                if current_status != last_status:
+                    status_changes.append({
+                        'status': current_status,
+                        'timestamp': datetime.now().isoformat(),
+                        'elapsed': round(time.time() - start_time, 2)
+                    })
+                    print(f"Status change: {current_status} (after {round(time.time() - start_time, 2)}s)")
+                    last_status = current_status
+                
+                if current_status == 'completed':
+                    evaluation = data.get('evaluation')
                     if evaluation:
-                        total_score = evaluation.get('totalScore', 0)
-                        max_score = evaluation.get('maxScore', 0)
-                        self.log_test(f"AI Evaluation ({student_name})", True, 
-                                    f"Score: {total_score}/{max_score}")
+                        self.log_result(test_name, True, 
+                                      f"Evaluation completed successfully. Status changes: {status_changes}")
+                        print(f"Evaluation details: Total score: {evaluation.get('totalScore', 'N/A')}/{evaluation.get('maxScore', 'N/A')}")
+                        return True
                     else:
-                        self.log_test(f"AI Evaluation ({student_name})", True, 
-                                    "Evaluation in progress or not started")
-                    
-                    success_count += 1
-                    
-                else:
-                    self.log_test(f"Retrieve Submission {submission_id[:8]}...", False, 
-                                f"HTTP {response.status_code}: {response.text}")
-                    
+                        self.log_result(test_name, False, 
+                                      f"Status is 'completed' but no evaluation data found. Status changes: {status_changes}")
+                        return False
+                
+                elif current_status == 'error':
+                    self.log_result(test_name, False, 
+                                  f"Submission ended in error status. Status changes: {status_changes}")
+                    return False
+                
+                time.sleep(3)  # Check every 3 seconds
+                
             except Exception as e:
-                self.log_test(f"Retrieve Submission {submission_id[:8]}...", False, 
-                            f"Exception: {str(e)}")
+                print(f"Error monitoring submission: {e}")
+                time.sleep(2)
         
-        return success_count == len(self.submission_ids)
+        # Timeout reached
+        self.log_result(test_name, False, 
+                      f"Evaluation timeout after {max_wait_time}s. Final status: {last_status}. Status changes: {status_changes}")
+        return False
+
+    def check_recent_submissions_for_errors(self):
+        """Check recent submissions for error patterns"""
+        try:
+            response = requests.get(f"{self.base_url}/submissions", timeout=10)
+            
+            if response.status_code != 200:
+                self.log_result("Check Recent Submissions", False, 
+                              f"Status: {response.status_code}", response.text)
+                return
+            
+            submissions = response.json()
+            
+            if not submissions:
+                self.log_result("Check Recent Submissions", True, "No submissions found")
+                return
+            
+            error_count = 0
+            completed_count = 0
+            evaluating_count = 0
+            submitted_count = 0
+            
+            print(f"Analyzing {len(submissions)} recent submissions...")
+            
+            for submission in submissions[:10]:  # Check last 10 submissions
+                status = submission.get('status', 'unknown')
+                submission_id = submission.get('id', 'unknown')
+                created_at = submission.get('createdAt', 'unknown')
+                
+                print(f"Submission {submission_id}: status={status}, created={created_at}")
+                
+                if status == 'error':
+                    error_count += 1
+                    # Get detailed info for error submissions
+                    try:
+                        detail_response = requests.get(f"{self.base_url}/submissions/{submission_id}", timeout=10)
+                        if detail_response.status_code == 200:
+                            detail_data = detail_response.json()
+                            evaluation = detail_data.get('evaluation')
+                            print(f"  Error submission details: evaluation={evaluation}")
+                    except:
+                        pass
+                elif status == 'completed':
+                    completed_count += 1
+                elif status == 'evaluating':
+                    evaluating_count += 1
+                elif status == 'submitted':
+                    submitted_count += 1
+            
+            summary = f"Recent submissions analysis: {error_count} errors, {completed_count} completed, {evaluating_count} evaluating, {submitted_count} submitted"
+            
+            if error_count > 0:
+                self.log_result("Check Recent Submissions", False, 
+                              f"Found {error_count} submissions with error status. {summary}")
+            else:
+                self.log_result("Check Recent Submissions", True, summary)
+                
+        except Exception as e:
+            self.log_result("Check Recent Submissions", False, error_details=str(e))
     
     def run_form_submission_tests(self):
         """Main test execution for form submission fix verification"""
