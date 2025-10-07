@@ -13,7 +13,7 @@ import sys
 from typing import Dict, Any, List
 
 # Configuration
-BASE_URL = "https://minor-fix-needed.preview.emergentagent.com/api"
+BASE_URL = "https://repo-analyzer-89.preview.emergentagent.com/api"
 HEADERS = {"Content-Type": "application/json"}
 
 class BackendTester:
