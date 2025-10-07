@@ -14,13 +14,12 @@ import sys
 # Configuration
 BASE_URL = "https://submit-repair-1.preview.emergentagent.com/api"
 
-class BackendTester:
+class AIEvaluationTester:
     def __init__(self):
         self.base_url = BASE_URL
-        self.headers = HEADERS
         self.test_results = []
-        self.rubric_id = None
-        self.submission_ids = []
+        self.created_submissions = []
+        self.created_rubrics = []
         
     def log_test(self, test_name, success, message, details=None):
         """Log test results"""
