@@ -9,6 +9,8 @@ const SubmissionResults = ({ submissionId }) => {
   const [error, setError] = useState(null)
 
   const fetchSubmission = useCallback(async () => {
+    if (!submissionId) return
+    
     try {
       const response = await fetch(`/api/submissions/${submissionId}`)
       if (response.ok) {
