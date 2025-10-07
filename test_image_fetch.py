@@ -55,7 +55,7 @@ def test_gemini_with_image():
     }
     
     try:
-        response = requests.post("https://submit-repair-1.preview.emergentagent.com/api/submissions", 
+        response = requests.post("https://code-submit-fix.preview.emergentagent.com/api/submissions", 
                                json=submission_data, timeout=60)
         
         if response.status_code == 200:
@@ -67,7 +67,7 @@ def test_gemini_with_image():
             import time
             for i in range(10):
                 time.sleep(2)
-                detail_response = requests.get(f"https://submit-repair-1.preview.emergentagent.com/api/submissions/{submission_id}")
+                detail_response = requests.get(f"https://code-submit-fix.preview.emergentagent.com/api/submissions/{submission_id}")
                 if detail_response.status_code == 200:
                     detail_data = detail_response.json()
                     status = detail_data.get('status')

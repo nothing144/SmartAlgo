@@ -12,7 +12,7 @@ from datetime import datetime
 import sys
 
 # Configuration
-BASE_URL = "https://submit-repair-1.preview.emergentagent.com/api"
+BASE_URL = "https://code-submit-fix.preview.emergentagent.com/api"
 
 class AIEvaluationTester:
     def __init__(self):

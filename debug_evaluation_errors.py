@@ -8,7 +8,7 @@ import json
 import time
 from datetime import datetime
 
-BASE_URL = "https://submit-repair-1.preview.emergentagent.com/api"
+BASE_URL = "https://code-submit-fix.preview.emergentagent.com/api"
 
 def test_specific_error_case():
     """Test the specific case that's causing errors"""
