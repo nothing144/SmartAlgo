@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { BookOpen, Users, Bot, Star, Clock, FileText, ArrowRight, CheckCircle } from 'lucide-react'
 import SubmissionForm from '../components/SubmissionForm'
 import SubmissionResults from '../components/SubmissionResults'
+import { ThemeToggle } from '../components/ThemeToggle'
 
 const HomePage = () => {
   const [currentView, setCurrentView] = useState('home') // 'home', 'submit', 'results'
