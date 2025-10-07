@@ -313,6 +313,93 @@ ${rubric.criteria.map(c => `    {"criterionId": "${c.criterion_id}", "earnedPoin
   }
 }
 
+// Async evaluation processing function (for Netlify deployment)
+async function processEvaluationAsync(submissionId, rubricId) {
+  try {
+    console.log(`Starting async evaluation for submission ${submissionId} with rubric ${rubricId}`)
+    
+    // Get the submission and rubric
+    const [submissionResponse, rubricResponse] = await Promise.all([
+      supabase.from('submissions').select('*').eq('id', submissionId).single(),
+      supabase.from('rubrics').select('*').eq('id', rubricId).single()
+    ])
+    
+    const submission = submissionResponse.data
+    const rubric = rubricResponse.data
+    
+    if (!submission || !rubric || submissionResponse.error || rubricResponse.error) {
+      throw new Error('Failed to fetch submission or rubric data')
+    }
+    
+    // Update submission status to evaluating
+    await supabase
+      .from('submissions')
+      .update({ 
+        status: 'evaluating', 
+        updated_at: new Date().toISOString() 
+      })
+      .eq('id', submissionId)
+
+    console.log(`Updated submission ${submissionId} status to evaluating`)
+
+    // Evaluate with Gemini AI with timeout
+    const evaluationPromise = evaluateWithGemini(
+      submission.submission_type,
+      {
+        text: submission.text_content,
+        imageUrl: submission.image_url
+      },
+      rubric
+    )
+    
+    // Add timeout for Netlify serverless functions (25s max)
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Evaluation timeout')), 20000)
+    })
+    
+    const aiResult = await Promise.race([evaluationPromise, timeoutPromise])
+    
+    console.log(`Gemini AI evaluation completed for submission ${submissionId}`)
+
+    // Create evaluation record
+    const evaluation = createEvaluation(submissionId, aiResult, aiResult.scores)
+
+    const { data: insertedEvaluation, error: evaluationError } = await supabase
+      .from('evaluations')
+      .insert(evaluation)
+      .select()
+      .single()
+
+    if (evaluationError) {
+      console.error(`Error inserting evaluation for submission ${submissionId}:`, evaluationError)
+      throw evaluationError
+    }
+
+    // Update submission status to completed
+    await supabase
+      .from('submissions')
+      .update({ 
+        status: 'completed', 
+        updated_at: new Date().toISOString() 
+      })
+      .eq('id', submissionId)
+      
+    console.log(`Updated submission ${submissionId} status to completed`)
+
+  } catch (evalError) {
+    console.error('Async evaluation error for submission', submissionId, ':', evalError)
+    
+    // Update submission status to error
+    await supabase
+      .from('submissions')
+      .update({ 
+        status: 'error', 
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', submissionId)
+  }
+}
+
 // Helper function to handle CORS
 function handleCORS(response) {
   response.headers.set('Access-Control-Allow-Origin', process.env.CORS_ORIGINS || '*')
