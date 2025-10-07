@@ -361,61 +361,107 @@ END BubbleSort
                 
         except Exception as e:
             self.log_result("Check Recent Submissions", False, error_details=str(e))
-    
-    def run_form_submission_tests(self):
-        """Main test execution for form submission fix verification"""
-        print("🧪 FORM SUBMISSION FIX VERIFICATION")
-        print("=" * 80)
-        print(f"Testing API at: {self.base_url}")
-        print(f"Test Focus: Verifying UUID field mapping fix for rubric selection")
-        print(f"Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        print("=" * 80)
+    def run_comprehensive_test(self):
+        """Run comprehensive AI evaluation testing"""
+        print("=" * 60)
+        print("AI EVALUATION SYSTEM COMPREHENSIVE TEST")
+        print("=" * 60)
+        print()
         
-        # Test 1: Verify rubric API field structure
-        if not self.test_rubrics_field_structure():
-            print("❌ Cannot proceed - Rubric API structure test failed")
-            return False
+        # Basic connectivity tests
+        if not self.test_basic_connectivity():
+            print("❌ Basic connectivity failed. Stopping tests.")
+            return
         
-        # Test 2: Test submissions with valid rubric UUID
-        if not self.test_submission_with_valid_rubric_id():
-            print("❌ Form submission test failed")
-            return False
+        if not self.test_gemini_connection():
+            print("❌ Gemini AI connection failed. This is critical for evaluation.")
         
-        # Test 3: Verify submission retrieval
-        if not self.test_submission_retrieval():
-            print("❌ Submission retrieval test failed")
-            return False
+        if not self.test_supabase_connection():
+            print("❌ Supabase connection failed. This is critical for data storage.")
         
-        # Summary
-        print("\n" + "=" * 80)
-        print("🏁 FORM SUBMISSION FIX VERIFICATION COMPLETED")
-        print("=" * 80)
+        # Check existing submissions for error patterns
+        self.check_recent_submissions_for_errors()
         
-        passed_tests = sum(1 for result in self.test_results if result['success'])
+        # Create test rubric
+        rubric_id = self.create_test_rubric()
+        if not rubric_id:
+            print("❌ Failed to create test rubric. Cannot proceed with evaluation tests.")
+            return
+        
+        print(f"Using test rubric: {rubric_id}")
+        print()
+        
+        # Test each submission type with AI evaluation
+        print("Testing AI evaluation for each submission type...")
+        print()
+        
+        # Test algorithm evaluation
+        self.test_algorithm_submission_evaluation(rubric_id)
+        
+        # Wait between tests to avoid rate limiting
+        time.sleep(5)
+        
+        # Test pseudocode evaluation
+        self.test_pseudocode_submission_evaluation(rubric_id)
+        
+        # Wait between tests
+        time.sleep(5)
+        
+        # Test flowchart evaluation
+        self.test_flowchart_submission_evaluation(rubric_id)
+        
+        # Final summary
+        self.print_test_summary()
+
+    def print_test_summary(self):
+        """Print comprehensive test summary"""
+        print()
+        print("=" * 60)
+        print("TEST SUMMARY")
+        print("=" * 60)
+        
         total_tests = len(self.test_results)
+        passed_tests = sum(1 for result in self.test_results if result['success'])
+        failed_tests = total_tests - passed_tests
         
-        print(f"✅ Tests Passed: {passed_tests}/{total_tests}")
+        print(f"Total Tests: {total_tests}")
+        print(f"Passed: {passed_tests}")
+        print(f"Failed: {failed_tests}")
+        print(f"Success Rate: {(passed_tests/total_tests*100):.1f}%")
+        print()
         
-        if passed_tests == total_tests:
-            print("🎉 ALL TESTS PASSED - Form submission fix is working correctly!")
-            print("✅ No UUID errors detected")
-            print("✅ Rubric IDs are properly mapped and stored")
-            print("✅ All submission types working with valid rubric UUIDs")
-            return True
+        if failed_tests > 0:
+            print("FAILED TESTS:")
+            for result in self.test_results:
+                if not result['success']:
+                    print(f"❌ {result['test']}")
+                    if result['error_details']:
+                        print(f"   Error: {result['error_details']}")
+            print()
+        
+        print("CRITICAL ISSUES FOUND:")
+        critical_issues = []
+        
+        # Check for specific failure patterns
+        for result in self.test_results:
+            if not result['success']:
+                if 'Gemini' in result['test']:
+                    critical_issues.append("🔥 Gemini AI connection/evaluation failures detected")
+                elif 'Evaluation' in result['test'] and 'error' in result['details'].lower():
+                    critical_issues.append("🔥 AI evaluation process ending in error status")
+                elif 'timeout' in result['details'].lower():
+                    critical_issues.append("🔥 Evaluation process timeouts - async processing issues")
+        
+        if critical_issues:
+            for issue in set(critical_issues):  # Remove duplicates
+                print(issue)
         else:
-            print("❌ Some tests failed - Form submission fix needs attention")
-            failed_tests = [r for r in self.test_results if not r['success']]
-            for test in failed_tests:
-                print(f"   - {test['test']}: {test['message']}")
-            return False
+            print("✅ No critical issues detected in AI evaluation system")
+        
+        print()
+        print(f"Created {len(self.created_submissions)} test submissions")
+        print(f"Created {len(self.created_rubrics)} test rubrics")
 
 if __name__ == "__main__":
-    tester = FormSubmissionTester()
-    success = tester.run_form_submission_tests()
-    
-    if success:
-        print("\n🎉 FORM SUBMISSION FIX VERIFICATION: SUCCESS")
-        exit(0)
-    else:
-        print("\n❌ FORM SUBMISSION FIX VERIFICATION: FAILED")
-        exit(1)
+    tester = AIEvaluationTester()
+    tester.run_comprehensive_test()
