@@ -205,7 +205,8 @@ async function evaluateWithGemini(submissionType, content, rubric) {
       prompt = `Analyze this flowchart image and evaluate it based on the following rubric criteria:
       
 ${rubric.criteria.map(c => `
-${c.name} (${c.max_points} points): ${c.description}
+CRITERION: ${c.name} (ID: ${c.criterion_id}, ${c.max_points} points)
+Description: ${c.description}
 Scoring levels: ${c.levels.map(l => `${l.points} pts - ${l.description}`).join('; ')}
 `).join('')}
 
@@ -214,11 +215,11 @@ Please provide:
 2. Identify any errors, missing elements, or logical issues
 3. Score for each criterion with specific reasoning
 4. Overall feedback with actionable suggestions for improvement
-5. Return the response in JSON format:
+5. Return the response in JSON format using the exact criterion IDs provided:
 {
   "analysis": "detailed analysis text including any errors or issues found",
   "scores": [
-    {"criterionId": "id", "earnedPoints": number, "maxPoints": number, "feedback": "specific feedback"}
+${rubric.criteria.map(c => `    {"criterionId": "${c.criterion_id}", "earnedPoints": number, "maxPoints": ${c.max_points}, "feedback": "specific feedback for ${c.name}"}`).join(',\n')}
   ],
   "overallFeedback": "summary feedback",
   "suggestions": ["specific suggestion 1", "specific suggestion 2", "specific suggestion 3"]
