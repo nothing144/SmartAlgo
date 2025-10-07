@@ -428,88 +428,11 @@ async function handleRoute(request, { params }) {
 
       // Start AI evaluation asynchronously if rubric is provided
       if (body.rubricId) {
-        // Get the rubric
-        const { data: rubric, error: rubricError } = await supabase
-          .from('rubrics')
-          .select('*')
-          .eq('id', body.rubricId)
-          .single()
-
-        if (rubric && !rubricError) {
-          try {
-            console.log(`Starting evaluation for submission ${submission.id} with rubric ${rubric.id}`)
-            
-            // Update submission status to evaluating
-            await supabase
-              .from('submissions')
-              .update({ 
-                status: 'evaluating', 
-                updated_at: new Date().toISOString() 
-              })
-              .eq('id', submission.id)
-
-            console.log(`Updated submission ${submission.id} status to evaluating`)
-
-            // Evaluate with Gemini AI
-            console.log(`Calling Gemini AI for submission ${submission.id}, type: ${submission.submission_type}`)
-            const aiResult = await evaluateWithGemini(
-              submission.submission_type,
-              {
-                text: submission.text_content,
-                imageUrl: submission.image_url
-              },
-              rubric
-            )
-            
-            console.log(`Gemini AI evaluation completed for submission ${submission.id}:`, JSON.stringify(aiResult, null, 2))
-
-            // Create evaluation record
-            const evaluation = createEvaluation(
-              submission.id,
-              aiResult,
-              aiResult.scores
-            )
-
-            console.log(`Creating evaluation record for submission ${submission.id}:`, JSON.stringify(evaluation, null, 2))
-
-            const { data: insertedEvaluation, error: evaluationError } = await supabase
-              .from('evaluations')
-              .insert(evaluation)
-              .select()
-              .single()
-
-            if (evaluationError) {
-              console.error(`Error inserting evaluation for submission ${submission.id}:`, evaluationError)
-              throw evaluationError
-            }
-
-            console.log(`Evaluation inserted successfully for submission ${submission.id}`)
-
-            // Update submission status to completed
-            await supabase
-              .from('submissions')
-              .update({ 
-                status: 'completed', 
-                updated_at: new Date().toISOString() 
-              })
-              .eq('id', submission.id)
-              
-            console.log(`Updated submission ${submission.id} status to completed`)
-
-          } catch (evalError) {
-            console.error('Evaluation error for submission', submission.id, ':', evalError)
-            console.error('Error stack:', evalError.stack)
-            
-            // Try to save error details to submission for debugging
-            await supabase
-              .from('submissions')
-              .update({ 
-                status: 'error', 
-                updated_at: new Date().toISOString()
-              })
-              .eq('id', submission.id)
-          }
-        }
+        // Start async evaluation process (don't wait for completion to avoid timeouts)
+        processEvaluationAsync(insertedSubmission.id, body.rubricId)
+          .catch(error => {
+            console.error('Async evaluation failed:', error)
+          })
       }
 
       return handleCORS(NextResponse.json(insertedSubmission))
