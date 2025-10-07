@@ -205,11 +205,14 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* Recent Submissions */}
+        {/* All Submissions */}
         {recentSubmissions.length > 0 && (
           <div className="bg-white rounded-xl p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Submissions</h3>
-            <div className="space-y-3">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">All Submissions</h3>
+              <span className="text-sm text-gray-600">Total: {recentSubmissions.length}</span>
+            </div>
+            <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
               {recentSubmissions.map((submission) => (
                 <div 
                   key={submission.submissionId}
