@@ -224,13 +224,23 @@ Please provide:
   "suggestions": ["specific suggestion 1", "specific suggestion 2", "specific suggestion 3"]
 }`
 
-      // Use the image URL from Cloudinary
+      // Fetch image from Cloudinary URL and convert to base64
+      const imageResponse = await fetch(content.imageUrl)
+      
+      if (!imageResponse.ok) {
+        throw new Error(`Failed to fetch image: ${imageResponse.status} ${imageResponse.statusText}`)
+      }
+      
+      const imageBuffer = await imageResponse.arrayBuffer()
+      const base64Image = Buffer.from(imageBuffer).toString('base64')
+      const mimeType = imageResponse.headers.get('content-type') || 'image/jpeg'
+
       result = await visionModel.generateContent([
         prompt,
         {
           inlineData: {
-            data: content.imageUrl,
-            mimeType: "image/jpeg"
+            data: base64Image,
+            mimeType: mimeType
           }
         }
       ])
