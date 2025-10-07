@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Backend Testing Script for AI Evaluation System
-Focus: Investigating AI evaluation failures and submission process issues
+Focus: Testing Netlify deployment fix for synchronous evaluation
 """
 
 import requests
