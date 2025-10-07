@@ -12,7 +12,8 @@ from datetime import datetime
 import sys
 
 # Configuration
-BASE_URL = "https://code-submit-fix.preview.emergentagent.com/api"
+import os
+BASE_URL = os.environ.get('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000') + '/api'
 
 class AIEvaluationTester:
     def __init__(self):
