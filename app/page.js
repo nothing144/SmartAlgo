@@ -38,12 +38,17 @@ const HomePage = () => {
   const handleSubmissionComplete = (submission) => {
     setCurrentSubmissionId(submission.submissionId)
     setCurrentView('results')
-    fetchRecentSubmissions() // Refresh the list
+    // Refresh the list with a slight delay to ensure backend has updated
+    setTimeout(fetchRecentSubmissions, 1000)
   }
 
   const handleViewSubmission = (submissionId) => {
-    setCurrentSubmissionId(submissionId)
-    setCurrentView('results')
+    // Clear any previous submission data to ensure clean state
+    setCurrentSubmissionId(null)
+    setTimeout(() => {
+      setCurrentSubmissionId(submissionId)
+      setCurrentView('results')
+    }, 100) // Small delay to ensure state clears first
   }
 
   if (currentView === 'submit') {
