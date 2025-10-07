@@ -204,7 +204,7 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
         <div>
           {formData.submissionType === 'flowchart' ? (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 Upload Flowchart *
               </label>
               <FileUpload
