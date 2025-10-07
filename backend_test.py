@@ -243,7 +243,7 @@ def test_transformation_functions():
             
             if response.status_code != 200:
                 log_test(f"POST {submission_type.title()} Submission", "FAIL", 
-                        f"Status: {response.status_code}")
+                        f"Status: {response.status_code}, Response: {response.text}")
                 continue
                 
             submission_data = response.json()
