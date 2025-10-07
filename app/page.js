@@ -178,32 +178,32 @@ const HomePage = () => {
 
         {/* Features */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          <div className="bg-white rounded-xl p-6 shadow-sm">
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-              <FileText className="w-6 h-6 text-green-600" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+            <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4">
+              <FileText className="w-6 h-6 text-green-600 dark:text-green-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Multiple Formats</h3>
-            <p className="text-gray-600 text-sm">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Multiple Formats</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
               Support for flowcharts (image upload), algorithms, and pseudocode submissions
             </p>
           </div>
           
-          <div className="bg-white rounded-xl p-6 shadow-sm">
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-              <Bot className="w-6 h-6 text-blue-600" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
+              <Bot className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Smart Analysis</h3>
-            <p className="text-gray-600 text-sm">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Smart Analysis</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
               Gemini AI evaluates logic, structure, and clarity with detailed feedback
             </p>
           </div>
           
-          <div className="bg-white rounded-xl p-6 shadow-sm">
-            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-              <Star className="w-6 h-6 text-purple-600" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+            <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4">
+              <Star className="w-6 h-6 text-purple-600 dark:text-purple-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Detailed Scoring</h3>
-            <p className="text-gray-600 text-sm">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Detailed Scoring</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
               Comprehensive rubric-based evaluation with criterion-specific feedback
             </p>
           </div>
