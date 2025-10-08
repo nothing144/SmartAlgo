@@ -308,7 +308,7 @@ const HomePage = () => {
           ) : (
             <a
               href="/auth/sign-up"
-              className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-3 rounded-lg text-lg font-medium transition-all inline-block"
+              className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg text-lg font-medium transition-all inline-block"
             >
               Create Free Account
             </a>
