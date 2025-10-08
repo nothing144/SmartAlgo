@@ -236,7 +236,7 @@ const HomePage = () => {
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Recent Submissions</h2>
               <button
                 onClick={() => setCurrentView('my-submissions')}
-                className="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 font-medium flex items-center gap-2"
+                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium flex items-center gap-2"
               >
                 View All
                 <ArrowRight className="w-4 h-4" />
