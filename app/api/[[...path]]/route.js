@@ -706,6 +706,40 @@ async function handleRoute(request, { params }) {
     if (route.startsWith('/submissions/') && method === 'GET') {
       const submissionId = route.split('/')[2]
       
+      // Check if this is a combined submission ID
+      const { data: combinedSubmissions, error: combinedError } = await supabase
+        .from('submissions')
+        .select('*')
+        .eq('combined_submission_id', submissionId)
+      
+      if (!combinedError && combinedSubmissions && combinedSubmissions.length > 0) {
+        // This is a combined submission - fetch all 3 parts with their evaluations
+        const combinedResults = []
+        
+        for (const submission of combinedSubmissions) {
+          const { data: evaluation } = await supabase
+            .from('evaluations')
+            .select('*')
+            .eq('submission_id', submission.id)
+            .single()
+          
+          const transformedSubmission = transformSubmission(submission)
+          const transformedEvaluation = transformEvaluation(evaluation)
+          
+          combinedResults.push({
+            ...transformedSubmission,
+            evaluation: transformedEvaluation
+          })
+        }
+        
+        return handleCORS(NextResponse.json({
+          type: 'combined',
+          combinedSubmissionId: submissionId,
+          submissions: combinedResults
+        }))
+      }
+      
+      // Regular single submission
       const { data: submission, error: submissionError } = await supabase
         .from('submissions')
         .select('*')
