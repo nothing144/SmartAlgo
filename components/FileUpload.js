@@ -16,13 +16,10 @@ const FileUpload = ({ onFileSelect, currentFile = null, accept = "image/*", maxS
 
     const file = acceptedFiles[0]
     if (file) {
-      setUploadedFile(file)
-      
       // Create preview for images
       if (file.type.startsWith('image/')) {
         const reader = new FileReader()
         reader.onload = (e) => {
-          setPreview(e.target.result)
           onFileSelect({
             file: file,
             preview: e.target.result,
@@ -43,8 +40,6 @@ const FileUpload = ({ onFileSelect, currentFile = null, accept = "image/*", maxS
   }, [onFileSelect])
 
   const removeFile = () => {
-    setUploadedFile(null)
-    setPreview(null)
     onFileSelect(null)
   }
 
