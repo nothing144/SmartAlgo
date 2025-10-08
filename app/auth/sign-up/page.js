@@ -100,7 +100,7 @@ const SignUpPage = () => {
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 relative">
-        <FloralBackground />
+        <CodeBackground />
         <div className="w-full max-w-md">
           <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 dark:border-gray-700/30 p-8 text-center">
             <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
