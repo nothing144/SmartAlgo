@@ -195,9 +195,12 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
         setPseudocodeContent('')
         setFlowchartFile(null)
         
-        // Pass the first submission (algorithm) to show results
-        if (onSubmissionComplete && result.submissions && result.submissions.length > 0) {
-          onSubmissionComplete(result.submissions[0])
+        // Pass the combined submission ID to show combined results
+        if (onSubmissionComplete && result.combinedSubmissionId) {
+          onSubmissionComplete({ 
+            submissionId: result.combinedSubmissionId,
+            isCombined: true 
+          })
         }
       } else {
         const error = await response.json()
