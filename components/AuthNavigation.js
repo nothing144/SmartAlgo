@@ -78,7 +78,7 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
 
           {/* Mobile Menu for Logged Out Users */}
           {showMobileMenu && (
-            <div className="sm:hidden border-t border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg">
+            <div className="sm:hidden border-t border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg relative z-50">
               <div className="px-4 py-3 space-y-3">
                 <a 
                   href="/auth/sign-in"
