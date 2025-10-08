@@ -11,8 +11,10 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
     assignmentTitle: '',
     submissionType: 'algorithm'
   })
-  const [textContent, setTextContent] = useState('')
-  const [uploadedFile, setUploadedFile] = useState(null)
+  // Track all three inputs separately for "Submit All" functionality
+  const [algorithmContent, setAlgorithmContent] = useState('')
+  const [pseudocodeContent, setPseudocodeContent] = useState('')
+  const [flowchartFile, setFlowchartFile] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [rubrics, setRubrics] = useState([])
   const [selectedRubric, setSelectedRubric] = useState('')
