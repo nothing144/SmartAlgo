@@ -98,6 +98,7 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
     
     try {
       const submissionData = {
+        userId: user?.id || 'anonymous',
         studentName: formData.studentName,
         assignmentTitle: formData.assignmentTitle,
         submissionType: formData.submissionType,
