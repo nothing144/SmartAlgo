@@ -35,18 +35,18 @@ export const CodeBackground = () => {
         }}
       />
       
-      {/* Dark overlay to ensure good contrast for form readability */}
+      {/* Professional dark overlay for form readability */}
       <div className={`absolute inset-0 ${
         theme === 'dark' 
-          ? 'bg-black/60' 
-          : 'bg-black/50'
+          ? 'bg-black/70' 
+          : 'bg-black/65'
       }`} />
       
-      {/* Subtle gradient overlay for better form integration */}
+      {/* Subtle professional gradient overlay */}
       <div className={`absolute inset-0 ${
         theme === 'dark'
-          ? 'bg-gradient-to-br from-slate-900/40 via-purple-900/30 to-slate-800/40'
-          : 'bg-gradient-to-br from-blue-900/20 via-indigo-900/15 to-purple-900/20'
+          ? 'bg-gradient-to-br from-gray-900/30 via-slate-900/25 to-gray-800/30'
+          : 'bg-gradient-to-br from-gray-800/25 via-slate-800/20 to-gray-900/25'
       }`} />
 
       {/* Animated code elements floating overlay */}
