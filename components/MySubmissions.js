@@ -19,18 +19,10 @@ const MySubmissions = ({ setCurrentView, setCurrentSubmissionId }) => {
   const fetchMySubmissions = async () => {
     try {
       setLoading(true)
-      // For now, we'll fetch all submissions and filter by user
-      // In production, you'd want to filter this server-side
-      const response = await fetch('/api/submissions')
+      // Use userId parameter to filter submissions server-side
+      const response = await fetch(`/api/submissions?userId=${user.id}`)
       if (response.ok) {
-        const data = await response.json()
-        
-        // Filter submissions by current user (using email as identifier for now)
-        // In production, you'd use user.id after setting up proper user association
-        const userSubmissions = data.filter(submission => 
-          submission.studentName?.toLowerCase().includes(user.email.split('@')[0].toLowerCase()) ||
-          submission.user_id === user.id
-        )
+        const userSubmissions = await response.json()
         
         // Group combined submissions
         const combinedGroups = {}
