@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../../../contexts/AuthContext'
-import { FloralBackground } from '../../../components/FloralBackground'
+import { CodeBackground } from '../../../components/CodeBackground'
 import { ThemeToggle } from '../../../components/ThemeToggle'
 import { Eye, EyeOff, Mail, Lock, User, ArrowLeft, Loader2, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
