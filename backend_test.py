@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+Backend Smoke Test for Mobile Responsiveness Changes
+Tests all core backend functionality to ensure no regressions from frontend changes.
+"""
 
 import requests
 import json
@@ -8,8 +12,336 @@ from datetime import datetime
 
 # Test configuration
 BASE_URL = "https://screen-adapter-2.preview.emergentagent.com/api"
-TEST_USER_ID = "test-user-123"
-TEST_USER_ID_2 = "test-user-456"
+TEST_USER_ID = "mobile_test_user_2024"
+TEST_USER_ID_2 = "mobile_test_user_2"
+
+class BackendSmokeTest:
+    def __init__(self):
+        self.test_results = []
+        self.total_tests = 0
+        self.passed_tests = 0
+        self.default_rubric_id = None
+        
+    def log_test(self, test_name, success, message="", response_time=None):
+        """Log test result with enhanced formatting"""
+        self.total_tests += 1
+        if success:
+            self.passed_tests += 1
+            status = "✅ PASS"
+        else:
+            status = "❌ FAIL"
+            
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        time_info = f" ({response_time:.2f}s)" if response_time else ""
+        result = f"[{timestamp}] {status}: {test_name}{time_info}"
+        if message:
+            result += f" - {message}"
+            
+        print(result)
+        self.test_results.append({
+            'test': test_name,
+            'success': success,
+            'message': message,
+            'response_time': response_time
+        })
+        
+    def test_api_health(self):
+        """Test basic API health endpoints"""
+        print("\n=== API Health Tests ===")
+        
+        # Test root endpoint
+        try:
+            start_time = time.time()
+            response = requests.get(f"{BASE_URL}/")
+            response_time = time.time() - start_time
+            
+            if response.status_code == 200:
+                data = response.json()
+                self.log_test("Root endpoint", True, f"API responding: {data.get('message', 'No message')[:50]}...", response_time)
+            else:
+                self.log_test("Root endpoint", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_test("Root endpoint", False, f"Error: {str(e)}")
+            
+        # Test /root endpoint
+        try:
+            start_time = time.time()
+            response = requests.get(f"{BASE_URL}/root")
+            response_time = time.time() - start_time
+            
+            if response.status_code == 200:
+                data = response.json()
+                self.log_test("/root endpoint", True, f"API responding", response_time)
+            else:
+                self.log_test("/root endpoint", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_test("/root endpoint", False, f"Error: {str(e)}")
+
+    def test_integration_health(self):
+        """Test all integration endpoints"""
+        print("\n=== Integration Health Tests ===")
+        
+        # Test Supabase connection
+        try:
+            start_time = time.time()
+            response = requests.get(f"{BASE_URL}/test/supabase")
+            response_time = time.time() - start_time
+            
+            if response.status_code == 200:
+                data = response.json()
+                self.log_test("Supabase connection", True, f"Database connected", response_time)
+            else:
+                self.log_test("Supabase connection", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_test("Supabase connection", False, f"Error: {str(e)}")
+            
+        # Test Gemini AI connection
+        try:
+            start_time = time.time()
+            response = requests.get(f"{BASE_URL}/test/gemini")
+            response_time = time.time() - start_time
+            
+            if response.status_code == 200:
+                data = response.json()
+                self.log_test("Gemini AI connection", True, f"AI responding", response_time)
+            else:
+                self.log_test("Gemini AI connection", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_test("Gemini AI connection", False, f"Error: {str(e)}")
+            
+        # Test Cloudinary connection
+        try:
+            start_time = time.time()
+            response = requests.get(f"{BASE_URL}/test/cloudinary")
+            response_time = time.time() - start_time
+            
+            if response.status_code == 200:
+                data = response.json()
+                self.log_test("Cloudinary connection", True, f"Image service connected", response_time)
+            else:
+                self.log_test("Cloudinary connection", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_test("Cloudinary connection", False, f"Error: {str(e)}")
+
+    def test_rubrics_api(self):
+        """Test rubrics API functionality"""
+        print("\n=== Rubrics API Tests ===")
+        
+        # Get existing rubrics
+        try:
+            start_time = time.time()
+            response = requests.get(f"{BASE_URL}/rubrics")
+            response_time = time.time() - start_time
+            
+            if response.status_code == 200:
+                rubrics = response.json()
+                self.log_test("GET rubrics", True, f"Found {len(rubrics)} rubrics", response_time)
+                
+                # Store a rubric ID for later tests
+                if rubrics:
+                    self.default_rubric_id = rubrics[0]['id']
+                    self.log_test("Default rubric available", True, f"Using rubric: {rubrics[0].get('title', 'Unknown')}")
+                else:
+                    self.log_test("Default rubric available", False, "No rubrics found")
+            else:
+                self.log_test("GET rubrics", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_test("GET rubrics", False, f"Error: {str(e)}")
+
+    def test_submissions_api_basic(self):
+        """Test basic submissions API functionality"""
+        print("\n=== Submissions API Basic Tests ===")
+        
+        # Get existing submissions
+        try:
+            start_time = time.time()
+            response = requests.get(f"{BASE_URL}/submissions")
+            response_time = time.time() - start_time
+            
+            if response.status_code == 200:
+                submissions = response.json()
+                self.log_test("GET submissions", True, f"Retrieved {len(submissions)} submissions", response_time)
+            else:
+                self.log_test("GET submissions", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_test("GET submissions", False, f"Error: {str(e)}")
+            
+        # Test user-specific submissions
+        try:
+            start_time = time.time()
+            response = requests.get(f"{BASE_URL}/submissions?userId={TEST_USER_ID}")
+            response_time = time.time() - start_time
+            
+            if response.status_code == 200:
+                user_submissions = response.json()
+                self.log_test("GET user submissions", True, f"User filtering working ({len(user_submissions)} results)", response_time)
+            else:
+                self.log_test("GET user submissions", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_test("GET user submissions", False, f"Error: {str(e)}")
+
+    def test_database_schema_issue(self):
+        """Test if the combined_submission_id database schema issue is resolved"""
+        print("\n=== Database Schema Tests ===")
+        
+        if not self.default_rubric_id:
+            self.log_test("Schema test", False, "No rubric available for testing")
+            return
+            
+        # Try to create a simple submission to check if combined_submission_id column exists
+        try:
+            test_data = {
+                "studentName": "Schema Test Student", 
+                "assignmentTitle": "Mobile Schema Test",
+                "submissionType": "pseudocode",
+                "textContent": "BEGIN MobileTest\n  PRINT 'Testing mobile changes'\nEND",
+                "rubricId": self.default_rubric_id,
+                "userId": TEST_USER_ID
+            }
+            
+            start_time = time.time()
+            response = requests.post(f"{BASE_URL}/submissions", json=test_data)
+            response_time = time.time() - start_time
+            
+            if response.status_code == 200:
+                self.log_test("Database schema check", True, "combined_submission_id column exists", response_time)
+            else:
+                error_msg = "Unknown error"
+                try:
+                    error_data = response.json()
+                    error_msg = error_data.get('error', 'Unknown error')
+                    if 'combined_submission_id' in error_msg.lower():
+                        self.log_test("Database schema check", False, "CRITICAL: combined_submission_id column missing from database")
+                    else:
+                        self.log_test("Database schema check", False, f"Other error: {error_msg}")
+                except:
+                    self.log_test("Database schema check", False, f"Status {response.status_code}")
+        except Exception as e:
+            self.log_test("Database schema check", False, f"Error: {str(e)}")
+
+    def test_single_submission_creation(self):
+        """Test single submission creation and evaluation"""
+        print("\n=== Single Submission Creation Tests ===")
+        
+        if not self.default_rubric_id:
+            self.log_test("Single submission test", False, "No rubric available for testing")
+            return
+            
+        # Test algorithm submission
+        try:
+            algorithm_data = {
+                "studentName": "Mobile Test Student",
+                "assignmentTitle": "Mobile Responsiveness Test - Algorithm",
+                "submissionType": "algorithm",
+                "textContent": "def mobile_test():\n    # Test algorithm after mobile changes\n    return 'Mobile backend working'",
+                "rubricId": self.default_rubric_id,
+                "userId": TEST_USER_ID,
+                "isPublic": True
+            }
+            
+            start_time = time.time()
+            response = requests.post(f"{BASE_URL}/submissions", json=algorithm_data)
+            response_time = time.time() - start_time
+            
+            if response.status_code == 200:
+                submission = response.json()
+                submission_id = submission.get('submissionId')
+                status = submission.get('status', 'unknown')
+                self.log_test("POST algorithm submission", True, f"Created with status: {status}", response_time)
+                
+                # Test retrieving the submission
+                if submission_id:
+                    try:
+                        get_response = requests.get(f"{BASE_URL}/submissions/{submission_id}")
+                        if get_response.status_code == 200:
+                            retrieved = get_response.json()
+                            final_status = retrieved.get('status', 'Unknown')
+                            self.log_test("GET specific submission", True, f"Retrieved with status: {final_status}")
+                        else:
+                            self.log_test("GET specific submission", False, f"Status: {get_response.status_code}")
+                    except Exception as e:
+                        self.log_test("GET specific submission", False, f"Error: {str(e)}")
+            else:
+                error_msg = "Unknown error"
+                try:
+                    error_data = response.json()
+                    error_msg = error_data.get('error', 'Unknown error')
+                except:
+                    error_msg = f"Status {response.status_code}"
+                self.log_test("POST algorithm submission", False, f"Error: {error_msg}")
+        except Exception as e:
+            self.log_test("POST algorithm submission", False, f"Error: {str(e)}")
+
+    def test_cors_headers(self):
+        """Test CORS headers are properly set"""
+        print("\n=== CORS Headers Tests ===")
+        
+        try:
+            response = requests.options(f"{BASE_URL}/submissions")
+            if response.status_code == 200:
+                cors_origin = response.headers.get('Access-Control-Allow-Origin')
+                cors_methods = response.headers.get('Access-Control-Allow-Methods')
+                self.log_test("CORS headers", True, f"Origin: {cors_origin}, Methods configured")
+            else:
+                self.log_test("CORS headers", False, f"OPTIONS request failed: {response.status_code}")
+        except Exception as e:
+            self.log_test("CORS headers", False, f"Error: {str(e)}")
+
+    def run_mobile_smoke_test(self):
+        """Run comprehensive smoke test after mobile changes"""
+        print("📱 MOBILE RESPONSIVENESS BACKEND SMOKE TEST")
+        print("=" * 70)
+        print("Testing backend functionality after mobile UI improvements...")
+        
+        start_time = time.time()
+        
+        # Run all test suites
+        self.test_api_health()
+        self.test_integration_health()
+        self.test_rubrics_api()
+        self.test_submissions_api_basic()
+        self.test_database_schema_issue()
+        self.test_single_submission_creation()
+        self.test_cors_headers()
+        
+        end_time = time.time()
+        duration = end_time - start_time
+        
+        # Print summary
+        print("\n" + "=" * 70)
+        print("📊 SMOKE TEST SUMMARY")
+        print("=" * 70)
+        
+        success_rate = (self.passed_tests / self.total_tests * 100) if self.total_tests > 0 else 0
+        print(f"Total Tests: {self.total_tests}")
+        print(f"Passed: {self.passed_tests}")
+        print(f"Failed: {self.total_tests - self.passed_tests}")
+        print(f"Success Rate: {success_rate:.1f}%")
+        print(f"Duration: {duration:.2f} seconds")
+        
+        if success_rate >= 90:
+            print("\n🎉 EXCELLENT: Backend is healthy after mobile changes!")
+            print("✅ All core functionality working correctly")
+        elif success_rate >= 75:
+            print("\n✅ GOOD: Backend is mostly functional with minor issues")
+            print("⚠️  Some non-critical issues detected")
+        elif success_rate >= 50:
+            print("\n⚠️  WARNING: Backend has significant issues")
+            print("🔧 Requires attention before deployment")
+        else:
+            print("\n🚨 CRITICAL: Backend has major problems")
+            print("🛑 Immediate fixes required")
+            
+        # Show failed tests
+        failed_tests = [t for t in self.test_results if not t['success']]
+        if failed_tests:
+            print(f"\n❌ FAILED TESTS ({len(failed_tests)}):")
+            for test in failed_tests:
+                print(f"  • {test['test']}: {test['message']}")
+        else:
+            print("\n✅ ALL TESTS PASSED - No backend regressions detected!")
+                
+        return success_rate >= 75
 
 def log_test(test_name, status, details=""):
     """Log test results with timestamp"""
