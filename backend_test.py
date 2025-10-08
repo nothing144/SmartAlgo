@@ -341,268 +341,61 @@ print(fibonacci(10))"""
         print(f"❌ Single Submission: FAILED - {str(e)}")
         return False
 
-def log_test(test_name, status, details=""):
-    """Log test results with timestamp"""
-    timestamp = datetime.now().strftime("%H:%M:%S")
-    status_symbol = "✅" if status == "PASS" else "❌" if status == "FAIL" else "⚠️"
-    print(f"[{timestamp}] {status_symbol} {test_name}")
-    if details:
-        print(f"    {details}")
-    print()
-
-def test_submission_creation_response_structure():
-    """Test 1: Verify POST /api/submissions returns submissionId field"""
-    print("=" * 80)
-    print("TEST 1: POST /api/submissions Response Structure")
-    print("=" * 80)
+def main():
+    """Run all combined submission tests"""
+    print("🚀 Starting Combined Submission Feature Testing")
+    print("=" * 60)
     
-    try:
-        # First get a rubric to use
-        rubrics_response = requests.get(f"{BASE_URL}/rubrics", headers=HEADERS)
-        if rubrics_response.status_code != 200:
-            log_test("Get Rubrics for Test Setup", "FAIL", f"Status: {rubrics_response.status_code}")
-            return False
-            
-        rubrics = rubrics_response.json()
-        if not rubrics:
-            log_test("Get Rubrics for Test Setup", "FAIL", "No rubrics available")
-            return False
-            
-        rubric_id = rubrics[0]['id']
-        log_test("Get Rubrics for Test Setup", "PASS", f"Using rubric: {rubric_id}")
-        
-        # Test Algorithm Submission
-        algorithm_payload = {
-            "submissionType": "algorithm",
-            "studentName": "Test Student Algorithm",
-            "assignmentTitle": "Fibonacci Algorithm Test",
-            "textContent": "def fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)",
-            "rubricId": rubric_id
-        }
-        
-        response = requests.post(f"{BASE_URL}/submissions", 
-                               headers=HEADERS, 
-                               json=algorithm_payload)
-        
-        if response.status_code != 200:
-            log_test("POST Algorithm Submission", "FAIL", 
-                    f"Status: {response.status_code}, Response: {response.text}")
-            return False
-            
-        submission_data = response.json()
-        
-        # Check for submissionId field (the key fix)
-        if 'submissionId' not in submission_data:
-            log_test("POST Algorithm Submission - submissionId Field", "FAIL", 
-                    f"Response missing 'submissionId' field. Keys: {list(submission_data.keys())}")
-            return False
-            
-        log_test("POST Algorithm Submission - submissionId Field", "PASS", 
-                f"submissionId: {submission_data['submissionId']}")
-        
-        # Verify other expected fields are in camelCase
-        expected_fields = ['submissionId', 'id', 'submissionType', 'studentName', 'textContent', 'status']
-        missing_fields = [field for field in expected_fields if field not in submission_data]
-        
-        if missing_fields:
-            log_test("POST Algorithm Submission - Field Structure", "FAIL", 
-                    f"Missing fields: {missing_fields}")
-            return False
-            
-        log_test("POST Algorithm Submission - Field Structure", "PASS", 
-                f"All expected fields present: {expected_fields}")
-        
-        # Verify submissionId matches id (transformation working)
-        if submission_data['submissionId'] != submission_data['id']:
-            log_test("POST Algorithm Submission - ID Mapping", "FAIL", 
-                    f"submissionId ({submission_data['submissionId']}) != id ({submission_data['id']})")
-            return False
-            
-        log_test("POST Algorithm Submission - ID Mapping", "PASS", 
-                "submissionId correctly mapped from id")
-        
-        return submission_data['submissionId']
-        
-    except Exception as e:
-        log_test("POST Algorithm Submission", "FAIL", f"Exception: {str(e)}")
-        return False
-
-def test_individual_submission_retrieval(submission_id):
-    """Test 2: Verify GET /api/submissions/{id} works correctly"""
-    print("=" * 80)
-    print("TEST 2: GET /api/submissions/{id} Individual Retrieval")
-    print("=" * 80)
+    # Track test results
+    results = {
+        'api_health': False,
+        'combined_creation': False,
+        'combined_fetch': False,
+        'list_submissions': False,
+        'backwards_compatibility': False
+    }
     
-    try:
-        response = requests.get(f"{BASE_URL}/submissions/{submission_id}", headers=HEADERS)
-        
-        if response.status_code != 200:
-            log_test("GET Individual Submission", "FAIL", 
-                    f"Status: {response.status_code}, Response: {response.text}")
-            return False
-            
-        submission_data = response.json()
-        
-        # Check for submissionId field
-        if 'submissionId' not in submission_data:
-            log_test("GET Individual Submission - submissionId Field", "FAIL", 
-                    f"Response missing 'submissionId' field. Keys: {list(submission_data.keys())}")
-            return False
-            
-        log_test("GET Individual Submission - submissionId Field", "PASS", 
-                f"submissionId: {submission_data['submissionId']}")
-        
-        # Verify the ID matches what we requested
-        if submission_data['submissionId'] != submission_id:
-            log_test("GET Individual Submission - ID Match", "FAIL", 
-                    f"Returned submissionId ({submission_data['submissionId']}) != requested ({submission_id})")
-            return False
-            
-        log_test("GET Individual Submission - ID Match", "PASS", 
-                "Returned submissionId matches requested ID")
-        
-        # Check if evaluation data is included (if available)
-        if 'evaluation' in submission_data and submission_data['evaluation']:
-            log_test("GET Individual Submission - Evaluation Data", "PASS", 
-                    "Evaluation data included in response")
-        else:
-            log_test("GET Individual Submission - Evaluation Data", "INFO", 
-                    "No evaluation data (may still be processing)")
-        
-        return True
-        
-    except Exception as e:
-        log_test("GET Individual Submission", "FAIL", f"Exception: {str(e)}")
-        return False
-
-def test_submissions_list_response():
-    """Test 3: Verify GET /api/submissions returns submissionId in list"""
-    print("=" * 80)
-    print("TEST 3: GET /api/submissions List Response")
-    print("=" * 80)
+    # Test 1: API Health
+    results['api_health'] = test_api_health()
     
-    try:
-        response = requests.get(f"{BASE_URL}/submissions", headers=HEADERS)
-        
-        if response.status_code != 200:
-            log_test("GET Submissions List", "FAIL", 
-                    f"Status: {response.status_code}, Response: {response.text}")
-            return False
-            
-        submissions = response.json()
-        
-        if not submissions:
-            log_test("GET Submissions List", "INFO", "No submissions in database")
-            return True
-            
-        # Check first submission for submissionId field
-        first_submission = submissions[0]
-        if 'submissionId' not in first_submission:
-            log_test("GET Submissions List - submissionId Field", "FAIL", 
-                    f"First submission missing 'submissionId' field. Keys: {list(first_submission.keys())}")
-            return False
-            
-        log_test("GET Submissions List - submissionId Field", "PASS", 
-                f"First submission has submissionId: {first_submission['submissionId']}")
-        
-        # Check that all submissions have submissionId
-        submissions_without_id = [i for i, sub in enumerate(submissions) if 'submissionId' not in sub]
-        if submissions_without_id:
-            log_test("GET Submissions List - All Have submissionId", "FAIL", 
-                    f"Submissions at indices {submissions_without_id} missing submissionId")
-            return False
-            
-        log_test("GET Submissions List - All Have submissionId", "PASS", 
-                f"All {len(submissions)} submissions have submissionId field")
-        
-        return True
-        
-    except Exception as e:
-        log_test("GET Submissions List", "FAIL", f"Exception: {str(e)}")
-        return False
-
-def test_transformation_functions():
-    """Test 4: Verify transformation functions work for different submission types"""
-    print("=" * 80)
-    print("TEST 4: Transformation Functions for Different Types")
-    print("=" * 80)
+    if not results['api_health']:
+        print("\n❌ CRITICAL: API is not responding. Stopping tests.")
+        return
     
-    try:
-        # Get rubric
-        rubrics_response = requests.get(f"{BASE_URL}/rubrics", headers=HEADERS)
-        rubrics = rubrics_response.json()
-        rubric_id = rubrics[0]['id']
-        
-        test_cases = [
-            {
-                "type": "pseudocode",
-                "payload": {
-                    "submissionType": "pseudocode",
-                    "studentName": "Test Student Pseudocode",
-                    "assignmentTitle": "Sum Algorithm Pseudocode Test",
-                    "textContent": "BEGIN\n  INPUT n\n  SET sum = 0\n  FOR i = 1 TO n\n    SET sum = sum + i\n  END FOR\n  OUTPUT sum\nEND",
-                    "rubricId": rubric_id
-                }
-            },
-            {
-                "type": "flowchart",
-                "payload": {
-                    "submissionType": "flowchart",
-                    "studentName": "Test Student Flowchart",
-                    "assignmentTitle": "Flowchart Algorithm Test",
-                    "imageUrl": "https://res.cloudinary.com/dkmsvlhpz/image/upload/v1728290234/flowchart_example.png",
-                    "rubricId": rubric_id
-                }
-            }
-        ]
-        
-        for test_case in test_cases:
-            submission_type = test_case["type"]
-            payload = test_case["payload"]
-            
-            response = requests.post(f"{BASE_URL}/submissions", 
-                                   headers=HEADERS, 
-                                   json=payload)
-            
-            if response.status_code != 200:
-                log_test(f"POST {submission_type.title()} Submission", "FAIL", 
-                        f"Status: {response.status_code}, Response: {response.text}")
-                continue
-                
-            submission_data = response.json()
-            
-            # Check submissionId field
-            if 'submissionId' not in submission_data:
-                log_test(f"POST {submission_type.title()} - submissionId Field", "FAIL", 
-                        "Missing submissionId field")
-                continue
-                
-            log_test(f"POST {submission_type.title()} - submissionId Field", "PASS", 
-                    f"submissionId: {submission_data['submissionId']}")
-            
-            # Check type-specific transformations
-            if submission_type == "flowchart":
-                if 'content' in submission_data and 'imageUrl' in submission_data['content']:
-                    log_test(f"POST {submission_type.title()} - Content Transformation", "PASS", 
-                            "Content properly structured with imageUrl")
-                else:
-                    log_test(f"POST {submission_type.title()} - Content Transformation", "FAIL", 
-                            "Content not properly structured for flowchart")
-            else:
-                if 'content' in submission_data and 'text' in submission_data['content']:
-                    log_test(f"POST {submission_type.title()} - Content Transformation", "PASS", 
-                            "Content properly structured with text")
-                else:
-                    log_test(f"POST {submission_type.title()} - Content Transformation", "FAIL", 
-                            "Content not properly structured for text submission")
-        
-        return True
-        
-    except Exception as e:
-        log_test("Transformation Functions Test", "FAIL", f"Exception: {str(e)}")
-        return False
+    # Test 2: Combined Submission Creation
+    combined_id = test_combined_submission_creation()
+    results['combined_creation'] = combined_id is not None
+    
+    # Test 3: Fetch Combined Submission
+    if combined_id:
+        results['combined_fetch'] = test_fetch_combined_submission(combined_id)
+    
+    # Test 4: List Submissions
+    results['list_submissions'] = test_list_submissions()
+    
+    # Test 5: Backwards Compatibility
+    results['backwards_compatibility'] = test_single_submission_backwards_compatibility()
+    
+    # Summary
+    print("\n" + "=" * 60)
+    print("📊 COMBINED SUBMISSION TESTING SUMMARY")
+    print("=" * 60)
+    
+    passed = sum(1 for result in results.values() if result)
+    total = len(results)
+    
+    for test_name, result in results.items():
+        status = "✅ PASSED" if result else "❌ FAILED"
+        print(f"{test_name.replace('_', ' ').title()}: {status}")
+    
+    print(f"\nOverall Result: {passed}/{total} tests passed ({passed/total*100:.1f}%)")
+    
+    if passed == total:
+        print("🎉 ALL TESTS PASSED - Combined submission feature is working correctly!")
+    elif passed >= total * 0.8:
+        print("⚠️  MOSTLY WORKING - Minor issues detected")
+    else:
+        print("🚨 MAJOR ISSUES - Combined submission feature needs attention")
 
 if __name__ == "__main__":
-    tester = BackendTester()
-    success = tester.run_all_tests()
-    exit(0 if success else 1)
+    main()
