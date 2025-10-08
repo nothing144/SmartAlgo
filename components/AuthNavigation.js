@@ -41,8 +41,8 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
               </span>
             </div>
 
-            {/* Right Side - Theme Toggle + Auth Links */}
-            <div className="flex items-center space-x-4">
+            {/* Desktop Right Side - Theme Toggle + Auth Links */}
+            <div className="hidden sm:flex items-center space-x-4">
               <ThemeToggle />
               <a 
                 href="/auth/sign-in"
@@ -57,8 +57,53 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
                 Sign Up
               </a>
             </div>
+
+            {/* Mobile Right Side - Theme Toggle + Menu Button */}
+            <div className="flex items-center space-x-2 sm:hidden">
+              <ThemeToggle />
+              <button 
+                onClick={() => setShowMobileMenu(!showMobileMenu)}
+                className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 p-2"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {showMobileMenu ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </button>
+            </div>
           </div>
+
+          {/* Mobile Menu for Logged Out Users */}
+          {showMobileMenu && (
+            <div className="sm:hidden border-t border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg">
+              <div className="px-4 py-3 space-y-3">
+                <a 
+                  href="/auth/sign-in"
+                  className="block w-full text-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 rounded-lg text-sm font-medium transition-all"
+                >
+                  Sign In
+                </a>
+                <a 
+                  href="/auth/sign-up"
+                  className="block w-full text-center bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-3 rounded-lg text-sm font-medium transition-all"
+                >
+                  Sign Up
+                </a>
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* Close dropdown when clicking outside */}
+        {showMobileMenu && (
+          <div 
+            className="fixed inset-0 z-40" 
+            onClick={() => setShowMobileMenu(false)}
+          />
+        )}
       </nav>
     )
   }
