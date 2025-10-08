@@ -288,7 +288,7 @@ const HomePage = () => {
         )}
 
         {/* Call to Action */}
-        <div className="text-center bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-8 text-white">
+        <div className="text-center bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-8 text-white">
           <h2 className="text-2xl font-bold mb-4">
             {user ? 'Ready to Submit Your Next Project?' : 'Ready to Get Started?'}
           </h2>
