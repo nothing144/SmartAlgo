@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-"""
-Backend Testing Script for Combined Submission Functionality
-Tests the specific combined submission API endpoints and data structure
-"""
 
 import requests
 import json
@@ -10,9 +6,18 @@ import time
 import base64
 from datetime import datetime
 
-# Get base URL from environment
-import os
+# Test configuration
 BASE_URL = "https://mobile-friendly-15.preview.emergentagent.com/api"
+TEST_USER_ID = "test-user-123"
+TEST_USER_ID_2 = "test-user-456"
+
+def log_test(test_name, status, details=""):
+    """Log test results with timestamp"""
+    timestamp = datetime.now().strftime("%H:%M:%S")
+    status_symbol = "✅" if status == "PASS" else "❌" if status == "FAIL" else "⚠️"
+    print(f"[{timestamp}] {status_symbol} {test_name}")
+    if details:
+        print(f"    {details}")
 
 def test_combined_submission_functionality():
     """Test the combined submission functionality specifically"""
