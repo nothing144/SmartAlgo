@@ -239,7 +239,7 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
 
       {/* Mobile Navigation Menu */}
       {showMobileMenu && (
-        <div className="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg">
+        <div className="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg relative z-50">
           <div className="px-4 py-3 space-y-2">
             <button
               onClick={() => {
