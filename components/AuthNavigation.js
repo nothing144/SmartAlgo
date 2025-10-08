@@ -320,11 +320,13 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
                 </p>
               </div>
               <button
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
                   handleSignOut()
                   setShowMobileMenu(false)
                 }}
-                className="w-full flex items-center px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                className="w-full flex items-center px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors touch-manipulation"
               >
                 <LogOut className="w-4 h-4 mr-3" />
                 Sign Out
