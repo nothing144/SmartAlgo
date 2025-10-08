@@ -1,20 +1,18 @@
 #!/usr/bin/env python3
 """
-Backend Testing for Combined Submission Feature
-Tests the combined submission functionality to verify it's working correctly.
+Backend Testing Script for Combined Submission Functionality
+Tests the specific combined submission API endpoints and data structure
 """
 
 import requests
 import json
 import time
 import base64
-from io import BytesIO
-from PIL import Image
-import os
+from datetime import datetime
 
-# Configuration
+# Get base URL from environment
+import os
 BASE_URL = "https://form-submit-patch.preview.emergentagent.com/api"
-TIMEOUT = 30
 
 def create_test_image():
     """Create a small test image and return as base64"""
