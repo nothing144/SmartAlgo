@@ -446,13 +446,138 @@ async function handleRoute(request, { params }) {
         }
       }
 
-      if (!['flowchart', 'algorithm', 'pseudocode'].includes(body.submissionType)) {
+      if (!['flowchart', 'algorithm', 'pseudocode', 'combined'].includes(body.submissionType)) {
         return handleCORS(NextResponse.json(
-          { error: 'submissionType must be flowchart, algorithm, or pseudocode' }, 
+          { error: 'submissionType must be flowchart, algorithm, pseudocode, or combined' }, 
           { status: 400 }
         ))
       }
 
+      // Handle combined submission (all three types)
+      if (body.submissionType === 'combined') {
+        if (!body.algorithmContent || !body.pseudocodeContent || !body.flowchartData) {
+          return handleCORS(NextResponse.json(
+            { error: 'Combined submission requires algorithmContent, pseudocodeContent, and flowchartData' }, 
+            { status: 400 }
+          ))
+        }
+
+        // Process combined submission - create 3 separate submissions
+        try {
+          const combinedResults = []
+          
+          // 1. Upload flowchart image to Cloudinary
+          let flowchartCloudinaryData = null
+          let flowchartImageUrl = null
+          
+          try {
+            flowchartCloudinaryData = await uploadToCloudinary(body.flowchartData.imageData, {
+              folder: `submissions/flowchart`,
+              public_id: `${body.studentName}_flowchart_${Date.now()}`
+            })
+            flowchartImageUrl = flowchartCloudinaryData.secure_url
+          } catch (uploadError) {
+            return handleCORS(NextResponse.json(
+              { error: `Flowchart image upload failed: ${uploadError.message}` }, 
+              { status: 400 }
+            ))
+          }
+
+          // Create all three submissions
+          const submissions = [
+            {
+              type: 'algorithm',
+              data: createSubmission({
+                userId: body.userId || 'anonymous',
+                studentName: body.studentName,
+                assignmentTitle: `${body.assignmentTitle} - Algorithm`,
+                submissionType: 'algorithm',
+                textContent: body.algorithmContent,
+                imageUrl: null,
+                cloudinaryData: null,
+                fileName: null,
+                rubricId: body.rubricId
+              })
+            },
+            {
+              type: 'pseudocode',
+              data: createSubmission({
+                userId: body.userId || 'anonymous',
+                studentName: body.studentName,
+                assignmentTitle: `${body.assignmentTitle} - Pseudocode`,
+                submissionType: 'pseudocode',
+                textContent: body.pseudocodeContent,
+                imageUrl: null,
+                cloudinaryData: null,
+                fileName: null,
+                rubricId: body.rubricId
+              })
+            },
+            {
+              type: 'flowchart',
+              data: createSubmission({
+                userId: body.userId || 'anonymous',
+                studentName: body.studentName,
+                assignmentTitle: `${body.assignmentTitle} - Flowchart`,
+                submissionType: 'flowchart',
+                textContent: null,
+                imageUrl: flowchartImageUrl,
+                cloudinaryData: flowchartCloudinaryData,
+                fileName: body.flowchartData.fileName,
+                rubricId: body.rubricId
+              })
+            }
+          ]
+
+          // Insert all submissions and evaluate them
+          for (const submission of submissions) {
+            const { data: insertedSubmission, error: insertError } = await supabase
+              .from('submissions')
+              .insert(submission.data)
+              .select()
+              .single()
+
+            if (insertError) {
+              return handleCORS(NextResponse.json(
+                { error: `Database error for ${submission.type}: ${insertError.message}` }, 
+                { status: 500 }
+              ))
+            }
+
+            // Start AI evaluation synchronously
+            if (body.rubricId) {
+              try {
+                await processEvaluationAsync(insertedSubmission.id, body.rubricId)
+                console.log(`Evaluation completed for ${submission.type} submission ${insertedSubmission.id}`)
+              } catch (error) {
+                console.error(`Evaluation failed for ${submission.type}:`, error)
+              }
+            }
+
+            // Fetch the updated submission
+            const { data: updatedSubmission } = await supabase
+              .from('submissions')
+              .select('*')
+              .eq('id', insertedSubmission.id)
+              .single()
+
+            combinedResults.push(transformSubmission(updatedSubmission || insertedSubmission))
+          }
+
+          return handleCORS(NextResponse.json({
+            type: 'combined',
+            submissions: combinedResults,
+            message: 'All three submissions created and evaluated successfully'
+          }))
+        } catch (error) {
+          return handleCORS(NextResponse.json(
+            { error: `Combined submission failed: ${error.message}` }, 
+            { status: 500 }
+          ))
+        }
+      }
+
+      // Single submission validation
       if (body.submissionType === 'flowchart' && !body.imageData) {
         return handleCORS(NextResponse.json(
           { error: 'imageData is required for flowchart submissions' }, 
