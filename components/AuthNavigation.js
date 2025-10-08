@@ -10,9 +10,7 @@ import {
   Users, 
   FileText, 
   Plus, 
-  ChevronDown,
-  Settings,
-  UserCircle 
+  ChevronDown
 } from 'lucide-react'
 
 export const AuthNavigation = ({ currentView, setCurrentView }) => {
