@@ -194,11 +194,103 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
         </div>
       </div>
 
+      {/* Mobile Navigation Menu */}
+      {showMobileMenu && (
+        <div className="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg">
+          <div className="px-4 py-3 space-y-2">
+            <button
+              onClick={() => {
+                setCurrentView('home')
+                setShowMobileMenu(false)
+              }}
+              className={`w-full flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                currentView === 'home'
+                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800/50'
+              }`}
+            >
+              <BookOpen className="w-4 h-4 mr-3" />
+              Dashboard
+            </button>
+
+            <button
+              onClick={() => {
+                setCurrentView('submit')
+                setShowMobileMenu(false)
+              }}
+              className={`w-full flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                currentView === 'submit'
+                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800/50'
+              }`}
+            >
+              <Plus className="w-4 h-4 mr-3" />
+              New Submission
+            </button>
+
+            <button
+              onClick={() => {
+                setCurrentView('my-submissions')
+                setShowMobileMenu(false)
+              }}
+              className={`w-full flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                currentView === 'my-submissions'
+                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800/50'
+              }`}
+            >
+              <FileText className="w-4 h-4 mr-3" />
+              My Submissions
+            </button>
+
+            <button
+              onClick={() => {
+                setCurrentView('all-submissions')
+                setShowMobileMenu(false)
+              }}
+              className={`w-full flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                currentView === 'all-submissions'
+                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800/50'
+              }`}
+            >
+              <Users className="w-4 h-4 mr-3" />
+              All Submissions
+            </button>
+
+            {/* Mobile User Section */}
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-3 mt-3">
+              <div className="px-4 py-2">
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {user?.user_metadata?.name || 'User'}
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                  {user?.email}
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  handleSignOut()
+                  setShowMobileMenu(false)
+                }}
+                className="w-full flex items-center px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+              >
+                <LogOut className="w-4 h-4 mr-3" />
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Close dropdown when clicking outside */}
-      {showUserMenu && (
+      {(showUserMenu || showMobileMenu) && (
         <div 
           className="fixed inset-0 z-40" 
-          onClick={() => setShowUserMenu(false)}
+          onClick={() => {
+            setShowUserMenu(false)
+            setShowMobileMenu(false)
+          }}
         />
       )}
     </nav>
