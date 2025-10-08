@@ -125,7 +125,7 @@ END BubbleSort`
         
         <div className="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
           <Editor
-            height="400px"
+            height="300px"
             language={selectedLanguage}
             value={value || ''}
             onChange={(newValue) => onChange(newValue || '')}
