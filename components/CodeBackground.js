@@ -53,7 +53,7 @@ export const CodeBackground = () => {
       <div className="absolute inset-0 opacity-10">
         {/* Floating code snippets simulation */}
         <div className="absolute top-20 left-10 text-green-400 font-mono text-sm animate-pulse">
-          const evaluate = (code) =&gt; {'{'}
+          const evaluate = (code) =&gt; &#123;
         </div>
         
         <div className="absolute top-40 right-20 text-blue-400 font-mono text-xs animate-pulse delay-1000">
@@ -61,11 +61,11 @@ export const CodeBackground = () => {
         </div>
         
         <div className="absolute bottom-32 left-16 text-yellow-400 font-mono text-xs animate-pulse delay-2000">
-          function analyzeAlgorithm() {'{'}
+          function analyzeAlgorithm() &#123;
         </div>
         
         <div className="absolute bottom-48 right-12 text-purple-400 font-mono text-sm animate-pulse delay-500">
-          {'}'} // End evaluation
+          &#125; // End evaluation
         </div>
 
         <div className="absolute top-1/2 left-1/4 text-emerald-400 font-mono text-xs animate-pulse delay-3000">
