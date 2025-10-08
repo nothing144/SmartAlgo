@@ -69,6 +69,7 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
     if (formData.submissionType === 'flowchart') setFlowchartFile(file)
   }
 
+  // Handle single submission (current tab only)
   const handleSubmit = async (e) => {
     e.preventDefault()
     
@@ -77,12 +78,15 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
       return
     }
 
-    if (formData.submissionType === 'flowchart' && !uploadedFile) {
+    const currentContent = getCurrentContent()
+    const currentFile = getCurrentFile()
+
+    if (formData.submissionType === 'flowchart' && !currentFile) {
       alert('Please upload a flowchart image')
       return
     }
 
-    if ((formData.submissionType === 'algorithm' || formData.submissionType === 'pseudocode') && !textContent.trim()) {
+    if ((formData.submissionType === 'algorithm' || formData.submissionType === 'pseudocode') && !currentContent.trim()) {
       alert('Please enter your code/pseudocode')
       return
     }
@@ -98,10 +102,10 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
       }
 
       if (formData.submissionType === 'flowchart') {
-        submissionData.imageData = uploadedFile.preview
-        submissionData.fileName = uploadedFile.name
+        submissionData.imageData = currentFile.preview
+        submissionData.fileName = currentFile.name
       } else {
-        submissionData.textContent = textContent
+        submissionData.textContent = currentContent
       }
 
       const response = await fetch('/api/submissions', {
@@ -114,16 +118,82 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
 
       if (response.ok) {
         const submission = await response.json()
-        alert('Submission created successfully! AI evaluation is in progress.')
+        alert(`${formData.submissionType.charAt(0).toUpperCase() + formData.submissionType.slice(1)} submitted successfully! AI evaluation is in progress.`)
         
-        // Clear form
+        if (onSubmissionComplete) {
+          onSubmissionComplete(submission)
+        }
+      } else {
+        const error = await response.json()
+        alert(`Error: ${error.error}`)
+      }
+    } catch (error) {
+      console.error('Submission error:', error)
+      alert('Failed to submit. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  // Handle combined submission (all three together)
+  const handleSubmitAll = async () => {
+    if (!formData.studentName || !formData.assignmentTitle) {
+      alert('Please fill in student name and assignment title')
+      return
+    }
+
+    if (!algorithmContent.trim()) {
+      alert('Please enter your algorithm code')
+      return
+    }
+
+    if (!pseudocodeContent.trim()) {
+      alert('Please enter your pseudocode')
+      return
+    }
+
+    if (!flowchartFile) {
+      alert('Please upload your flowchart image')
+      return
+    }
+
+    setIsSubmitting(true)
+    
+    try {
+      const submissionData = {
+        studentName: formData.studentName,
+        assignmentTitle: formData.assignmentTitle,
+        submissionType: 'combined',
+        rubricId: selectedRubric,
+        algorithmContent: algorithmContent,
+        pseudocodeContent: pseudocodeContent,
+        flowchartData: {
+          imageData: flowchartFile.preview,
+          fileName: flowchartFile.name
+        }
+      }
+
+      const response = await fetch('/api/submissions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(submissionData)
+      })
+
+      if (response.ok) {
+        const submission = await response.json()
+        alert('All three submissions created successfully! AI evaluation is in progress.')
+        
+        // Clear all fields
         setFormData({
           studentName: '',
           assignmentTitle: '',
           submissionType: 'algorithm'
         })
-        setTextContent('')
-        setUploadedFile(null)
+        setAlgorithmContent('')
+        setPseudocodeContent('')
+        setFlowchartFile(null)
         
         if (onSubmissionComplete) {
           onSubmissionComplete(submission)
