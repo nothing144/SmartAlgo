@@ -1,19 +1,29 @@
 #!/usr/bin/env python3
 """
-Backend API Testing Suite for Intelligent Rubrics-Based Evaluator
-Testing after theme toggle addition to ensure no backend functionality is broken.
+Backend Testing for Combined Submission Feature
+Tests the combined submission functionality to verify it's working correctly.
 """
 
 import requests
 import json
 import time
 import base64
-from datetime import datetime
+from io import BytesIO
+from PIL import Image
 import os
 
-# Get base URL from environment
-BASE_URL = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://perfect-submit.preview.emergentagent.com')
-API_BASE = f"{BASE_URL}/api"
+# Configuration
+BASE_URL = "https://perfect-submit.preview.emergentagent.com/api"
+TIMEOUT = 30
+
+def create_test_image():
+    """Create a small test image and return as base64"""
+    # Create a simple 100x100 red square
+    img = Image.new('RGB', (100, 100), color='red')
+    buffer = BytesIO()
+    img.save(buffer, format='PNG')
+    img_data = buffer.getvalue()
+    return base64.b64encode(img_data).decode('utf-8')
 
 class BackendTester:
     def __init__(self):
