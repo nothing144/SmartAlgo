@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { Send, Clock, CheckCircle, AlertCircle, FileText, Image as ImageIcon, Code } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext'
 import FileUpload from './FileUpload'
 import CodeEditor from './CodeEditor'
 
 const SubmissionForm = ({ onSubmissionComplete }) => {
+  const { user } = useAuth()
   const [formData, setFormData] = useState({
     studentName: '',
     assignmentTitle: '',
