@@ -280,7 +280,7 @@ const HomePage = () => {
                         {submission.assignmentTitle}
                       </p>
                       <p className={`text-sm ${submission.status === 'error' ? 'text-gray-500 dark:text-gray-500' : 'text-gray-600 dark:text-gray-400'}`}>
-                        {submission.studentName} • {submission.submissionType} • {new Date(submission.createdAt).toLocaleDateString()}
+                        {submission.studentName} • {submission.isCombined ? 'Combined Submission (Algorithm + Pseudocode + Flowchart)' : submission.submissionType} • {new Date(submission.createdAt).toLocaleDateString()}
                       </p>
                       {submission.status === 'error' && (
                         <p className="text-xs text-red-600 dark:text-red-400 mt-1">Evaluation failed - historical issue</p>
