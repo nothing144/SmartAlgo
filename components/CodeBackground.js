@@ -15,15 +15,28 @@ export const CodeBackground = () => {
     return null
   }
 
-  // High-quality code background images from Unsplash
-  const codeImages = [
-    'https://images.unsplash.com/photo-1653387319597-84bde7e5368e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxjb2RlJTIwcHJvZ3JhbW1pbmd8ZW58MHx8fGJsYWNrfDE3NTk5NDYzMDJ8MA&ixlib=rb-4.1.0&q=85',
-    'https://images.unsplash.com/photo-1653387137517-fbc54d488ed8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwyfHxjb2RlJTIwcHJvZ3JhbW1pbmd8ZW58MHx8fGJsYWNrfDE3NTk5NDYzMDJ8MA&ixlib=rb-4.1.0&q=85'
-  ]
+  // Diverse professional code background images
+  const codeImages = {
+    'sign-in': 'https://images.unsplash.com/photo-1653387319597-84bde7e5368e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxjb2RlJTIwcHJvZ3JhbW1pbmd8ZW58MHx8fGJsYWNrfDE3NTk5NDYzMDJ8MA&ixlib=rb-4.1.0&q=85',
+    'sign-up': 'https://images.unsplash.com/photo-1653387137517-fbc54d488ed8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwyfHxjb2RlJTIwcHJvZ3JhbW1pbmd8ZW58MHx8fGJsYWNrfDE3NTk5NDYzMDJ8MA&ixlib=rb-4.1.0&q=85',
+    'home': 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxwcm9ncmFtbWluZyUyMGNvZGV8ZW58MHx8fGJsYWNrfDE3NTk5NDczMzB8MA&ixlib=rb-4.1.0&q=85',
+    'submissions': 'https://images.unsplash.com/photo-1653387300291-bfa1eeb90e16?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwzfHxwcm9ncmFtbWluZyUyMGNvZGV8ZW58MHx8fGJsYWNrfDE3NTk5NDczMzB8MA&ixlib=rb-4.1.0&q=85',
+    'default': 'https://images.pexels.com/photos/2330137/pexels-photo-2330137.jpeg'
+  }
 
-  // Use different image for sign-in vs sign-up (based on current path if available)
-  const imageIndex = typeof window !== 'undefined' && window.location.pathname.includes('sign-up') ? 1 : 0
-  const backgroundImage = codeImages[imageIndex]
+  // Determine image based on current path or page prop
+  const getBackgroundImage = () => {
+    if (typeof window === 'undefined') return codeImages.default
+    
+    const path = window.location.pathname
+    if (path.includes('sign-up')) return codeImages['sign-up']
+    if (path.includes('sign-in')) return codeImages['sign-in']
+    if (path.includes('submissions') || path.includes('results')) return codeImages.submissions
+    if (path === '/') return codeImages.home
+    return codeImages.default
+  }
+
+  const backgroundImage = getBackgroundImage()
 
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden">
