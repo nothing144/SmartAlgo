@@ -160,6 +160,19 @@ const SingleSubmissionCard = ({ submission, icon: Icon, title }) => {
 const CombinedSubmissionView = ({ submission }) => {
   const submissions = submission.submissions || []
   
+  // Debug logging to see what data we're receiving
+  console.log('CombinedSubmissionView - submission:', submission)
+  console.log('CombinedSubmissionView - submissions array:', submissions)
+  submissions.forEach((sub, index) => {
+    console.log(`Submission ${index + 1} (${sub.submissionType}):`, {
+      status: sub.status,
+      evaluation: sub.evaluation,
+      hasEvaluation: !!sub.evaluation,
+      totalScore: sub.evaluation?.totalScore,
+      maxScore: sub.evaluation?.maxScore
+    })
+  })
+  
   // Find each type
   const algorithmSub = submissions.find(s => s.submissionType === 'algorithm')
   const pseudocodeSub = submissions.find(s => s.submissionType === 'pseudocode')
@@ -172,6 +185,9 @@ const CombinedSubmissionView = ({ submission }) => {
   const maxScore = submissions.reduce((sum, s) => 
     sum + (s.evaluation?.maxScore || 0), 0
   )
+  
+  // Debug overall scoring
+  console.log('CombinedSubmissionView - Calculated scores:', { totalScore, maxScore })
   
   // Determine overall status
   const allCompleted = submissions.every(s => s.status === 'completed')
