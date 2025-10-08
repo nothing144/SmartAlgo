@@ -1,12 +1,13 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { CheckCircle, Clock, AlertCircle, Eye, Star, BookOpen } from 'lucide-react'
+import { CheckCircle, Clock, AlertCircle, Eye, Star, BookOpen, Code, FileText, Image as ImageIcon } from 'lucide-react'
 
 const SubmissionResults = ({ submissionId }) => {
   const [submission, setSubmission] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [isCombined, setIsCombined] = useState(false)
 
   const fetchSubmission = useCallback(async () => {
     if (!submissionId) return
@@ -15,7 +16,15 @@ const SubmissionResults = ({ submissionId }) => {
       const response = await fetch(`/api/submissions/${submissionId}`)
       if (response.ok) {
         const data = await response.json()
-        setSubmission(data)
+        
+        // Check if this is a combined submission
+        if (data.type === 'combined' && data.submissions) {
+          setIsCombined(true)
+          setSubmission(data)
+        } else {
+          setIsCombined(false)
+          setSubmission(data)
+        }
         setError(null)
       } else {
         throw new Error('Failed to fetch submission')
