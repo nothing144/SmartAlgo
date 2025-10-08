@@ -210,39 +210,43 @@ const MySubmissions = ({ setCurrentView, setCurrentSubmissionId }) => {
             {filteredSubmissions.map((submission) => (
               <div
                 key={submission.submissionId}
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 hover:shadow-md transition-shadow"
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
-                      {getStatusIcon(submission.status)}
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                        {submission.assignmentTitle}
-                      </h3>
-                      {submission.isCombined && (
-                        <span className="bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 px-2 py-1 rounded-full text-xs font-medium">
-                          Combined Submission ({submission.parts?.length || 3} parts)
-                        </span>
-                      )}
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="flex-shrink-0 pt-1">
+                        {getStatusIcon(submission.status)}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white truncate">
+                          {submission.assignmentTitle}
+                        </h3>
+                        {submission.isCombined && (
+                          <span className="inline-block mt-1 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 px-2 py-1 rounded-full text-xs font-medium">
+                            Combined ({submission.parts?.length || 3} parts)
+                          </span>
+                        )}
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400 mb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 text-sm text-gray-500 dark:text-gray-400 mb-4">
                       <div className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        {formatDate(submission.createdAt)}
+                        <Calendar className="w-4 h-4 flex-shrink-0" />
+                        <span className="truncate">{formatDate(submission.createdAt)}</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <User className="w-4 h-4" />
-                        {submission.studentName}
+                        <User className="w-4 h-4 flex-shrink-0" />
+                        <span className="truncate">{submission.studentName}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <span className="font-medium">Status:</span>
-                        {getStatusText(submission.status)}
+                        <span>{getStatusText(submission.status)}</span>
                       </div>
                     </div>
 
                     {/* Submission Type Details */}
-                    <div className="flex flex-wrap gap-2 mb-4">
+                    <div className="flex flex-wrap gap-2 mb-4 sm:mb-0">
                       {submission.isCombined ? (
                         submission.parts?.map((part, index) => (
                           <span
@@ -267,10 +271,15 @@ const MySubmissions = ({ setCurrentView, setCurrentSubmissionId }) => {
                       setCurrentView('results')
                     }}
                     disabled={submission.status === 'evaluating'}
-                    className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all disabled:cursor-not-allowed"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all disabled:cursor-not-allowed"
                   >
                     <Eye className="w-4 h-4" />
-                    {submission.status === 'evaluating' ? 'Evaluating...' : 'View Results'}
+                    <span className="sm:hidden">
+                      {submission.status === 'evaluating' ? 'Evaluating...' : 'View'}
+                    </span>
+                    <span className="hidden sm:inline">
+                      {submission.status === 'evaluating' ? 'Evaluating...' : 'View Results'}
+                    </span>
                   </button>
                 </div>
               </div>
