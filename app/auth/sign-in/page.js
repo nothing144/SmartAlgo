@@ -160,7 +160,7 @@ const SignInPage = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <label className="flex items-center">
                   <input
                     type="checkbox"
@@ -171,7 +171,7 @@ const SignInPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowForgotPassword(true)}
-                  className="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 font-medium"
+                  className="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 font-medium text-left sm:text-right"
                 >
                   Forgot password?
                 </button>
