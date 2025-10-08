@@ -16,6 +16,7 @@ import {
 export const AuthNavigation = ({ currentView, setCurrentView }) => {
   const { user, signOut } = useAuth()
   const [showUserMenu, setShowUserMenu] = useState(false)
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
 
   const handleSignOut = async () => {
     await signOut()
