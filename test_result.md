@@ -316,6 +316,21 @@
         agent: "main"
         comment: "IMPLEMENTED: Successfully integrated Monaco Editor (@monaco-editor/react v4.6.0) for algorithm code only. Features: ✅ Multi-language support (JavaScript, Python, Java, C++, C, C#, TypeScript, Go, Rust, PHP, Ruby, Swift, Kotlin, SQL, R, Perl, Scala, Dart, Lua, Shell). ✅ Language selector dropdown for user selection. ✅ Full Monaco features enabled (minimap, IntelliSense, code folding, auto-completion, syntax highlighting, line numbers, bracket matching, auto-closing quotes/brackets, format on paste/type). ✅ Black theme (vs-dark) as requested. ✅ Pseudocode still uses simple textarea. ✅ Dynamic import to avoid SSR issues. ✅ Character count and tips displayed. Tested with Python syntax highlighting - working perfectly."
 
+  - task: "Dual Submission Mode - Single and Combined"
+    implemented: true
+    working: true
+    file: "/app/components/SubmissionForm.js, /app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "User requested two submission types: 1) Single submission (current tab only), 2) Submit All Three (algorithm + pseudocode + flowchart together). Dynamic button names based on active tab."
+      - working: true
+        agent: "main"
+        comment: "IMPLEMENTED: Dual submission mode successfully added. ✅ FRONTEND: Updated SubmissionForm to track all three inputs simultaneously (algorithmContent, pseudocodeContent, flowchartFile). Dynamic button text changes based on active tab: 'Submit Algorithm', 'Submit Pseudocode', 'Submit Flowchart'. Added purple 'Submit All Three' button on the left requiring all three fields filled. ✅ BACKEND: Added 'combined' submission type support in API route. Creates 3 separate submissions with separate evaluations. Each gets evaluated by Gemini AI with rubric-based scoring. Flowchart image uploaded to Cloudinary. Returns array of all 3 submissions. ✅ VALIDATION: Single submission validates only current tab content. Combined submission validates all three fields are filled. ✅ UI: Maintains tab switching functionality while preserving content across tabs. Both buttons functional with proper validation."
+
   - task: "Submission Form Component"
     implemented: true
     working: true
