@@ -119,6 +119,7 @@ function createSubmission(data) {
     file_name: data.fileName || null,
     rubric_id: data.rubricId || null,
     combined_submission_id: data.combinedSubmissionId || null, // Link for combined submissions
+    is_public: data.isPublic !== undefined ? data.isPublic : true, // Default to public for compatibility
     status: 'submitted', // 'submitted', 'evaluating', 'completed', 'error'
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
