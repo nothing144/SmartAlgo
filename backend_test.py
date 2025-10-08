@@ -12,7 +12,7 @@ from datetime import datetime
 import os
 
 # Get base URL from environment
-BASE_URL = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://light-dark-theme-1.preview.emergentagent.com')
+BASE_URL = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://shadow-highlight-1.preview.emergentagent.com')
 API_BASE = f"{BASE_URL}/api"
 
 class BackendTester:
