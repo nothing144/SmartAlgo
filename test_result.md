@@ -264,6 +264,24 @@
         agent: "testing"
         comment: "NETLIFY SYNCHRONOUS EVALUATION FIX VERIFIED: ✅ Comprehensive testing confirms the synchronous evaluation fix is working perfectly. All 3 submission types (algorithm, pseudocode, flowchart) now complete evaluation BEFORE returning HTTP response. ✅ SYNCHRONOUS BEHAVIOR CONFIRMED: Response times 6.7-8.1s (average 7.54s) indicate evaluation completes within request. Status returned as 'completed' (not 'submitted') with evaluation data immediately available. ✅ NETLIFY COMPATIBILITY: The await processEvaluationAsync() pattern prevents serverless context termination. Evaluation records properly created in database with detailed AI analysis and scoring. ✅ ALL TESTS PASSED: 8/9 tests successful (88.9% success rate). Only failure was historical error submissions from previous issues. Current system fully operational for Netlify deployment."
 
+  - task: "Submission Visibility Fix - User Association"
+    implemented: true
+    working: true
+    file: "/app/components/SubmissionForm.js, /app/app/api/[[...path]]/route.js, /app/components/MySubmissions.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "User reported that submissions appear in 'All Submissions' when marked as public, but don't appear in 'My Submissions'. Issue was that submissions weren't being associated with user IDs properly."
+      - working: true
+        agent: "main"
+        comment: "FIXED: Added userId field to submission creation in SubmissionForm.js. Both single and combined submissions now include 'userId: user?.id || \"anonymous\"' in submission data. Backend API already supported userId filtering via GET /api/submissions?userId=xxx parameter."
+      - working: true
+        agent: "testing"
+        comment: "SUBMISSION VISIBILITY FIX VERIFIED: ✅ Comprehensive testing confirms the user association fix is working perfectly. ✅ BACKEND FUNCTIONALITY: All submission creation endpoints (single and combined) now properly store user_id field. GET /api/submissions?userId=xxx filtering works correctly - returns only submissions for specified user. ✅ FRONTEND FIX: Updated MySubmissions component to use server-side filtering instead of client-side. Changed from fetch('/api/submissions') to fetch(`/api/submissions?userId=${user.id}`). ✅ PRIVACY SETTINGS: Fixed isPublic field handling in single submissions (was missing from createSubmission call). ✅ COMPREHENSIVE TESTING: Created 15+ test submissions with different user IDs. Verified proper filtering, user association, and visibility settings. All tests passed - submissions now appear correctly in 'My Submissions' when created by authenticated users."
+
 ## frontend:
   - task: "Student Submission Portal UI"
     implemented: true
