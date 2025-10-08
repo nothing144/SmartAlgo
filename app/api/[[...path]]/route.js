@@ -463,9 +463,12 @@ async function handleRoute(request, { params }) {
           ))
         }
 
-        // Process combined submission - create 3 separate submissions
+        // Process combined submission - create 3 separate submissions linked by a combined ID
         try {
           const combinedResults = []
+          
+          // Generate a unique ID for this combined submission to link all 3 parts
+          const combinedSubmissionId = uuidv4()
           
           // 1. Upload flowchart image to Cloudinary
           let flowchartCloudinaryData = null
@@ -484,20 +487,21 @@ async function handleRoute(request, { params }) {
             ))
           }
 
-          // Create all three submissions
+          // Create all three submissions with the same combined_submission_id
           const submissions = [
             {
               type: 'algorithm',
               data: createSubmission({
                 userId: body.userId || 'anonymous',
                 studentName: body.studentName,
-                assignmentTitle: `${body.assignmentTitle} - Algorithm`,
+                assignmentTitle: body.assignmentTitle, // Keep original title without suffix
                 submissionType: 'algorithm',
                 textContent: body.algorithmContent,
                 imageUrl: null,
                 cloudinaryData: null,
                 fileName: null,
-                rubricId: body.rubricId
+                rubricId: body.rubricId,
+                combinedSubmissionId: combinedSubmissionId
               })
             },
             {
@@ -505,13 +509,14 @@ async function handleRoute(request, { params }) {
               data: createSubmission({
                 userId: body.userId || 'anonymous',
                 studentName: body.studentName,
-                assignmentTitle: `${body.assignmentTitle} - Pseudocode`,
+                assignmentTitle: body.assignmentTitle, // Keep original title without suffix
                 submissionType: 'pseudocode',
                 textContent: body.pseudocodeContent,
                 imageUrl: null,
                 cloudinaryData: null,
                 fileName: null,
-                rubricId: body.rubricId
+                rubricId: body.rubricId,
+                combinedSubmissionId: combinedSubmissionId
               })
             },
             {
@@ -519,13 +524,14 @@ async function handleRoute(request, { params }) {
               data: createSubmission({
                 userId: body.userId || 'anonymous',
                 studentName: body.studentName,
-                assignmentTitle: `${body.assignmentTitle} - Flowchart`,
+                assignmentTitle: body.assignmentTitle, // Keep original title without suffix
                 submissionType: 'flowchart',
                 textContent: null,
                 imageUrl: flowchartImageUrl,
                 cloudinaryData: flowchartCloudinaryData,
                 fileName: body.flowchartData.fileName,
-                rubricId: body.rubricId
+                rubricId: body.rubricId,
+                combinedSubmissionId: combinedSubmissionId
               })
             }
           ]
@@ -567,6 +573,7 @@ async function handleRoute(request, { params }) {
 
           return handleCORS(NextResponse.json({
             type: 'combined',
+            combinedSubmissionId: combinedSubmissionId,
             submissions: combinedResults,
             message: 'All three submissions created and evaluated successfully'
           }))
