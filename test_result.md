@@ -396,7 +396,7 @@
 
 ## test_plan:
   current_focus:
-    - "Dual Submission Mode - Single and Combined"
+    - "Submission Visibility Fix - User Association"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
