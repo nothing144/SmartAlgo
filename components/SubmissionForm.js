@@ -167,6 +167,7 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
         assignmentTitle: formData.assignmentTitle,
         submissionType: 'combined',
         rubricId: selectedRubric,
+        isPublic: isPublic,
         algorithmContent: algorithmContent,
         pseudocodeContent: pseudocodeContent,
         flowchartData: {
