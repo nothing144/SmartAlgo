@@ -60,27 +60,35 @@ const SubmissionResults = ({ submissionId }) => {
     // Set up polling for evaluation updates
     const interval = setInterval(() => {
       // Poll if submission is not yet completed
-      if (submission?.status && submission.status !== 'completed' && submission.status !== 'error') {
+      if (isCombined && submission?.submissions) {
+        // For combined submissions, check if any part is still evaluating
+        const anyEvaluating = submission.submissions.some(s => 
+          s.status !== 'completed' && s.status !== 'error'
+        )
+        if (anyEvaluating) {
+          fetchSubmission()
+        }
+      } else if (submission?.status && submission.status !== 'completed' && submission.status !== 'error') {
         fetchSubmission()
       }
     }, 2000) // Poll every 2 seconds
     
     return () => clearInterval(interval)
-  }, [submission?.status, fetchSubmission])
+  }, [submission, isCombined, fetchSubmission])
 
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <Clock className="w-6 h-6 animate-spin mr-2" />
-        Loading submission...
+        <Clock className="w-6 h-6 animate-spin mr-2 text-blue-600" />
+        <span className="text-gray-700 dark:text-gray-300">Loading submission...</span>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="p-6 bg-red-50 border border-red-200 rounded-lg">
-        <div className="flex items-center text-red-800">
+      <div className="p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+        <div className="flex items-center text-red-800 dark:text-red-400">
           <AlertCircle className="w-5 h-5 mr-2" />
           Error: {error}
         </div>
@@ -89,6 +97,11 @@ const SubmissionResults = ({ submissionId }) => {
   }
 
   if (!submission) return null
+  
+  // Render combined submission view
+  if (isCombined && submission.submissions) {
+    return <CombinedSubmissionView submission={submission} />
+  }
 
   const getStatusIcon = (status) => {
     switch (status) {
