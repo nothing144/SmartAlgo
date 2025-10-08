@@ -13,7 +13,7 @@ from PIL import Image
 import os
 
 # Configuration
-BASE_URL = "https://perfect-submit.preview.emergentagent.com/api"
+BASE_URL = "https://form-submit-patch.preview.emergentagent.com/api"
 TIMEOUT = 30
 
 def create_test_image():
