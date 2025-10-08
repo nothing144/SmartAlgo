@@ -9,6 +9,7 @@ import SubmissionResults from '../components/SubmissionResults'
 import MySubmissions from '../components/MySubmissions'
 import AllSubmissions from '../components/AllSubmissions'
 import { ThemeToggle } from '../components/ThemeToggle'
+import { CodeBackground } from '../components/CodeBackground'
 
 const HomePage = () => {
   const { user, loading: authLoading } = useAuth()
