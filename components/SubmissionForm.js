@@ -298,7 +298,8 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
                 Upload Flowchart *
               </label>
               <FileUpload
-                onFileSelect={setUploadedFile}
+                onFileSelect={setCurrentFile}
+                currentFile={getCurrentFile()}
                 accept="image/*"
                 maxSize={10 * 1024 * 1024} // 10MB
               />
@@ -309,16 +310,41 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
                 Enter Your {formData.submissionType === 'algorithm' ? 'Algorithm' : 'Pseudocode'} *
               </label>
               <CodeEditor
-                value={textContent}
-                onChange={setTextContent}
+                value={getCurrentContent()}
+                onChange={setCurrentContent}
                 submissionType={formData.submissionType}
               />
             </div>
           )}
         </div>
 
-        {/* Submit Button */}
-        <div className="flex justify-end">
+        {/* Submit Buttons */}
+        <div className="flex justify-between items-center">
+          {/* Submit All Button */}
+          <button
+            type="button"
+            onClick={handleSubmitAll}
+            disabled={isSubmitting}
+            className={`px-6 py-3 rounded-lg font-medium flex items-center space-x-2 transition-colors ${
+              isSubmitting
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-purple-600 hover:bg-purple-700 text-white'
+            }`}
+          >
+            {isSubmitting ? (
+              <>
+                <Clock className="w-4 h-4 animate-spin" />
+                <span>Submitting...</span>
+              </>
+            ) : (
+              <>
+                <CheckCircle className="w-4 h-4" />
+                <span>Submit All Three</span>
+              </>
+            )}
+          </button>
+
+          {/* Single Submit Button */}
           <button
             type="submit"
             disabled={isSubmitting}
@@ -336,7 +362,7 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
             ) : (
               <>
                 <Send className="w-4 h-4" />
-                <span>Submit for Evaluation</span>
+                <span>Submit {formData.submissionType.charAt(0).toUpperCase() + formData.submissionType.slice(1)}</span>
               </>
             )}
           </button>
