@@ -717,26 +717,14 @@ async function handleRoute(request, { params }) {
         const combinedResults = []
         
         for (const submission of combinedSubmissions) {
-          console.log(`Fetching evaluation for submission ${submission.id} (${submission.submission_type})`)
-          
-          const { data: evaluation, error: evalError } = await supabase
+          const { data: evaluation } = await supabase
             .from('evaluations')
             .select('*')
             .eq('submission_id', submission.id)
             .single()
           
-          console.log(`Evaluation result:`, { evaluation, evalError, submissionId: submission.id })
-          
           const transformedSubmission = transformSubmission(submission)
           const transformedEvaluation = transformEvaluation(evaluation)
-          
-          console.log(`Transformed data:`, { 
-            submissionId: submission.id,
-            submissionType: submission.submission_type,
-            status: submission.status,
-            hasEvaluation: !!evaluation,
-            transformedEvaluation
-          })
           
           combinedResults.push({
             ...transformedSubmission,
