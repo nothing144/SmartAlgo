@@ -1,19 +1,26 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { BookOpen, Users, Bot, Star, Clock, FileText, ArrowRight, CheckCircle } from 'lucide-react'
+import { BookOpen, Users, Bot, Star, Clock, FileText, ArrowRight, CheckCircle, Plus, LogIn } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext'
+import { AuthNavigation } from '../components/AuthNavigation'
 import SubmissionForm from '../components/SubmissionForm'
 import SubmissionResults from '../components/SubmissionResults'
+import MySubmissions from '../components/MySubmissions'
+import AllSubmissions from '../components/AllSubmissions'
 import { ThemeToggle } from '../components/ThemeToggle'
 
 const HomePage = () => {
-  const [currentView, setCurrentView] = useState('home') // 'home', 'submit', 'results'
+  const { user, loading: authLoading } = useAuth()
+  const [currentView, setCurrentView] = useState('home') // 'home', 'submit', 'results', 'my-submissions', 'all-submissions'
   const [recentSubmissions, setRecentSubmissions] = useState([])
   const [currentSubmissionId, setCurrentSubmissionId] = useState(null)
 
   useEffect(() => {
-    fetchRecentSubmissions()
-  }, [])
+    if (!authLoading) {
+      fetchRecentSubmissions()
+    }
+  }, [authLoading])
 
   const fetchRecentSubmissions = async () => {
     try {
@@ -55,66 +62,42 @@ const HomePage = () => {
           }
         })
         
-        // Combine both arrays
-        const allSubmissions = [
-          ...Object.values(combinedGroups),
-          ...standaloneSubmissions
-        ]
+        // Combine and sort by date
+        const allSubmissions = [...Object.values(combinedGroups), ...standaloneSubmissions]
+        allSubmissions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         
-        // Sort by status priority and date
-        const sortedData = allSubmissions.sort((a, b) => {
-          const statusPriority = { completed: 0, evaluating: 1, submitted: 2, error: 3 }
-          const aPriority = statusPriority[a.status] || 3
-          const bPriority = statusPriority[b.status] || 3
-          if (aPriority !== bPriority) return aPriority - bPriority
-          // If same status, sort by creation date (newest first)
-          return new Date(b.createdAt) - new Date(a.createdAt)
-        })
-        
-        setRecentSubmissions(sortedData)
+        setRecentSubmissions(allSubmissions.slice(0, 5)) // Show latest 5
       }
     } catch (error) {
       console.error('Error fetching submissions:', error)
     }
   }
 
-  const handleSubmissionComplete = (submission) => {
-    setCurrentSubmissionId(submission.submissionId)
-    setCurrentView('results')
-    // Refresh the list with a slight delay to ensure backend has updated
-    setTimeout(fetchRecentSubmissions, 1000)
+  const handleSubmissionSuccess = () => {
+    fetchRecentSubmissions()
   }
 
-  const handleViewSubmission = (submissionId) => {
-    // Clear any previous submission data to ensure clean state
-    setCurrentSubmissionId(null)
-    setTimeout(() => {
-      setCurrentSubmissionId(submissionId)
-      setCurrentView('results')
-    }, 100) // Small delay to ensure state clears first
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-300">Loading...</p>
+        </div>
+      </div>
+    )
   }
 
+  // Show different views based on currentView
   if (currentView === 'submit') {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700">
-          <div className="max-w-7xl mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <button
-                onClick={() => setCurrentView('home')}
-                className="flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
-              >
-                ← Back to Home
-              </button>
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">New Submission</h1>
-              <ThemeToggle />
-            </div>
-          </div>
-        </div>
-        
-        <div className="py-8">
-          <SubmissionForm onSubmissionComplete={handleSubmissionComplete} />
-        </div>
+        <AuthNavigation currentView={currentView} setCurrentView={setCurrentView} />
+        <SubmissionForm 
+          setCurrentView={setCurrentView} 
+          setCurrentSubmissionId={setCurrentSubmissionId}
+          onSubmissionSuccess={handleSubmissionSuccess}
+        />
       </div>
     )
   }
@@ -122,186 +105,213 @@ const HomePage = () => {
   if (currentView === 'results') {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700">
-          <div className="max-w-7xl mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <button
-                onClick={() => setCurrentView('home')}
-                className="flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
-              >
-                ← Back to Home
-              </button>
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Submission Results</h1>
-              <ThemeToggle />
-            </div>
-          </div>
-        </div>
-        
-        <div className="py-8">
-          <SubmissionResults submissionId={currentSubmissionId} />
-        </div>
+        <AuthNavigation currentView={currentView} setCurrentView={setCurrentView} />
+        <SubmissionResults 
+          submissionId={currentSubmissionId} 
+          setCurrentView={setCurrentView} 
+        />
       </div>
     )
   }
 
+  if (currentView === 'my-submissions') {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <AuthNavigation currentView={currentView} setCurrentView={setCurrentView} />
+        <MySubmissions 
+          setCurrentView={setCurrentView} 
+          setCurrentSubmissionId={setCurrentSubmissionId}
+        />
+      </div>
+    )
+  }
+
+  if (currentView === 'all-submissions') {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <AuthNavigation currentView={currentView} setCurrentView={setCurrentView} />
+        <AllSubmissions 
+          setCurrentView={setCurrentView} 
+          setCurrentSubmissionId={setCurrentSubmissionId}
+        />
+      </div>
+    )
+  }
+
+  // Home/Dashboard view
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <div className="bg-white dark:bg-gray-800 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-blue-600 rounded-lg">
-                <BookOpen className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Smart Evaluator</h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">AI-Powered Rubrics-Based Assessment</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3">
-              <ThemeToggle />
+      <AuthNavigation currentView={currentView} setCurrentView={setCurrentView} />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            Welcome to{' '}
+            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Smart Evaluator
+            </span>
+          </h1>
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+            AI-powered evaluation system for flowcharts, algorithms, and pseudocode. 
+            Get instant feedback and improve your programming skills with our advanced rubric-based assessment.
+          </p>
+          
+          {user ? (
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => setCurrentView('submit')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-all flex items-center justify-center gap-2"
               >
-                <FileText className="w-4 h-4" />
-                <span>New Submission</span>
+                <Plus className="w-5 h-5" />
+                Create New Submission
+              </button>
+              <button
+                onClick={() => setCurrentView('my-submissions')}
+                className="border-2 border-purple-600 text-purple-600 dark:text-purple-400 hover:bg-purple-600 hover:text-white px-8 py-3 rounded-lg text-lg font-medium transition-all flex items-center justify-center gap-2"
+              >
+                <FileText className="w-5 h-5" />
+                View My Submissions
               </button>
             </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a
+                href="/auth/sign-up"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-all flex items-center justify-center gap-2"
+              >
+                Get Started Free
+                <ArrowRight className="w-5 h-5" />
+              </a>
+              <a
+                href="/auth/sign-in"
+                className="border-2 border-purple-600 text-purple-600 dark:text-purple-400 hover:bg-purple-600 hover:text-white px-8 py-3 rounded-lg text-lg font-medium transition-all flex items-center justify-center gap-2"
+              >
+                <LogIn className="w-5 h-5" />
+                Sign In
+              </a>
+            </div>
+          )}
+        </div>
+
+        {/* Features Grid */}
+        <div className="grid md:grid-cols-3 gap-8 mb-12">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4">
+              <Bot className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">AI-Powered Evaluation</h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Advanced Gemini AI analyzes your submissions with intelligent feedback and detailed scoring.
+            </p>
+          </div>
+          
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="w-12 h-12 bg-pink-100 dark:bg-pink-900/30 rounded-lg flex items-center justify-center mb-4">
+              <FileText className="w-6 h-6 text-pink-600 dark:text-pink-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Multiple Formats</h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Submit flowcharts, algorithms, and pseudocode. Support for images, code, and combined submissions.
+            </p>
+          </div>
+          
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
+              <Star className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Rubric-Based Scoring</h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Comprehensive evaluation with structured rubrics covering logic, structure, and syntax.
+            </p>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Hero Section */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl text-white p-8 mb-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div>
-              <h2 className="text-3xl font-bold mb-4">
-                Intelligent Assessment Made Simple
-              </h2>
-              <p className="text-blue-100 mb-6">
-                Submit your flowcharts, algorithms, and pseudocode for instant AI-powered evaluation. 
-                Get detailed feedback and scores based on comprehensive rubrics.
-              </p>
+        {/* Recent Submissions */}
+        {user && recentSubmissions.length > 0 && (
+          <div className="mb-12">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Recent Submissions</h2>
               <button
-                onClick={() => setCurrentView('submit')}
-                className="bg-white text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center space-x-2"
+                onClick={() => setCurrentView('my-submissions')}
+                className="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 font-medium flex items-center gap-2"
               >
-                <span>Get Started</span>
+                View All
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white/20 backdrop-blur rounded-lg p-4">
-                <Bot className="w-8 h-8 mb-2" />
-                <h3 className="font-semibold mb-1">AI-Powered</h3>
-                <p className="text-sm text-blue-100">Advanced Gemini AI analysis</p>
-              </div>
-              <div className="bg-white/20 backdrop-blur rounded-lg p-4">
-                <Star className="w-8 h-8 mb-2" />
-                <h3 className="font-semibold mb-1">Rubric-Based</h3>
-                <p className="text-sm text-blue-100">Consistent scoring criteria</p>
-              </div>
-              <div className="bg-white/20 backdrop-blur rounded-lg p-4">
-                <Clock className="w-8 h-8 mb-2" />
-                <h3 className="font-semibold mb-1">Instant Results</h3>
-                <p className="text-sm text-blue-100">Fast evaluation and feedback</p>
-              </div>
-              <div className="bg-white/20 backdrop-blur rounded-lg p-4">
-                <Users className="w-8 h-8 mb-2" />
-                <h3 className="font-semibold mb-1">Student-Friendly</h3>
-                <p className="text-sm text-blue-100">Easy submission process</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Features */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4">
-              <FileText className="w-6 h-6 text-green-600 dark:text-green-400" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Multiple Formats</h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Support for flowcharts (image upload), algorithms, and pseudocode submissions
-            </p>
-          </div>
-          
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
-              <Bot className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Smart Analysis</h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Gemini AI evaluates logic, structure, and clarity with detailed feedback
-            </p>
-          </div>
-          
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4">
-              <Star className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Detailed Scoring</h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Comprehensive rubric-based evaluation with criterion-specific feedback
-            </p>
-          </div>
-        </div>
-
-        {/* All Submissions */}
-        {recentSubmissions.length > 0 && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">All Submissions</h3>
-              <span className="text-sm text-gray-600 dark:text-gray-400">Total: {recentSubmissions.length}</span>
-            </div>
-            <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+            
+            <div className="grid gap-4">
               {recentSubmissions.map((submission) => (
-                <div 
+                <div
                   key={submission.submissionId}
-                  className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer transition-colors ${
-                    submission.status === 'error' 
-                      ? 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 opacity-75' 
-                      : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
-                  }`}
-                  onClick={() => handleViewSubmission(submission.submissionId)}
+                  className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => {
+                    setCurrentSubmissionId(submission.submissionId)
+                    setCurrentView('results')
+                  }}
                 >
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-3 h-3 rounded-full ${
-                      submission.status === 'completed' ? 'bg-green-500' :
-                      submission.status === 'evaluating' ? 'bg-blue-500 animate-pulse' :
-                      submission.status === 'error' ? 'bg-red-500' : 'bg-gray-500'
-                    }`}></div>
-                    <div>
-                      <p className={`font-medium ${submission.status === 'error' ? 'text-gray-700 dark:text-gray-300' : 'text-gray-900 dark:text-gray-100'}`}>
-                        {submission.assignmentTitle}
-                      </p>
-                      <p className={`text-sm ${submission.status === 'error' ? 'text-gray-500 dark:text-gray-500' : 'text-gray-600 dark:text-gray-400'}`}>
-                        {submission.studentName} • {submission.isCombined ? 'Combined Submission (Algorithm + Pseudocode + Flowchart)' : submission.submissionType} • {new Date(submission.createdAt).toLocaleDateString()}
-                      </p>
-                      {submission.status === 'error' && (
-                        <p className="text-xs text-red-600 dark:text-red-400 mt-1">Evaluation failed - historical issue</p>
-                      )}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      {submission.status === 'completed' && <CheckCircle className="w-5 h-5 text-green-500" />}
+                      {submission.status === 'evaluating' && <Clock className="w-5 h-5 text-yellow-500 animate-spin" />}
+                      {submission.status === 'error' && <Clock className="w-5 h-5 text-red-500" />}
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 dark:text-white">
+                          {submission.assignmentTitle}
+                        </h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          {submission.isCombined ? 'Combined Submission' : submission.submissionType} • {' '}
+                          {new Date(submission.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      submission.status === 'completed' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' :
-                      submission.status === 'evaluating' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400' :
-                      submission.status === 'error' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400' : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-400'
+                    
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      submission.status === 'completed' 
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                        : submission.status === 'evaluating'
+                        ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+                        : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
                     }`}>
-                      {submission.status === 'error' ? 'failed' : submission.status}
+                      {submission.status === 'completed' ? 'Completed' : 
+                       submission.status === 'evaluating' ? 'Evaluating...' : 'Error'}
                     </span>
-                    <ArrowRight className={`w-4 h-4 ${submission.status === 'error' ? 'text-gray-300 dark:text-gray-600' : 'text-gray-400 dark:text-gray-500'}`} />
                   </div>
                 </div>
               ))}
             </div>
           </div>
         )}
+
+        {/* Call to Action */}
+        <div className="text-center bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-8 text-white">
+          <h2 className="text-2xl font-bold mb-4">
+            {user ? 'Ready to Submit Your Next Project?' : 'Ready to Get Started?'}
+          </h2>
+          <p className="text-lg mb-6 opacity-90">
+            {user 
+              ? 'Upload your algorithms, pseudocode, or flowcharts and get instant AI-powered feedback.'
+              : 'Join thousands of students improving their programming skills with AI-powered evaluations.'
+            }
+          </p>
+          {user ? (
+            <button
+              onClick={() => setCurrentView('submit')}
+              className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-3 rounded-lg text-lg font-medium transition-all"
+            >
+              Submit New Assignment
+            </button>
+          ) : (
+            <a
+              href="/auth/sign-up"
+              className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-3 rounded-lg text-lg font-medium transition-all inline-block"
+            >
+              Create Free Account
+            </a>
+          )}
+        </div>
       </div>
     </div>
   )
