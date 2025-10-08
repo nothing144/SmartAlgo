@@ -18,6 +18,7 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [rubrics, setRubrics] = useState([])
   const [selectedRubric, setSelectedRubric] = useState('')
+  const [isPublic, setIsPublic] = useState(true) // Default to public
 
   useEffect(() => {
     // Load available rubrics
