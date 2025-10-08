@@ -33,7 +33,7 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
               className="flex items-center cursor-pointer" 
               onClick={() => setCurrentView('home')}
             >
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mr-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center mr-3">
                 <span className="text-sm font-bold text-white">SE</span>
               </div>
               <span className="text-xl font-bold text-gray-900 dark:text-white">
