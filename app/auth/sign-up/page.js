@@ -246,14 +246,14 @@ const SignUpPage = () => {
               </div>
             </div>
 
-            <div className="flex items-center">
+            <div className="flex items-start">
               <input
                 type="checkbox"
                 id="terms"
-                className="rounded border-gray-300 dark:border-gray-600 text-purple-600 focus:ring-purple-500"
+                className="rounded border-gray-300 dark:border-gray-600 text-purple-600 focus:ring-purple-500 mt-0.5 flex-shrink-0"
                 required
               />
-              <label htmlFor="terms" className="ml-2 text-sm text-gray-600 dark:text-gray-300">
+              <label htmlFor="terms" className="ml-2 text-sm text-gray-600 dark:text-gray-300 leading-5">
                 I agree to the{' '}
                 <Link href="/terms" className="text-purple-600 dark:text-purple-400 hover:underline">
                   Terms of Service
