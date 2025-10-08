@@ -395,7 +395,8 @@
   run_ui: false
 
 ## test_plan:
-  current_focus: []
+  current_focus:
+    - "Dual Submission Mode - Single and Combined"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
