@@ -20,8 +20,49 @@ const HomePage = () => {
       const response = await fetch('/api/submissions')
       if (response.ok) {
         const data = await response.json()
-        // Filter and prioritize submissions: completed first, then evaluating, error submissions last
-        const sortedData = data.sort((a, b) => {
+        
+        // Group combined submissions together
+        const combinedGroups = {}
+        const standaloneSubmissions = []
+        
+        data.forEach(submission => {
+          if (submission.combinedSubmissionId) {
+            // This is part of a combined submission
+            if (!combinedGroups[submission.combinedSubmissionId]) {
+              combinedGroups[submission.combinedSubmissionId] = {
+                submissionId: submission.combinedSubmissionId,
+                isCombined: true,
+                assignmentTitle: submission.assignmentTitle,
+                studentName: submission.studentName,
+                createdAt: submission.createdAt,
+                parts: [],
+                // Overall status: completed only if all parts are completed
+                status: 'completed'
+              }
+            }
+            combinedGroups[submission.combinedSubmissionId].parts.push(submission)
+            // Update overall status - if any part is not completed, update the status
+            if (submission.status === 'evaluating' && combinedGroups[submission.combinedSubmissionId].status !== 'error') {
+              combinedGroups[submission.combinedSubmissionId].status = 'evaluating'
+            } else if (submission.status === 'error') {
+              combinedGroups[submission.combinedSubmissionId].status = 'error'
+            } else if (submission.status === 'submitted' && combinedGroups[submission.combinedSubmissionId].status === 'completed') {
+              combinedGroups[submission.combinedSubmissionId].status = 'submitted'
+            }
+          } else {
+            // Standalone submission
+            standaloneSubmissions.push(submission)
+          }
+        })
+        
+        // Combine both arrays
+        const allSubmissions = [
+          ...Object.values(combinedGroups),
+          ...standaloneSubmissions
+        ]
+        
+        // Sort by status priority and date
+        const sortedData = allSubmissions.sort((a, b) => {
           const statusPriority = { completed: 0, evaluating: 1, submitted: 2, error: 3 }
           const aPriority = statusPriority[a.status] || 3
           const bPriority = statusPriority[b.status] || 3
@@ -29,7 +70,8 @@ const HomePage = () => {
           // If same status, sort by creation date (newest first)
           return new Date(b.createdAt) - new Date(a.createdAt)
         })
-        setRecentSubmissions(sortedData) // Show ALL submissions
+        
+        setRecentSubmissions(sortedData)
       }
     } catch (error) {
       console.error('Error fetching submissions:', error)
