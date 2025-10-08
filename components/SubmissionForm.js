@@ -99,7 +99,8 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
         studentName: formData.studentName,
         assignmentTitle: formData.assignmentTitle,
         submissionType: formData.submissionType,
-        rubricId: selectedRubric
+        rubricId: selectedRubric,
+        isPublic: isPublic
       }
 
       if (formData.submissionType === 'flowchart') {
