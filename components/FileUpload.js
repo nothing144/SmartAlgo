@@ -93,7 +93,7 @@ const FileUpload = ({ onFileSelect, currentFile = null, accept = "image/*", maxS
   return (
     <div
       {...getRootProps()}
-      className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors
+      className={`border-2 border-dashed rounded-lg p-6 sm:p-8 text-center cursor-pointer transition-colors touch-manipulation
         ${isDragActive 
           ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/30 dark:border-blue-500' 
           : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
