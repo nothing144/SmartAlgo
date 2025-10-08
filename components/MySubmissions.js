@@ -148,24 +148,25 @@ const MySubmissions = ({ setCurrentView, setCurrentSubmissionId }) => {
         {/* Filter Tabs */}
         <div className="mb-6">
           <div className="border-b border-gray-200 dark:border-gray-700">
-            <nav className="-mb-px flex space-x-8">
+            <nav className="-mb-px flex space-x-2 sm:space-x-8 overflow-x-auto">
               {[
-                { key: 'all', label: 'All Submissions', count: submissions.length },
-                { key: 'completed', label: 'Completed', count: submissions.filter(s => s.status === 'completed').length },
-                { key: 'evaluating', label: 'Evaluating', count: submissions.filter(s => s.status === 'evaluating').length },
-                { key: 'error', label: 'Errors', count: submissions.filter(s => s.status === 'error').length }
+                { key: 'all', label: 'All', longLabel: 'All Submissions', count: submissions.length },
+                { key: 'completed', label: 'Done', longLabel: 'Completed', count: submissions.filter(s => s.status === 'completed').length },
+                { key: 'evaluating', label: 'Pending', longLabel: 'Evaluating', count: submissions.filter(s => s.status === 'evaluating').length },
+                { key: 'error', label: 'Errors', longLabel: 'Errors', count: submissions.filter(s => s.status === 'error').length }
               ].map((tab) => (
                 <button
                   key={tab.key}
                   onClick={() => setFilter(tab.key)}
-                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors whitespace-nowrap ${
                     filter === tab.key
                       ? 'border-purple-500 text-purple-600 dark:text-purple-400'
                       : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-300'
                   }`}
                 >
-                  {tab.label}
-                  <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
+                  <span className="sm:hidden">{tab.label}</span>
+                  <span className="hidden sm:inline">{tab.longLabel}</span>
+                  <span className={`ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 rounded-full text-xs ${
                     filter === tab.key
                       ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400'
                       : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
