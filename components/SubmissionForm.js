@@ -370,13 +370,13 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
         </div>
 
         {/* Submit Buttons */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row gap-3 sm:justify-between sm:items-center">
           {/* Submit All Button */}
           <button
             type="button"
             onClick={handleSubmitAll}
             disabled={isSubmitting}
-            className={`px-6 py-3 rounded-lg font-medium flex items-center space-x-2 transition-colors ${
+            className={`w-full sm:w-auto px-4 sm:px-6 py-3 rounded-lg font-medium flex items-center justify-center space-x-2 transition-colors ${
               isSubmitting
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-purple-600 hover:bg-purple-700 text-white'
@@ -385,12 +385,14 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
             {isSubmitting ? (
               <>
                 <Clock className="w-4 h-4 animate-spin" />
-                <span>Submitting...</span>
+                <span className="hidden sm:inline">Submitting...</span>
+                <span className="sm:hidden">Submitting...</span>
               </>
             ) : (
               <>
                 <CheckCircle className="w-4 h-4" />
-                <span>Submit All Three</span>
+                <span className="hidden sm:inline">Submit All Three</span>
+                <span className="sm:hidden">Submit All</span>
               </>
             )}
           </button>
@@ -399,7 +401,7 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`px-8 py-3 rounded-lg font-medium flex items-center space-x-2 transition-colors ${
+            className={`w-full sm:w-auto px-4 sm:px-8 py-3 rounded-lg font-medium flex items-center justify-center space-x-2 transition-colors ${
               isSubmitting
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-700 text-white'
@@ -408,12 +410,14 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
             {isSubmitting ? (
               <>
                 <Clock className="w-4 h-4 animate-spin" />
-                <span>Submitting...</span>
+                <span className="hidden sm:inline">Submitting...</span>
+                <span className="sm:hidden">Submitting...</span>
               </>
             ) : (
               <>
                 <Send className="w-4 h-4" />
-                <span>Submit {formData.submissionType.charAt(0).toUpperCase() + formData.submissionType.slice(1)}</span>
+                <span className="hidden sm:inline">Submit {formData.submissionType.charAt(0).toUpperCase() + formData.submissionType.slice(1)}</span>
+                <span className="sm:hidden">Submit</span>
               </>
             )}
           </button>
