@@ -52,7 +52,7 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
               </a>
               <a 
                 href="/auth/sign-up"
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all"
               >
                 Sign Up
               </a>
