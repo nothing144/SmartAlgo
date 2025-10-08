@@ -4,9 +4,9 @@ import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Upload, X, FileImage, CheckCircle } from 'lucide-react'
 
-const FileUpload = ({ onFileSelect, accept = "image/*", maxSize = 5 * 1024 * 1024 }) => {
-  const [uploadedFile, setUploadedFile] = useState(null)
-  const [preview, setPreview] = useState(null)
+const FileUpload = ({ onFileSelect, currentFile = null, accept = "image/*", maxSize = 5 * 1024 * 1024 }) => {
+  const uploadedFile = currentFile
+  const preview = currentFile?.preview || null
 
   const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
     if (rejectedFiles.length > 0) {
