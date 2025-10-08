@@ -134,7 +134,7 @@ END BubbleSort`
           />
         </div>
         
-        <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+        <div className="flex flex-col sm:flex-row sm:justify-between text-xs text-gray-500 dark:text-gray-400 gap-4">
           <div>
             <p className="font-medium mb-1">Tips:</p>
             <ul className="ml-4 list-disc space-y-1">
@@ -143,10 +143,11 @@ END BubbleSort`
               <li>Include all necessary steps and conditions</li>
             </ul>
           </div>
-          <div className="text-right">
+          <div className="text-left sm:text-right">
             <p className="text-gray-400 dark:text-gray-500">{value?.length || 0} characters</p>
             <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-              Press Ctrl+Space for suggestions
+              <span className="hidden sm:inline">Press Ctrl+Space for suggestions</span>
+              <span className="sm:hidden">Long press for suggestions</span>
             </p>
           </div>
         </div>
