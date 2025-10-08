@@ -7,7 +7,7 @@ import base64
 from datetime import datetime
 
 # Test configuration
-BASE_URL = "https://mobile-friendly-15.preview.emergentagent.com/api"
+BASE_URL = "https://screen-adapter-2.preview.emergentagent.com/api"
 TEST_USER_ID = "test-user-123"
 TEST_USER_ID_2 = "test-user-456"
 
