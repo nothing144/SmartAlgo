@@ -630,7 +630,8 @@ async function handleRoute(request, { params }) {
         imageUrl: imageUrl,
         cloudinaryData: cloudinaryData,
         fileName: body.fileName,
-        rubricId: body.rubricId
+        rubricId: body.rubricId,
+        isPublic: body.isPublic
       })
 
       // Insert into Supabase
