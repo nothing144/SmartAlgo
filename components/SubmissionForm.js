@@ -43,12 +43,30 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }))
-    
-    // Reset content when switching submission types
-    if (field === 'submissionType') {
-      setTextContent('')
-      setUploadedFile(null)
-    }
+  }
+
+  // Get current content based on active tab
+  const getCurrentContent = () => {
+    if (formData.submissionType === 'algorithm') return algorithmContent
+    if (formData.submissionType === 'pseudocode') return pseudocodeContent
+    return ''
+  }
+
+  // Set current content based on active tab
+  const setCurrentContent = (value) => {
+    if (formData.submissionType === 'algorithm') setAlgorithmContent(value)
+    else if (formData.submissionType === 'pseudocode') setPseudocodeContent(value)
+  }
+
+  // Get current file based on active tab
+  const getCurrentFile = () => {
+    if (formData.submissionType === 'flowchart') return flowchartFile
+    return null
+  }
+
+  // Set current file
+  const setCurrentFile = (file) => {
+    if (formData.submissionType === 'flowchart') setFlowchartFile(file)
   }
 
   const handleSubmit = async (e) => {
