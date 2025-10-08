@@ -170,7 +170,7 @@ const HomePage = () => {
               </button>
               <button
                 onClick={() => setCurrentView('my-submissions')}
-                className="border-2 border-purple-600 text-purple-600 dark:text-purple-400 hover:bg-purple-600 hover:text-white px-8 py-3 rounded-lg text-lg font-medium transition-all flex items-center justify-center gap-2"
+                className="border-2 border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-lg text-lg font-medium transition-all flex items-center justify-center gap-2"
               >
                 <FileText className="w-5 h-5" />
                 View My Submissions
@@ -187,7 +187,7 @@ const HomePage = () => {
               </a>
               <a
                 href="/auth/sign-in"
-                className="border-2 border-purple-600 text-purple-600 dark:text-purple-400 hover:bg-purple-600 hover:text-white px-8 py-3 rounded-lg text-lg font-medium transition-all flex items-center justify-center gap-2"
+                className="border-2 border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-lg text-lg font-medium transition-all flex items-center justify-center gap-2"
               >
                 <LogIn className="w-5 h-5" />
                 Sign In
