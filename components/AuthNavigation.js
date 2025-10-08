@@ -242,11 +242,13 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
         <div className="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg relative z-50">
           <div className="px-4 py-3 space-y-2">
             <button
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
                 setCurrentView('home')
                 setShowMobileMenu(false)
               }}
-              className={`w-full flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+              className={`w-full flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all touch-manipulation ${
                 currentView === 'home'
                   ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
                   : 'text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800/50'
