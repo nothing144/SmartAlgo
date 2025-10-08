@@ -25,309 +25,321 @@ def create_test_image():
     img_data = buffer.getvalue()
     return base64.b64encode(img_data).decode('utf-8')
 
-class BackendTester:
-    def __init__(self):
-        self.test_results = []
-        self.total_tests = 0
-        self.passed_tests = 0
-        
-    def log_test(self, test_name, success, message="", response_time=None):
-        """Log test result"""
-        self.total_tests += 1
-        if success:
-            self.passed_tests += 1
-            status = "✅ PASS"
+def test_api_health():
+    """Test basic API connectivity"""
+    print("🔍 Testing API Health...")
+    try:
+        response = requests.get(f"{BASE_URL}/", timeout=TIMEOUT)
+        if response.status_code == 200:
+            print("✅ API Health: PASSED - API is responding")
+            return True
         else:
-            status = "❌ FAIL"
-            
-        time_info = f" ({response_time:.2f}s)" if response_time else ""
-        result = f"{status} {test_name}{time_info}"
-        if message:
-            result += f" - {message}"
-            
-        print(result)
-        self.test_results.append({
-            'test': test_name,
-            'success': success,
-            'message': message,
-            'response_time': response_time
-        })
-        
-    def test_api_health(self):
-        """Test basic API health endpoints"""
-        print("\n=== API Health Check ===")
-        
-        # Test root endpoint
-        try:
-            start_time = time.time()
-            response = requests.get(f"{API_BASE}/", timeout=10)
-            response_time = time.time() - start_time
-            
-            if response.status_code == 200:
-                data = response.json()
-                self.log_test("Root API Endpoint", True, 
-                            f"Status: {response.status_code}, Message: {data.get('message', 'No message')}", 
-                            response_time)
-            else:
-                self.log_test("Root API Endpoint", False, f"Status: {response.status_code}")
-        except Exception as e:
-            self.log_test("Root API Endpoint", False, f"Error: {str(e)}")
-            
-        # Test /root endpoint
-        try:
-            start_time = time.time()
-            response = requests.get(f"{API_BASE}/root", timeout=10)
-            response_time = time.time() - start_time
-            
-            if response.status_code == 200:
-                data = response.json()
-                self.log_test("Root Info Endpoint", True, 
-                            f"Status: {response.status_code}, Message: {data.get('message', 'No message')}", 
-                            response_time)
-            else:
-                self.log_test("Root Info Endpoint", False, f"Status: {response.status_code}")
-        except Exception as e:
-            self.log_test("Root Info Endpoint", False, f"Error: {str(e)}")
-            
-    def test_theme_endpoints(self):
-        """Test if any theme-related endpoints exist"""
-        print("\n=== Theme-Related Endpoints Check ===")
-        
-        theme_endpoints = [
-            "/theme",
-            "/themes", 
-            "/user/theme",
-            "/settings/theme",
-            "/preferences/theme"
-        ]
-        
-        for endpoint in theme_endpoints:
-            try:
-                start_time = time.time()
-                response = requests.get(f"{API_BASE}{endpoint}", timeout=5)
-                response_time = time.time() - start_time
+            print(f"❌ API Health: FAILED - Status {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"❌ API Health: FAILED - {str(e)}")
+        return False
+
+def get_default_rubric():
+    """Get the default rubric for testing"""
+    print("🔍 Getting default rubric...")
+    try:
+        response = requests.get(f"{BASE_URL}/rubrics", timeout=TIMEOUT)
+        if response.status_code == 200:
+            rubrics = response.json()
+            if rubrics:
+                # Find default rubric or use first one
+                default_rubric = None
+                for rubric in rubrics:
+                    if 'Default' in rubric.get('title', ''):
+                        default_rubric = rubric
+                        break
                 
-                if response.status_code == 404:
-                    self.log_test(f"Theme Endpoint {endpoint}", True, 
-                                "Correctly returns 404 (no theme backend needed)", response_time)
-                elif response.status_code == 200:
-                    self.log_test(f"Theme Endpoint {endpoint}", True, 
-                                f"Theme endpoint exists and responds: {response.status_code}", response_time)
-                else:
-                    self.log_test(f"Theme Endpoint {endpoint}", True, 
-                                f"Unexpected status but not broken: {response.status_code}", response_time)
-            except Exception as e:
-                self.log_test(f"Theme Endpoint {endpoint}", False, f"Error: {str(e)}")
+                if not default_rubric:
+                    default_rubric = rubrics[0]
                 
-    def test_database_connectivity(self):
-        """Test database connections"""
-        print("\n=== Database Connectivity ===")
-        
-        # Test Supabase connection
-        try:
-            start_time = time.time()
-            response = requests.get(f"{API_BASE}/test/supabase", timeout=15)
-            response_time = time.time() - start_time
-            
-            if response.status_code == 200:
-                data = response.json()
-                if data.get('status') == 'success':
-                    self.log_test("Supabase Connection", True, 
-                                f"Connected to: {data.get('supabaseUrl', 'Unknown URL')}", response_time)
-                else:
-                    self.log_test("Supabase Connection", False, 
-                                f"Connection failed: {data.get('message', 'Unknown error')}")
+                print(f"✅ Default Rubric: Found - {default_rubric['title']} (ID: {default_rubric['id']})")
+                return default_rubric['id']
             else:
-                self.log_test("Supabase Connection", False, f"Status: {response.status_code}")
-        except Exception as e:
-            self.log_test("Supabase Connection", False, f"Error: {str(e)}")
-            
-        # Test Gemini AI connection
-        try:
-            start_time = time.time()
-            response = requests.get(f"{API_BASE}/test/gemini", timeout=15)
-            response_time = time.time() - start_time
-            
-            if response.status_code == 200:
-                data = response.json()
-                if data.get('status') == 'success':
-                    self.log_test("Gemini AI Connection", True, 
-                                f"Response: {data.get('geminiResponse', 'No response')[:50]}...", response_time)
-                else:
-                    self.log_test("Gemini AI Connection", False, 
-                                f"Connection failed: {data.get('error', 'Unknown error')}")
-            else:
-                self.log_test("Gemini AI Connection", False, f"Status: {response.status_code}")
-        except Exception as e:
-            self.log_test("Gemini AI Connection", False, f"Error: {str(e)}")
-            
-        # Test Cloudinary connection
-        try:
-            start_time = time.time()
-            response = requests.get(f"{API_BASE}/test/cloudinary", timeout=15)
-            response_time = time.time() - start_time
-            
-            if response.status_code == 200:
-                data = response.json()
-                if data.get('status') == 'success':
-                    self.log_test("Cloudinary Connection", True, 
-                                f"Test image uploaded: {data.get('testImageUrl', 'No URL')}", response_time)
-                else:
-                    self.log_test("Cloudinary Connection", False, 
-                                f"Connection failed: {data.get('error', 'Unknown error')}")
-            else:
-                self.log_test("Cloudinary Connection", False, f"Status: {response.status_code}")
-        except Exception as e:
-            self.log_test("Cloudinary Connection", False, f"Error: {str(e)}")
-            
-    def test_rubrics_api(self):
-        """Test rubrics API functionality"""
-        print("\n=== Rubrics API ===")
-        
-        # Test GET rubrics
-        try:
-            start_time = time.time()
-            response = requests.get(f"{API_BASE}/rubrics", timeout=10)
-            response_time = time.time() - start_time
-            
-            if response.status_code == 200:
-                data = response.json()
-                rubric_count = len(data) if isinstance(data, list) else 0
-                self.log_test("GET Rubrics", True, 
-                            f"Retrieved {rubric_count} rubrics", response_time)
-                
-                # Store first rubric ID for later use
-                if rubric_count > 0:
-                    self.test_rubric_id = data[0].get('id')
-                    self.log_test("Rubric ID Available", True, 
-                                f"Using rubric ID: {self.test_rubric_id}")
-                else:
-                    self.test_rubric_id = None
-                    self.log_test("Rubric ID Available", False, "No rubrics found")
-            else:
-                self.log_test("GET Rubrics", False, f"Status: {response.status_code}")
-                self.test_rubric_id = None
-        except Exception as e:
-            self.log_test("GET Rubrics", False, f"Error: {str(e)}")
-            self.test_rubric_id = None
-            
-    def test_submissions_api(self):
-        """Test submissions API functionality"""
-        print("\n=== Submissions API ===")
-        
-        # Test GET submissions
-        try:
-            start_time = time.time()
-            response = requests.get(f"{API_BASE}/submissions", timeout=10)
-            response_time = time.time() - start_time
-            
-            if response.status_code == 200:
-                data = response.json()
-                submission_count = len(data) if isinstance(data, list) else 0
-                self.log_test("GET Submissions", True, 
-                            f"Retrieved {submission_count} submissions", response_time)
-            else:
-                self.log_test("GET Submissions", False, f"Status: {response.status_code}")
-        except Exception as e:
-            self.log_test("GET Submissions", False, f"Error: {str(e)}")
-            
-        # Test POST submission (algorithm type) - only if we have a rubric
-        if hasattr(self, 'test_rubric_id') and self.test_rubric_id:
-            try:
-                submission_data = {
-                    "studentName": "Theme Test Student",
-                    "assignmentTitle": "Theme Toggle Test - Algorithm",
-                    "submissionType": "algorithm",
-                    "textContent": "def fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)",
-                    "rubricId": self.test_rubric_id
-                }
-                
-                start_time = time.time()
-                response = requests.post(f"{API_BASE}/submissions", 
-                                       json=submission_data, 
-                                       timeout=30)  # Longer timeout for AI evaluation
-                response_time = time.time() - start_time
-                
-                if response.status_code == 200:
-                    data = response.json()
-                    submission_id = data.get('submissionId') or data.get('id')
-                    status = data.get('status', 'unknown')
-                    self.log_test("POST Algorithm Submission", True, 
-                                f"Created submission {submission_id}, Status: {status}", response_time)
-                    
-                    # Test GET specific submission
-                    if submission_id:
-                        try:
-                            start_time = time.time()
-                            get_response = requests.get(f"{API_BASE}/submissions/{submission_id}", timeout=10)
-                            get_response_time = time.time() - start_time
-                            
-                            if get_response.status_code == 200:
-                                get_data = get_response.json()
-                                has_evaluation = get_data.get('evaluation') is not None
-                                self.log_test("GET Specific Submission", True, 
-                                            f"Retrieved submission, Has evaluation: {has_evaluation}", get_response_time)
-                            else:
-                                self.log_test("GET Specific Submission", False, 
-                                            f"Status: {get_response.status_code}")
-                        except Exception as e:
-                            self.log_test("GET Specific Submission", False, f"Error: {str(e)}")
-                else:
-                    self.log_test("POST Algorithm Submission", False, 
-                                f"Status: {response.status_code}, Response: {response.text[:200]}")
-            except Exception as e:
-                self.log_test("POST Algorithm Submission", False, f"Error: {str(e)}")
+                print("❌ Default Rubric: No rubrics found")
+                return None
         else:
-            self.log_test("POST Algorithm Submission", False, "No rubric ID available for testing")
-            
-    def test_cors_headers(self):
-        """Test CORS headers are properly set"""
-        print("\n=== CORS Headers ===")
+            print(f"❌ Default Rubric: Failed to fetch - Status {response.status_code}")
+            return None
+    except Exception as e:
+        print(f"❌ Default Rubric: FAILED - {str(e)}")
+        return None
+
+def test_combined_submission_creation():
+    """Test creating a combined submission with all 3 types"""
+    print("\n🔍 Testing Combined Submission Creation...")
+    
+    rubric_id = get_default_rubric()
+    if not rubric_id:
+        print("❌ Combined Submission Creation: FAILED - No rubric available")
+        return None
+    
+    # Create test data
+    test_image_base64 = create_test_image()
+    
+    payload = {
+        "studentName": "Test Student",
+        "assignmentTitle": "Duplicate Remover Test",
+        "submissionType": "combined",
+        "rubricId": rubric_id,
+        "algorithmContent": """def remove_duplicates(arr):
+    seen = set()
+    result = []
+    for item in arr:
+        if item not in seen:
+            seen.add(item)
+            result.append(item)
+    return result
+
+# Test the function
+test_array = [1, 2, 2, 3, 4, 4, 5]
+print(remove_duplicates(test_array))  # Should output: [1, 2, 3, 4, 5]""",
+        "pseudocodeContent": """BEGIN RemoveDuplicates
+    INPUT: array of elements
+    OUTPUT: array without duplicates
+    
+    1. CREATE empty set called 'seen'
+    2. CREATE empty array called 'result'
+    3. FOR each item in input array:
+        a. IF item is NOT in 'seen':
+            i. ADD item to 'seen'
+            ii. APPEND item to 'result'
+    4. RETURN result
+END""",
+        "flowchartData": {
+            "imageData": f"data:image/png;base64,{test_image_base64}",
+            "fileName": "duplicate_remover_flowchart.png"
+        }
+    }
+    
+    try:
+        print("📤 Sending combined submission request...")
+        start_time = time.time()
+        response = requests.post(f"{BASE_URL}/submissions", json=payload, timeout=TIMEOUT)
+        end_time = time.time()
         
-        try:
-            response = requests.options(f"{API_BASE}/", timeout=5)
-            
-            cors_headers = {
-                'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
-                'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
-                'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
-            }
-            
-            has_cors = any(cors_headers.values())
-            self.log_test("CORS Headers", has_cors, 
-                        f"Headers present: {list(k for k, v in cors_headers.items() if v)}")
-        except Exception as e:
-            self.log_test("CORS Headers", False, f"Error: {str(e)}")
-            
-    def run_all_tests(self):
-        """Run all backend tests"""
-        print("🚀 Starting Backend API Testing Suite")
-        print(f"Testing API at: {API_BASE}")
-        print("=" * 60)
+        print(f"⏱️  Response time: {end_time - start_time:.2f}s")
         
-        # Run all test suites
-        self.test_api_health()
-        self.test_theme_endpoints()
-        self.test_database_connectivity()
-        self.test_rubrics_api()
-        self.test_submissions_api()
-        self.test_cors_headers()
-        
-        # Print summary
-        print("\n" + "=" * 60)
-        print("🏁 TEST SUMMARY")
-        print("=" * 60)
-        print(f"Total Tests: {self.total_tests}")
-        print(f"Passed: {self.passed_tests}")
-        print(f"Failed: {self.total_tests - self.passed_tests}")
-        print(f"Success Rate: {(self.passed_tests/self.total_tests*100):.1f}%")
-        
-        if self.passed_tests == self.total_tests:
-            print("\n🎉 ALL TESTS PASSED! Backend is working correctly after theme toggle addition.")
+        if response.status_code == 200:
+            data = response.json()
+            print("✅ Combined Submission Creation: PASSED")
+            print(f"   📋 Type: {data.get('type')}")
+            print(f"   🔗 Combined ID: {data.get('combinedSubmissionId')}")
+            print(f"   📊 Submissions count: {len(data.get('submissions', []))}")
+            
+            # Verify response structure
+            if data.get('type') == 'combined' and data.get('combinedSubmissionId') and len(data.get('submissions', [])) == 3:
+                print("✅ Response Structure: PASSED - Correct combined submission format")
+                
+                # Check each submission has the same combined_submission_id
+                combined_id = data.get('combinedSubmissionId')
+                all_have_combined_id = True
+                submission_types = []
+                
+                for submission in data.get('submissions', []):
+                    if submission.get('combinedSubmissionId') != combined_id:
+                        all_have_combined_id = False
+                    submission_types.append(submission.get('submissionType'))
+                
+                if all_have_combined_id:
+                    print("✅ Combined ID Linking: PASSED - All submissions have same combined_submission_id")
+                else:
+                    print("❌ Combined ID Linking: FAILED - Submissions don't have matching combined_submission_id")
+                
+                # Check all 3 types are present
+                expected_types = {'algorithm', 'pseudocode', 'flowchart'}
+                if set(submission_types) == expected_types:
+                    print("✅ Submission Types: PASSED - All 3 types created (algorithm, pseudocode, flowchart)")
+                else:
+                    print(f"❌ Submission Types: FAILED - Expected {expected_types}, got {set(submission_types)}")
+                
+                # Check evaluation status
+                completed_count = sum(1 for s in data.get('submissions', []) if s.get('status') == 'completed')
+                print(f"📊 Evaluation Status: {completed_count}/3 submissions completed")
+                
+                return data.get('combinedSubmissionId')
+            else:
+                print("❌ Response Structure: FAILED - Invalid combined submission format")
+                return None
         else:
-            print(f"\n⚠️  {self.total_tests - self.passed_tests} tests failed. Check the issues above.")
+            print(f"❌ Combined Submission Creation: FAILED - Status {response.status_code}")
+            print(f"   Response: {response.text}")
+            return None
             
-        return self.passed_tests == self.total_tests
+    except Exception as e:
+        print(f"❌ Combined Submission Creation: FAILED - {str(e)}")
+        return None
+
+def test_fetch_combined_submission(combined_id):
+    """Test fetching a combined submission by its combined ID"""
+    print(f"\n🔍 Testing Fetch Combined Submission by ID: {combined_id}")
+    
+    if not combined_id:
+        print("❌ Fetch Combined Submission: SKIPPED - No combined ID provided")
+        return False
+    
+    try:
+        response = requests.get(f"{BASE_URL}/submissions/{combined_id}", timeout=TIMEOUT)
+        
+        if response.status_code == 200:
+            data = response.json()
+            print("✅ Fetch Combined Submission: PASSED")
+            print(f"   📋 Type: {data.get('type')}")
+            print(f"   🔗 Combined ID: {data.get('combinedSubmissionId')}")
+            print(f"   📊 Submissions count: {len(data.get('submissions', []))}")
+            
+            # Verify response structure
+            if data.get('type') == 'combined' and len(data.get('submissions', [])) == 3:
+                print("✅ Combined Fetch Structure: PASSED - Correct format with all 3 submissions")
+                
+                # Check each submission has evaluation data
+                evaluations_present = 0
+                for submission in data.get('submissions', []):
+                    if submission.get('evaluation'):
+                        evaluations_present += 1
+                        print(f"   📝 {submission.get('submissionType')}: {submission.get('status')} - Evaluation present")
+                    else:
+                        print(f"   📝 {submission.get('submissionType')}: {submission.get('status')} - No evaluation")
+                
+                print(f"📊 Evaluations: {evaluations_present}/3 submissions have evaluation data")
+                return True
+            else:
+                print("❌ Combined Fetch Structure: FAILED - Invalid response format")
+                return False
+        else:
+            print(f"❌ Fetch Combined Submission: FAILED - Status {response.status_code}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Fetch Combined Submission: FAILED - {str(e)}")
+        return False
+
+def test_list_submissions():
+    """Test listing submissions to verify combined submissions can be identified"""
+    print("\n🔍 Testing List Submissions...")
+    
+    try:
+        response = requests.get(f"{BASE_URL}/submissions", timeout=TIMEOUT)
+        
+        if response.status_code == 200:
+            submissions = response.json()
+            print(f"✅ List Submissions: PASSED - Retrieved {len(submissions)} submissions")
+            
+            # Look for combined submissions
+            combined_submissions = []
+            single_submissions = []
+            
+            for submission in submissions:
+                if submission.get('combinedSubmissionId'):
+                    combined_submissions.append(submission)
+                else:
+                    single_submissions.append(submission)
+            
+            print(f"   🔗 Combined submissions: {len(combined_submissions)}")
+            print(f"   📄 Single submissions: {len(single_submissions)}")
+            
+            # Group combined submissions by combined_submission_id
+            combined_groups = {}
+            for submission in combined_submissions:
+                combined_id = submission.get('combinedSubmissionId')
+                if combined_id not in combined_groups:
+                    combined_groups[combined_id] = []
+                combined_groups[combined_id].append(submission)
+            
+            print(f"   📊 Combined groups: {len(combined_groups)}")
+            
+            # Verify each group has 3 submissions
+            for combined_id, group in combined_groups.items():
+                if len(group) == 3:
+                    types = [s.get('submissionType') for s in group]
+                    print(f"   ✅ Group {combined_id[:8]}...: 3 submissions ({', '.join(types)})")
+                else:
+                    print(f"   ❌ Group {combined_id[:8]}...: {len(group)} submissions (expected 3)")
+            
+            return True
+        else:
+            print(f"❌ List Submissions: FAILED - Status {response.status_code}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ List Submissions: FAILED - {str(e)}")
+        return False
+
+def test_single_submission_backwards_compatibility():
+    """Test that single submissions still work as before"""
+    print("\n🔍 Testing Single Submission Backwards Compatibility...")
+    
+    rubric_id = get_default_rubric()
+    if not rubric_id:
+        print("❌ Single Submission: FAILED - No rubric available")
+        return False
+    
+    # Test algorithm submission
+    payload = {
+        "studentName": "Test Student Single",
+        "assignmentTitle": "Single Algorithm Test",
+        "submissionType": "algorithm",
+        "rubricId": rubric_id,
+        "textContent": """def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+print(fibonacci(10))"""
+    }
+    
+    try:
+        print("📤 Sending single algorithm submission...")
+        response = requests.post(f"{BASE_URL}/submissions", json=payload, timeout=TIMEOUT)
+        
+        if response.status_code == 200:
+            data = response.json()
+            print("✅ Single Submission Creation: PASSED")
+            print(f"   📋 Type: {data.get('submissionType')}")
+            print(f"   🆔 ID: {data.get('submissionId')}")
+            print(f"   📊 Status: {data.get('status')}")
+            
+            # Verify it doesn't have combined_submission_id
+            if not data.get('combinedSubmissionId'):
+                print("✅ Single Submission Format: PASSED - No combined_submission_id field")
+            else:
+                print("❌ Single Submission Format: FAILED - Has unexpected combined_submission_id")
+                return False
+            
+            # Test fetching single submission
+            submission_id = data.get('submissionId')
+            if submission_id:
+                print(f"🔍 Testing fetch single submission: {submission_id}")
+                fetch_response = requests.get(f"{BASE_URL}/submissions/{submission_id}", timeout=TIMEOUT)
+                
+                if fetch_response.status_code == 200:
+                    fetch_data = fetch_response.json()
+                    # Should return single submission format, not combined
+                    if fetch_data.get('type') != 'combined':
+                        print("✅ Single Submission Fetch: PASSED - Returns single submission format")
+                        return True
+                    else:
+                        print("❌ Single Submission Fetch: FAILED - Returns combined format unexpectedly")
+                        return False
+                else:
+                    print(f"❌ Single Submission Fetch: FAILED - Status {fetch_response.status_code}")
+                    return False
+            else:
+                print("❌ Single Submission: FAILED - No submissionId in response")
+                return False
+        else:
+            print(f"❌ Single Submission Creation: FAILED - Status {response.status_code}")
+            print(f"   Response: {response.text}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Single Submission: FAILED - {str(e)}")
+        return False
 
 def log_test(test_name, status, details=""):
     """Log test results with timestamp"""
