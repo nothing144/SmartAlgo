@@ -301,6 +301,21 @@
         agent: "main"
         comment: "Created FileUpload component with drag-drop, preview, and CodeEditor component"
 
+  - task: "Monaco Code Editor Integration"
+    implemented: true
+    working: true
+    file: "/app/components/CodeEditor.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "User requested Monaco Code Editor for algorithm writing with full features, black theme, and multi-language support"
+      - working: true
+        agent: "main"
+        comment: "IMPLEMENTED: Successfully integrated Monaco Editor (@monaco-editor/react v4.6.0) for algorithm code only. Features: ✅ Multi-language support (JavaScript, Python, Java, C++, C, C#, TypeScript, Go, Rust, PHP, Ruby, Swift, Kotlin, SQL, R, Perl, Scala, Dart, Lua, Shell). ✅ Language selector dropdown for user selection. ✅ Full Monaco features enabled (minimap, IntelliSense, code folding, auto-completion, syntax highlighting, line numbers, bracket matching, auto-closing quotes/brackets, format on paste/type). ✅ Black theme (vs-dark) as requested. ✅ Pseudocode still uses simple textarea. ✅ Dynamic import to avoid SSR issues. ✅ Character count and tips displayed. Tested with Python syntax highlighting - working perfectly."
+
   - task: "Submission Form Component"
     implemented: true
     working: true
