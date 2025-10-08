@@ -319,10 +319,10 @@
   - task: "Dual Submission Mode - Single and Combined"
     implemented: true
     working: true
-    file: "/app/components/SubmissionForm.js, /app/app/api/[[...path]]/route.js"
+    file: "/app/components/SubmissionForm.js, /app/app/api/[[...path]]/route.js, /app/app/page.js, /app/components/SubmissionResults.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
@@ -330,6 +330,9 @@
       - working: true
         agent: "main"
         comment: "IMPLEMENTED: Dual submission mode successfully added. ✅ FRONTEND: Updated SubmissionForm to track all three inputs simultaneously (algorithmContent, pseudocodeContent, flowchartFile). Dynamic button text changes based on active tab: 'Submit Algorithm', 'Submit Pseudocode', 'Submit Flowchart'. Added purple 'Submit All Three' button on the left requiring all three fields filled. ✅ BACKEND: Added 'combined' submission type support in API route. Creates 3 separate submissions with separate evaluations. Each gets evaluated by Gemini AI with rubric-based scoring. Flowchart image uploaded to Cloudinary. Returns array of all 3 submissions. ✅ VALIDATION: Single submission validates only current tab content. Combined submission validates all three fields are filled. ✅ UI: Maintains tab switching functionality while preserving content across tabs. Both buttons functional with proper validation."
+      - working: true
+        agent: "main"
+        comment: "MAJOR ENHANCEMENT: Fixed combined submission display issue. User reported that 'Submit All Three' was creating 3 separate entries in submissions list instead of 1 combined entry. ✅ BACKEND CHANGES: Added 'combined_submission_id' field to link all 3 parts together. Modified combined submission handler to generate unique combined ID and assign to all 3 submissions. Removed title suffixes (- Algorithm, - Pseudocode, - Flowchart) to keep original title. Added API endpoint to fetch combined submissions by combined_submission_id. ✅ FRONTEND CHANGES (page.js): Updated fetchRecentSubmissions to group submissions by combined_submission_id. Combined submissions now show as ONE entry with label 'Combined Submission (Algorithm + Pseudocode + Flowchart)'. Overall status calculated based on all 3 parts (completed only if all completed). ✅ RESULTS VIEW (SubmissionResults.js): Created new CombinedSubmissionView component to display all 3 evaluations in one page. Shows overall combined score at top. Displays 3 cards side-by-side (Algorithm, Pseudocode, Flowchart) with individual scores, content, and AI analysis. Each card shows status, score breakdown, and feedback. Now when user clicks combined submission, they see all 3 results together on one page instead of separately."
 
   - task: "Submission Form Component"
     implemented: true
