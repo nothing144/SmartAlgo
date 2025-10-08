@@ -414,7 +414,7 @@
 
 ## test_plan:
   current_focus:
-    - "Submission Visibility Fix - User Association"
+    - "Mobile Responsiveness Improvements - Complete"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
