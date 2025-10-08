@@ -11,7 +11,7 @@ import base64
 from datetime import datetime
 
 # Test configuration
-BASE_URL = "https://menu-touch-fix.preview.emergentagent.com/api"
+BASE_URL = "https://code-backdrop.preview.emergentagent.com/api"
 TEST_USER_ID = "mobile_test_user_2024"
 TEST_USER_ID_2 = "mobile_test_user_2"
 
