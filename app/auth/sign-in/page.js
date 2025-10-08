@@ -79,7 +79,7 @@ const SignInPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative">
-      <FloralBackground />
+      <CodeBackground />
       
       {/* Theme Toggle */}
       <div className="absolute top-4 right-4 z-50">
