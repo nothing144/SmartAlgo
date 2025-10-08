@@ -163,17 +163,7 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
                     </p>
                   </div>
                   
-                  <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <UserCircle className="w-4 h-4 mr-3" />
-                    Profile Settings
-                  </button>
-                  
-                  <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <Settings className="w-4 h-4 mr-3" />
-                    Preferences
-                  </button>
-                  
-                  <div className="border-t border-gray-200 dark:border-gray-700 mt-2 pt-2">
+                  <div className="border-t border-gray-200 dark:border-gray-700">
                     <button
                       onClick={handleSignOut}
                       className="flex items-center w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
