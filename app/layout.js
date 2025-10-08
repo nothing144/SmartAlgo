@@ -1,5 +1,6 @@
 import './globals.css'
 import { ThemeProvider } from '../components/ThemeProvider'
+import { CursorGlow } from '../components/CursorGlow'
 
 export const metadata = {
   title: 'Smart Evaluator - AI-Powered Rubrics-Based Assessment',
@@ -11,6 +12,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <ThemeProvider>
+          <CursorGlow />
           {children}
         </ThemeProvider>
       </body>
