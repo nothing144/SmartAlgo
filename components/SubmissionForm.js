@@ -182,7 +182,7 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
       })
 
       if (response.ok) {
-        const submission = await response.json()
+        const result = await response.json()
         alert('All three submissions created successfully! AI evaluation is in progress.')
         
         // Clear all fields
@@ -195,8 +195,9 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
         setPseudocodeContent('')
         setFlowchartFile(null)
         
-        if (onSubmissionComplete) {
-          onSubmissionComplete(submission)
+        // Pass the first submission (algorithm) to show results
+        if (onSubmissionComplete && result.submissions && result.submissions.length > 0) {
+          onSubmissionComplete(result.submissions[0])
         }
       } else {
         const error = await response.json()
