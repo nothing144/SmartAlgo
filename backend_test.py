@@ -12,7 +12,7 @@ from datetime import datetime
 
 # Get base URL from environment
 import os
-BASE_URL = "https://form-submit-patch.preview.emergentagent.com/api"
+BASE_URL = "https://repo-analyzer-92.preview.emergentagent.com/api"
 
 def test_combined_submission_functionality():
     """Test the combined submission functionality specifically"""
