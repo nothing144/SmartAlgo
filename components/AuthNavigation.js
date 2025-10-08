@@ -131,12 +131,12 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
             </button>
           </div>
 
-          {/* Right Side - Theme Toggle + User Menu */}
+          {/* Right Side - Theme Toggle + User Menu + Mobile Menu Button */}
           <div className="flex items-center space-x-4">
             <ThemeToggle />
             
-            {/* User Menu */}
-            <div className="relative">
+            {/* Desktop User Menu */}
+            <div className="relative hidden md:block">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
                 className="flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 transition-all"
@@ -144,13 +144,13 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
                 <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
                   <User className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-sm font-medium hidden sm:block">
+                <span className="text-sm font-medium">
                   {user.user_metadata?.name || user.email}
                 </span>
                 <ChevronDown className="w-4 h-4" />
               </button>
 
-              {/* Dropdown Menu */}
+              {/* Desktop Dropdown Menu */}
               {showUserMenu && (
                 <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
                   <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
@@ -174,13 +174,11 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
                 </div>
               )}
             </div>
-          </div>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
+            {/* Mobile Menu Button */}
             <button 
               onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 p-2"
+              className="md:hidden text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 p-2"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {showMobileMenu ? (
