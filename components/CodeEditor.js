@@ -100,7 +100,7 @@ END BubbleSort`
   if (submissionType === 'algorithm') {
     return (
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center space-x-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             <Code className="w-4 h-4" />
             <span>Algorithm Code</span>
@@ -108,11 +108,11 @@ END BubbleSort`
           
           {/* Language Selector */}
           <div className="flex items-center space-x-2">
-            <label className="text-xs text-gray-600 dark:text-gray-400">Language:</label>
+            <label className="text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap">Language:</label>
             <select
               value={selectedLanguage}
               onChange={(e) => setSelectedLanguage(e.target.value)}
-              className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+              className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 min-w-0 flex-1"
             >
               {programmingLanguages.map((lang) => (
                 <option key={lang.value} value={lang.value}>
