@@ -106,11 +106,11 @@ const FileUpload = ({ onFileSelect, currentFile = null, accept = "image/*", maxS
         </div>
         
         <div>
-          <p className="text-lg font-medium text-gray-900 dark:text-gray-100">
+          <p className="text-base sm:text-lg font-medium text-gray-900 dark:text-gray-100">
             {isDragActive ? 'Drop your file here' : 'Upload your flowchart'}
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Drag and drop or click to browse
+            <span className="hidden sm:inline">Drag and drop or </span>Tap to browse
           </p>
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
             Supports: JPG, PNG, PDF (max {Math.round(maxSize / (1024 * 1024))}MB)
