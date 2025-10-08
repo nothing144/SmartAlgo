@@ -318,11 +318,11 @@
 
   - task: "Dual Submission Mode - Single and Combined"
     implemented: true
-    working: true
+    working: false
     file: "/app/components/SubmissionForm.js, /app/app/api/[[...path]]/route.js, /app/app/page.js, /app/components/SubmissionResults.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
@@ -333,6 +333,9 @@
       - working: true
         agent: "main"
         comment: "MAJOR ENHANCEMENT: Fixed combined submission display issue. User reported that 'Submit All Three' was creating 3 separate entries in submissions list instead of 1 combined entry. ✅ BACKEND CHANGES: Added 'combined_submission_id' field to link all 3 parts together. Modified combined submission handler to generate unique combined ID and assign to all 3 submissions. Removed title suffixes (- Algorithm, - Pseudocode, - Flowchart) to keep original title. Added API endpoint to fetch combined submissions by combined_submission_id. ✅ FRONTEND CHANGES (page.js): Updated fetchRecentSubmissions to group submissions by combined_submission_id. Combined submissions now show as ONE entry with label 'Combined Submission (Algorithm + Pseudocode + Flowchart)'. Overall status calculated based on all 3 parts (completed only if all completed). ✅ RESULTS VIEW (SubmissionResults.js): Created new CombinedSubmissionView component to display all 3 evaluations in one page. Shows overall combined score at top. Displays 3 cards side-by-side (Algorithm, Pseudocode, Flowchart) with individual scores, content, and AI analysis. Each card shows status, score breakdown, and feedback. Now when user clicks combined submission, they see all 3 results together on one page instead of separately."
+      - working: false
+        agent: "testing"
+        comment: "CRITICAL DATABASE SCHEMA ISSUE IDENTIFIED: Combined submission feature testing reveals that the 'combined_submission_id' column does NOT exist in the Supabase submissions table schema. ❌ ALL SUBMISSION CREATION FAILING: Both combined and single submissions fail with error 'Could not find the combined_submission_id column of submissions in the schema cache'. ❌ ROOT CAUSE: Backend code (line 121 in route.js) includes combined_submission_id field in createSubmission() function, but this column was never added to the actual Supabase database table. ❌ IMPACT: Complete submission functionality is broken - no new submissions can be created. ✅ CONNECTIVITY VERIFIED: Supabase connection working, can read existing data (17 submissions, 17 rubrics), but INSERT operations fail due to missing column. ✅ CODE IMPLEMENTATION: Backend logic for combined submissions is correctly implemented in route.js. REQUIRED FIX: Add 'combined_submission_id' column to Supabase submissions table schema (nullable UUID field). This is a database migration issue, not a code issue."
 
   - task: "Submission Form Component"
     implemented: true
