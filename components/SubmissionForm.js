@@ -325,6 +325,46 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
           )}
         </div>
 
+        {/* Privacy Settings */}
+        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">
+                Submission Visibility
+              </h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {isPublic 
+                  ? 'Your submission will be visible in the public "All Submissions" section for other students to learn from.'
+                  : 'Your submission will be private and only visible to you in "My Submissions".'
+                }
+              </p>
+            </div>
+            <div className="ml-4">
+              <label className="flex items-center cursor-pointer">
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    checked={isPublic}
+                    onChange={(e) => setIsPublic(e.target.checked)}
+                    className="sr-only"
+                  />
+                  <div className={`block w-14 h-8 rounded-full transition-colors ${
+                    isPublic ? 'bg-green-400' : 'bg-gray-300 dark:bg-gray-600'
+                  }`}></div>
+                  <div className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform ${
+                    isPublic ? 'transform translate-x-6' : ''
+                  }`}></div>
+                </div>
+                <span className={`ml-3 text-sm font-medium ${
+                  isPublic ? 'text-green-700 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'
+                }`}>
+                  {isPublic ? 'Public' : 'Private'}
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
         {/* Submit Buttons */}
         <div className="flex justify-between items-center">
           {/* Submit All Button */}
