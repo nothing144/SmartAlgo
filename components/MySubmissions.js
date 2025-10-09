@@ -122,7 +122,7 @@ const MySubmissions = ({ setCurrentView, setCurrentSubmissionId }) => {
             </p>
             <a 
               href="/auth/sign-in"
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-3 rounded-lg font-medium transition-all"
+              className="bg-gradient-to-r from-[#4a1d96] to-[#2d1055] hover:from-[#5a2da6] hover:to-[#3d1865] text-white px-6 py-3 rounded-lg font-medium transition-all"
             >
               Sign In
             </a>
