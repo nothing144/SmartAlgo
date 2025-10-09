@@ -117,7 +117,7 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
             className="flex items-center cursor-pointer" 
             onClick={() => setCurrentView('home')}
           >
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mr-3">
+            <div className="w-8 h-8 bg-gradient-to-r from-[#4a1d96] to-[#2d1055] rounded-lg flex items-center justify-center mr-3">
               <span className="text-sm font-bold text-white">SE</span>
             </div>
             <span className="text-xl font-bold text-gray-900 dark:text-white">
@@ -131,8 +131,8 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
               onClick={() => setCurrentView('home')}
               className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 currentView === 'home'
-                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
-                  : 'text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800/50'
+                  ? 'bg-[#4a1d96]/10 dark:bg-[#4a1d96]/30 text-[#4a1d96] dark:text-[#a78bfa]'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-[#4a1d96] dark:hover:text-[#a78bfa] hover:bg-gray-100 dark:hover:bg-gray-800/50'
               }`}
             >
               <BookOpen className="w-4 h-4 mr-2" />
@@ -143,8 +143,8 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
               onClick={() => setCurrentView('submit')}
               className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 currentView === 'submit'
-                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
-                  : 'text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800/50'
+                  ? 'bg-[#4a1d96]/10 dark:bg-[#4a1d96]/30 text-[#4a1d96] dark:text-[#a78bfa]'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-[#4a1d96] dark:hover:text-[#a78bfa] hover:bg-gray-100 dark:hover:bg-gray-800/50'
               }`}
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -155,8 +155,8 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
               onClick={() => setCurrentView('my-submissions')}
               className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 currentView === 'my-submissions'
-                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
-                  : 'text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800/50'
+                  ? 'bg-[#4a1d96]/10 dark:bg-[#4a1d96]/30 text-[#4a1d96] dark:text-[#a78bfa]'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-[#4a1d96] dark:hover:text-[#a78bfa] hover:bg-gray-100 dark:hover:bg-gray-800/50'
               }`}
             >
               <FileText className="w-4 h-4 mr-2" />
@@ -167,8 +167,8 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
               onClick={() => setCurrentView('all-submissions')}
               className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 currentView === 'all-submissions'
-                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
-                  : 'text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800/50'
+                  ? 'bg-[#4a1d96]/10 dark:bg-[#4a1d96]/30 text-[#4a1d96] dark:text-[#a78bfa]'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-[#4a1d96] dark:hover:text-[#a78bfa] hover:bg-gray-100 dark:hover:bg-gray-800/50'
               }`}
             >
               <Users className="w-4 h-4 mr-2" />
@@ -184,9 +184,9 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
             <div className="relative hidden md:block">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 transition-all"
+                className="flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-[#4a1d96] dark:hover:text-[#a78bfa] hover:bg-gray-100 dark:hover:bg-gray-800/50 transition-all"
               >
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-r from-[#4a1d96] to-[#2d1055] rounded-full flex items-center justify-center">
                   <User className="w-4 h-4 text-white" />
                 </div>
                 <span className="text-sm font-medium">
