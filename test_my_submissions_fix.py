@@ -6,7 +6,7 @@ import time
 from datetime import datetime
 
 # Test configuration
-BASE_URL = "https://code-backdrop.preview.emergentagent.com/api"
+BASE_URL = "https://repo-detective-6.preview.emergentagent.com/api"
 TEST_USER_ID = "test-user-visibility-fix"
 
 def log_test(test_name, status, details=""):
