@@ -223,7 +223,7 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
             {/* Mobile Menu Button */}
             <button 
               onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="md:hidden text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 p-2"
+              className="md:hidden text-gray-600 dark:text-gray-300 hover:text-[#4a1d96] dark:hover:text-[#a78bfa] p-2"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {showMobileMenu ? (
