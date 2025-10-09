@@ -160,7 +160,7 @@ const MySubmissions = ({ setCurrentView, setCurrentSubmissionId }) => {
                   onClick={() => setFilter(tab.key)}
                   className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors whitespace-nowrap ${
                     filter === tab.key
-                      ? 'border-purple-500 text-purple-600 dark:text-purple-400'
+                      ? 'border-[#4a1d96] text-[#4a1d96] dark:text-[#a78bfa]'
                       : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-300'
                   }`}
                 >
@@ -168,7 +168,7 @@ const MySubmissions = ({ setCurrentView, setCurrentSubmissionId }) => {
                   <span className="hidden sm:inline">{tab.longLabel}</span>
                   <span className={`ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 rounded-full text-xs ${
                     filter === tab.key
-                      ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400'
+                      ? 'bg-[#4a1d96]/10 text-[#4a1d96] dark:bg-[#4a1d96]/30 dark:text-[#a78bfa]'
                       : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
                   }`}>
                     {tab.count}
