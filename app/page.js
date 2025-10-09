@@ -163,14 +163,14 @@ const HomePage = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => setCurrentView('submit')}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-all flex items-center justify-center gap-2"
+                className="bg-gradient-to-r from-[#090f4f] to-[#02050e] hover:from-[#0a1058] hover:to-[#030714] text-white px-8 py-3 rounded-lg text-lg font-medium transition-all flex items-center justify-center gap-2"
               >
                 <Plus className="w-5 h-5" />
                 Create New Submission
               </button>
               <button
                 onClick={() => setCurrentView('my-submissions')}
-                className="border-2 border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-lg text-lg font-medium transition-all flex items-center justify-center gap-2"
+                className="border-2 border-[#090f4f] text-[#090f4f] dark:text-[#5a6fd8] hover:bg-[#090f4f] hover:text-white px-8 py-3 rounded-lg text-lg font-medium transition-all flex items-center justify-center gap-2"
               >
                 <FileText className="w-5 h-5" />
                 View My Submissions
@@ -180,14 +180,14 @@ const HomePage = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="/auth/sign-up"
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-all flex items-center justify-center gap-2"
+                className="bg-gradient-to-r from-[#090f4f] to-[#02050e] hover:from-[#0a1058] hover:to-[#030714] text-white px-8 py-3 rounded-lg text-lg font-medium transition-all flex items-center justify-center gap-2"
               >
                 Get Started Free
                 <ArrowRight className="w-5 h-5" />
               </a>
               <a
                 href="/auth/sign-in"
-                className="border-2 border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-lg text-lg font-medium transition-all flex items-center justify-center gap-2"
+                className="border-2 border-[#090f4f] text-[#090f4f] dark:text-[#5a6fd8] hover:bg-[#090f4f] hover:text-white px-8 py-3 rounded-lg text-lg font-medium transition-all flex items-center justify-center gap-2"
               >
                 <LogIn className="w-5 h-5" />
                 Sign In
