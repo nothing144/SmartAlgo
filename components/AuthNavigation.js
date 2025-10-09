@@ -82,13 +82,13 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
               <div className="px-4 py-3 space-y-3">
                 <a 
                   href="/auth/sign-in"
-                  className="block w-full text-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 rounded-lg text-sm font-medium transition-all"
+                  className="block w-full text-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:text-[#4a1d96] dark:hover:text-[#a78bfa] hover:bg-gray-100 dark:hover:bg-gray-800/50 rounded-lg text-sm font-medium transition-all"
                 >
                   Sign In
                 </a>
                 <a 
                   href="/auth/sign-up"
-                  className="block w-full text-center bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-3 rounded-lg text-sm font-medium transition-all"
+                  className="block w-full text-center bg-gradient-to-r from-[#4a1d96] to-[#2d1055] hover:from-[#5a2da6] hover:to-[#3d1865] text-white px-4 py-3 rounded-lg text-sm font-medium transition-all"
                 >
                   Sign Up
                 </a>
