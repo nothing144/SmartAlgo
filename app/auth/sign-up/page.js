@@ -143,7 +143,7 @@ const SignUpPage = () => {
       <div className="w-full max-w-md">
         <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 dark:border-gray-700/30 p-6 sm:p-8">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-gradient-to-r from-[#090f4f] to-[#02050e] rounded-2xl flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl font-bold text-white">SE</span>
             </div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
