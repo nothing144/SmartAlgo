@@ -150,7 +150,7 @@ const HomePage = () => {
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             Welcome to{' '}
-            <span className="bg-gradient-to-r from-[#090f4f] to-[#02050e] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#6366f1] to-[#a78bfa] bg-clip-text text-transparent">
               Smart Evaluator
             </span>
           </h1>
