@@ -379,7 +379,7 @@ const SubmissionForm = ({ onSubmissionComplete }) => {
             className={`w-full sm:w-auto px-4 sm:px-6 py-3 rounded-lg font-medium flex items-center justify-center space-x-2 transition-colors ${
               isSubmitting
                 ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-purple-600 hover:bg-purple-700 text-white'
+                : 'bg-[#4a1d96] hover:bg-[#5a2da6] text-white'
             }`}
           >
             {isSubmitting ? (
