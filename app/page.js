@@ -199,8 +199,8 @@ const HomePage = () => {
         {/* Features Grid */}
         <div className="grid md:grid-cols-3 gap-8 mb-12">
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
-              <Bot className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <div className="w-12 h-12 bg-[#090f4f]/10 dark:bg-[#090f4f]/30 rounded-lg flex items-center justify-center mb-4">
+              <Bot className="w-6 h-6 text-[#090f4f] dark:text-[#5a6fd8]" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">AI-Powered Evaluation</h3>
             <p className="text-gray-600 dark:text-gray-300">
@@ -209,8 +209,8 @@ const HomePage = () => {
           </div>
           
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="w-12 h-12 bg-pink-100 dark:bg-pink-900/30 rounded-lg flex items-center justify-center mb-4">
-              <FileText className="w-6 h-6 text-pink-600 dark:text-pink-400" />
+            <div className="w-12 h-12 bg-[#4a1d96]/10 dark:bg-[#4a1d96]/30 rounded-lg flex items-center justify-center mb-4">
+              <FileText className="w-6 h-6 text-[#4a1d96] dark:text-[#a78bfa]" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Multiple Formats</h3>
             <p className="text-gray-600 dark:text-gray-300">
@@ -219,8 +219,8 @@ const HomePage = () => {
           </div>
           
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
-              <Star className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <div className="w-12 h-12 bg-[#090f4f]/10 dark:bg-[#090f4f]/30 rounded-lg flex items-center justify-center mb-4">
+              <Star className="w-6 h-6 text-[#090f4f] dark:text-[#5a6fd8]" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Rubric-Based Scoring</h3>
             <p className="text-gray-600 dark:text-gray-300">
