@@ -182,7 +182,7 @@ const MySubmissions = ({ setCurrentView, setCurrentSubmissionId }) => {
         {/* Submissions List */}
         {loading ? (
           <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4a1d96]"></div>
           </div>
         ) : filteredSubmissions.length === 0 ? (
           <div className="text-center py-12">
@@ -199,7 +199,7 @@ const MySubmissions = ({ setCurrentView, setCurrentSubmissionId }) => {
             {filter === 'all' && (
               <button
                 onClick={() => setCurrentView('submit')}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-3 rounded-lg font-medium transition-all"
+                className="bg-gradient-to-r from-[#4a1d96] to-[#2d1055] hover:from-[#5a2da6] hover:to-[#3d1865] text-white px-6 py-3 rounded-lg font-medium transition-all"
               >
                 Create New Submission
               </button>
