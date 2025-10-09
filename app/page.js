@@ -288,7 +288,7 @@ const HomePage = () => {
         )}
 
         {/* Call to Action */}
-        <div className="text-center bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-8 text-white">
+        <div className="text-center bg-gradient-to-r from-[#090f4f] to-[#02050e] rounded-xl p-8 text-white">
           <h2 className="text-2xl font-bold mb-4">
             {user ? 'Ready to Submit Your Next Project?' : 'Ready to Get Started?'}
           </h2>
@@ -301,14 +301,14 @@ const HomePage = () => {
           {user ? (
             <button
               onClick={() => setCurrentView('submit')}
-              className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg text-lg font-medium transition-all"
+              className="bg-white text-[#090f4f] hover:bg-gray-100 px-8 py-3 rounded-lg text-lg font-medium transition-all"
             >
               Submit New Assignment
             </button>
           ) : (
             <a
               href="/auth/sign-up"
-              className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg text-lg font-medium transition-all inline-block"
+              className="bg-white text-[#090f4f] hover:bg-gray-100 px-8 py-3 rounded-lg text-lg font-medium transition-all inline-block"
             >
               Create Free Account
             </a>
