@@ -33,7 +33,7 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
               className="flex items-center cursor-pointer" 
               onClick={() => setCurrentView('home')}
             >
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center mr-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-[#090f4f] to-[#02050e] rounded-lg flex items-center justify-center mr-3">
                 <span className="text-sm font-bold text-white">SE</span>
               </div>
               <span className="text-xl font-bold text-gray-900 dark:text-white">
@@ -46,13 +46,13 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
               <ThemeToggle />
               <a 
                 href="/auth/sign-in"
-                className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                className="text-gray-600 dark:text-gray-300 hover:text-[#090f4f] dark:hover:text-[#5a6fd8] px-3 py-2 rounded-md text-sm font-medium transition-colors"
               >
                 Sign In
               </a>
               <a 
                 href="/auth/sign-up"
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                className="bg-gradient-to-r from-[#090f4f] to-[#02050e] hover:from-[#0a1058] hover:to-[#030714] text-white px-4 py-2 rounded-lg text-sm font-medium transition-all"
               >
                 Sign Up
               </a>
