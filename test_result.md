@@ -297,6 +297,21 @@
         agent: "main"
         comment: "MOBILE RESPONSIVENESS COMPLETED: ✅ NAVIGATION FIXES: Fixed mobile menu structure in AuthNavigation.js - separated desktop and mobile layouts, added mobile menu for logged-out users with Sign In/Sign Up buttons. Mobile menu button now properly positioned and functional. ✅ AUTH PAGES: Improved sign-in and sign-up pages with responsive padding (p-6 sm:p-8), better button layouts (flex-col sm:flex-row), responsive back button text (Back/Back to Home), and improved form spacing for small screens. ✅ COMPONENT OPTIMIZATIONS: FileUpload component now touch-friendly with responsive padding and mobile-specific text ('Tap to browse' vs 'Drag and drop'). CodeEditor component responsive with mobile-optimized tips, language selector layout, and reduced Monaco Editor height (300px) for mobile screens. ✅ RESPONSIVE BREAKPOINTS: All components now properly handle 320px (iPhone SE), 375px (iPhone), 768px (tablet), and desktop sizes with appropriate spacing, typography, and layout adjustments. ✅ VERIFIED: Tested all major pages across multiple screen sizes - homepage, auth pages, navigation menus, and form components all properly responsive."
 
+  - task: "Private Submissions Filter - All Submissions Privacy"
+    implemented: true
+    working: "NA"
+    file: "/app/app/api/[[...path]]/route.js, /app/components/AllSubmissions.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "User reported that private submissions (isPublic: false) are appearing in 'All Submissions' section when they should only be visible in 'My Submissions'. Root cause: Backend GET /api/submissions endpoint was not filtering by is_public field, and frontend had placeholder filter that returned true for all submissions."
+      - working: "NA"
+        agent: "main"
+        comment: "FIXED: ✅ BACKEND (route.js lines 677-695): Modified GET /api/submissions endpoint to filter by is_public=true when no userId parameter is provided. When userId is specified (for 'My Submissions'), returns all submissions (public and private) for that user. ✅ FRONTEND (AllSubmissions.js): Removed placeholder filter, now uses actual submission.isPublic field to double-check on frontend. Updated combined submission grouping to use actual isPublic value. ✅ BEHAVIOR: 'All Submissions' now shows only public submissions. 'My Submissions' shows all user's submissions regardless of privacy setting. Private submissions are only visible to their creator. Ready for backend testing to verify privacy filtering works correctly."
+
 ## frontend:
   - task: "Student Submission Portal UI"
     implemented: true
