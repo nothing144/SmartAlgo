@@ -54,10 +54,7 @@ const AllSubmissions = ({ setCurrentView, setCurrentSubmissionId }) => {
               combinedGroups[submission.combinedSubmissionId].status = 'submitted'
             }
           } else {
-            standaloneSubmissions.push({
-              ...submission,
-              isPublic: true // Will be determined by submission.is_public when implemented
-            })
+            standaloneSubmissions.push(submission)
           }
         })
         
