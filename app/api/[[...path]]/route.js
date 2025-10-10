@@ -502,7 +502,8 @@ async function handleRoute(request, { params }) {
                 cloudinaryData: null,
                 fileName: null,
                 rubricId: body.rubricId,
-                combinedSubmissionId: combinedSubmissionId
+                combinedSubmissionId: combinedSubmissionId,
+                isPublic: body.isPublic
               })
             },
             {
