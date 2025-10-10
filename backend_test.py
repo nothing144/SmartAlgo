@@ -282,7 +282,7 @@ class PrivacyFilterTester:
             rubric_id = self.get_default_rubric()
             submission_data = {
                 "submissionType": "algorithm",
-                "title": "Edge Case Test - No isPublic Field",
+                "assignmentTitle": "Edge Case Test - No isPublic Field",
                 "studentName": "Edge Case Tester",
                 "textContent": "def edge_case():\n    return 'default public'",
                 "rubricId": rubric_id,
