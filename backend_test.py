@@ -342,7 +342,7 @@ class PrivacyFilterTester:
             # Create a combined submission with privacy setting
             combined_data = {
                 "submissionType": "combined",
-                "title": "Privacy Test Combined Submission",
+                "assignmentTitle": "Privacy Test Combined Submission",
                 "studentName": "Combined Tester",
                 "algorithmContent": "def algorithm():\n    return 'combined test'",
                 "pseudocodeContent": "BEGIN\n    PRINT 'combined test'\nEND",
