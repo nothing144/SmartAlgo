@@ -446,8 +446,7 @@
   run_ui: false
 
 ## test_plan:
-  current_focus:
-    - "Private Submissions Filter - All Submissions Privacy"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
