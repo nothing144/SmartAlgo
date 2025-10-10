@@ -686,7 +686,11 @@ async function handleRoute(request, { params }) {
         .limit(100)
 
       if (userId) {
+        // When filtering by userId, show all their submissions (public and private)
         query = query.eq('user_id', userId)
+      } else {
+        // When no userId specified, only show public submissions
+        query = query.eq('is_public', true)
       }
 
       const { data: submissions, error } = await query
