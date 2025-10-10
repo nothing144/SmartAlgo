@@ -66,7 +66,7 @@ class PrivacyFilterTester:
             
         submission_data = {
             "submissionType": submission_type,
-            "title": f"Privacy Test {submission_type.title()} - {'Public' if is_public else 'Private'}",
+            "assignmentTitle": f"Privacy Test {submission_type.title()} - {'Public' if is_public else 'Private'}",
             "studentName": f"Test Student {user_id[:8]}",
             "textContent": f"def test_function():\n    # This is a test {submission_type}\n    return 'Hello World'",
             "rubricId": rubric_id,
