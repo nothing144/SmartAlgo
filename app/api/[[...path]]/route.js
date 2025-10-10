@@ -534,7 +534,8 @@ async function handleRoute(request, { params }) {
                 cloudinaryData: flowchartCloudinaryData,
                 fileName: body.flowchartData.fileName,
                 rubricId: body.rubricId,
-                combinedSubmissionId: combinedSubmissionId
+                combinedSubmissionId: combinedSubmissionId,
+                isPublic: body.isPublic
               })
             }
           ]
