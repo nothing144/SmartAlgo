@@ -143,18 +143,18 @@ code {
 /* Cursor Glow Effect for Dark Theme */
 .cursor-glow {
   position: fixed;
-  width: 150px;
-  height: 150px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
   background: radial-gradient(
     circle,
-    rgba(59, 130, 246, 0.35) 0%,
-    rgba(139, 92, 246, 0.25) 25%,
-    rgba(59, 130, 246, 0.15) 50%,
-    transparent 70%
+    rgba(59, 130, 246, 0.5) 0%,
+    rgba(139, 92, 246, 0.35) 30%,
+    rgba(59, 130, 246, 0.2) 60%,
+    transparent 100%
   );
   transition: opacity 0.3s ease;
   mix-blend-mode: screen;
