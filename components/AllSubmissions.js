@@ -20,11 +20,9 @@ const AllSubmissions = ({ setCurrentView, setCurrentSubmissionId }) => {
       if (response.ok) {
         const data = await response.json()
         
-        // Filter only public submissions (once we implement the is_public field)
-        // For now, show all submissions as they'll all be public by default
+        // Backend now filters for public submissions, but double-check on frontend
         const publicSubmissions = data.filter(submission => 
-          // Add filter for is_public when implemented
-          true // For now, show all submissions
+          submission.isPublic !== false // Show if explicitly public or undefined (default)
         )
         
         // Group combined submissions
