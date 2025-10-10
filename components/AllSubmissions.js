@@ -40,7 +40,7 @@ const AllSubmissions = ({ setCurrentView, setCurrentSubmissionId }) => {
                 createdAt: submission.createdAt,
                 parts: [],
                 status: 'completed',
-                isPublic: true // Will be determined by the combined submission setting
+                isPublic: submission.isPublic // Use actual isPublic value from submission
               }
             }
             combinedGroups[submission.combinedSubmissionId].parts.push(submission)
