@@ -444,7 +444,7 @@
 
 ## test_plan:
   current_focus:
-    - "Mobile Responsiveness Improvements - Complete"
+    - "Private Submissions Filter - All Submissions Privacy"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
