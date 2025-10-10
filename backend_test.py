@@ -1,21 +1,23 @@
 #!/usr/bin/env python3
 """
-Backend Smoke Test for Mobile Responsiveness Changes
-Tests all core backend functionality to ensure no regressions from frontend changes.
+Backend Testing Script for Privacy Filter Fix
+Tests the privacy filter implementation for submissions visibility
 """
 
 import requests
 import json
 import time
-import base64
-from datetime import datetime
+import uuid
+from typing import Dict, List, Any
 
-# Test configuration
+# Configuration
 BASE_URL = "https://sub-privacy-filter.preview.emergentagent.com/api"
-TEST_USER_ID = "mobile_test_user_2024"
-TEST_USER_ID_2 = "mobile_test_user_2"
+HEADERS = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+}
 
-class BackendSmokeTest:
+class PrivacyFilterTester:
     def __init__(self):
         self.test_results = []
         self.total_tests = 0
