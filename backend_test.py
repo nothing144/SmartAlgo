@@ -346,7 +346,10 @@ class PrivacyFilterTester:
                 "studentName": "Combined Tester",
                 "algorithmContent": "def algorithm():\n    return 'combined test'",
                 "pseudocodeContent": "BEGIN\n    PRINT 'combined test'\nEND",
-                "flowchartFile": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==",
+                "flowchartData": {
+                    "imageData": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==",
+                    "fileName": "privacy_test_flowchart.png"
+                },
                 "rubricId": rubric_id,
                 "userId": self.test_users[0],
                 "isPublic": False  # Make it private
