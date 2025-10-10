@@ -11,7 +11,7 @@ import base64
 from datetime import datetime
 
 # Get base URL from environment
-BASE_URL = "https://repo-detective-6.preview.emergentagent.com/api"
+BASE_URL = "https://sub-privacy-filter.preview.emergentagent.com/api"
 
 def test_supabase_client_configuration():
     """Test if Supabase client is properly configured"""
