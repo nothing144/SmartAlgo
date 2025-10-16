@@ -341,6 +341,23 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
               All Submissions
             </button>
 
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setCurrentView('public-view')
+                setShowMobileMenu(false)
+              }}
+              className={`w-full flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all touch-manipulation ${
+                currentView === 'public-view' || currentView === 'public-submit'
+                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800/50'
+              }`}
+            >
+              <Code2 className="w-4 h-4 mr-3" />
+              Public Codes
+            </button>
+
             {/* Mobile User Section */}
             <div className="border-t border-gray-200 dark:border-gray-700 pt-3 mt-3">
               <div className="px-4 py-2">
