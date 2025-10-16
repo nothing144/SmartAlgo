@@ -192,6 +192,17 @@ function createRubric(data) {
   }
 }
 
+// Public Code Submission Schema for Supabase (separate from evaluated submissions)
+function createPublicCodeSubmission(data) {
+  return {
+    id: uuidv4(),
+    student_name: data.studentName,
+    code_title: data.codeTitle,
+    code_content: data.codeContent,
+    created_at: new Date().toISOString()
+  }
+}
+
 // Gemini AI Evaluation Functions (same as before but with image handling via Cloudinary)
 async function evaluateWithGemini(submissionType, content, rubric) {
   try {
