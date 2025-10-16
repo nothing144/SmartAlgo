@@ -141,6 +141,24 @@ const HomePage = () => {
     )
   }
 
+  if (currentView === 'public-submit') {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <AuthNavigation currentView={currentView} setCurrentView={setCurrentView} />
+        <PublicCodeSubmit setCurrentView={setCurrentView} />
+      </div>
+    )
+  }
+
+  if (currentView === 'public-view') {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <AuthNavigation currentView={currentView} setCurrentView={setCurrentView} />
+        <PublicCodeView setCurrentView={setCurrentView} />
+      </div>
+    )
+  }
+
   // Home/Dashboard view
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 relative">
