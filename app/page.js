@@ -8,12 +8,14 @@ import SubmissionForm from '../components/SubmissionForm'
 import SubmissionResults from '../components/SubmissionResults'
 import MySubmissions from '../components/MySubmissions'
 import AllSubmissions from '../components/AllSubmissions'
+import PublicCodeSubmit from '../components/PublicCodeSubmit'
+import PublicCodeView from '../components/PublicCodeView'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { CodeBackground } from '../components/CodeBackground'
 
 const HomePage = () => {
   const { user, loading: authLoading } = useAuth()
-  const [currentView, setCurrentView] = useState('home') // 'home', 'submit', 'results', 'my-submissions', 'all-submissions'
+  const [currentView, setCurrentView] = useState('home') // 'home', 'submit', 'results', 'my-submissions', 'all-submissions', 'public-submit', 'public-view'
   const [recentSubmissions, setRecentSubmissions] = useState([])
   const [currentSubmissionId, setCurrentSubmissionId] = useState(null)
 
