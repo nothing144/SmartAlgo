@@ -921,6 +921,67 @@ async function handleRoute(request, { params }) {
       }
     }
 
+    // ===== PUBLIC CODE SUBMISSIONS API (Anonymous, No Evaluation) =====
+    
+    // Create public code submission - POST /api/public-code-submissions
+    if (route === '/public-code-submissions' && method === 'POST') {
+      const body = await request.json()
+      
+      // Validate required fields
+      if (!body.studentName || !body.codeTitle || !body.codeContent) {
+        return handleCORS(NextResponse.json(
+          { error: 'studentName, codeTitle, and codeContent are required' }, 
+          { status: 400 }
+        ))
+      }
+
+      // Create public code submission object
+      const submission = createPublicCodeSubmission({
+        studentName: body.studentName,
+        codeTitle: body.codeTitle,
+        codeContent: body.codeContent
+      })
+
+      // Insert into Supabase
+      const { data: insertedSubmission, error: insertError } = await supabase
+        .from('public_code_submissions')
+        .insert(submission)
+        .select()
+        .single()
+
+      if (insertError) {
+        return handleCORS(NextResponse.json(
+          { error: `Database error: ${insertError.message}` }, 
+          { status: 500 }
+        ))
+      }
+
+      // Transform to camelCase for frontend compatibility
+      const transformedSubmission = transformToCamelCase(insertedSubmission)
+      
+      return handleCORS(NextResponse.json(transformedSubmission))
+    }
+
+    // Get all public code submissions - GET /api/public-code-submissions
+    if (route === '/public-code-submissions' && method === 'GET') {
+      const { data: submissions, error } = await supabase
+        .from('public_code_submissions')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        return handleCORS(NextResponse.json(
+          { error: `Database error: ${error.message}` }, 
+          { status: 500 }
+        ))
+      }
+      
+      // Transform submissions to camelCase for frontend compatibility
+      const transformedSubmissions = (submissions || []).map(transformToCamelCase)
+      
+      return handleCORS(NextResponse.json(transformedSubmissions))
+    }
+
     // Route not found
     return handleCORS(NextResponse.json(
       { error: `Route ${route} not found` }, 
