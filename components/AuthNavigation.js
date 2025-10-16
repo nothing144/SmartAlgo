@@ -194,6 +194,18 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
               <Users className="w-4 h-4 mr-2" />
               All Submissions
             </button>
+
+            <button
+              onClick={() => setCurrentView('public-view')}
+              className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                currentView === 'public-view' || currentView === 'public-submit'
+                  ? 'bg-[#4a1d96]/10 dark:bg-[#4a1d96]/30 text-[#4a1d96] dark:text-[#a78bfa]'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-[#4a1d96] dark:hover:text-[#a78bfa] hover:bg-gray-100 dark:hover:bg-gray-800/50'
+              }`}
+            >
+              <Code2 className="w-4 h-4 mr-2" />
+              Public Codes
+            </button>
           </div>
 
           {/* Right Side - Theme Toggle + User Menu + Mobile Menu Button */}
