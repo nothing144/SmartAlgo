@@ -44,6 +44,13 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
 
             {/* Desktop Right Side - Theme Toggle + Auth Links */}
             <div className="hidden sm:flex items-center space-x-4">
+              <button
+                onClick={() => setCurrentView('public-view')}
+                className="flex items-center text-gray-600 dark:text-gray-300 hover:text-[#090f4f] dark:hover:text-[#5a6fd8] px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                <Code2 className="w-4 h-4 mr-2" />
+                Public Codes
+              </button>
               <ThemeToggle />
               <a 
                 href="/auth/sign-in"
