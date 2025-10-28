@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { BookOpen, Users, Bot, Star, Clock, FileText, ArrowRight, CheckCircle, Plus, LogIn } from 'lucide-react'
+import { BookOpen, Users, Bot, Star, Clock, FileText, ArrowRight, CheckCircle, Plus, LogIn, Code, ImageIcon, Send } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { AuthNavigation } from '../components/AuthNavigation'
 import SubmissionForm from '../components/SubmissionForm'
