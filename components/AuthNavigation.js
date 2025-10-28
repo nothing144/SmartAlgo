@@ -11,7 +11,8 @@ import {
   FileText, 
   Plus, 
   ChevronDown,
-  Code2
+  Code2,
+  ImageIcon
 } from 'lucide-react'
 
 export const AuthNavigation = ({ currentView, setCurrentView }) => {
