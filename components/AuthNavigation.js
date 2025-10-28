@@ -108,6 +108,18 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
                   <Code2 className="w-4 h-4 mr-3" />
                   Public Codes
                 </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setCurrentView('public-output-view')
+                    setShowMobileMenu(false)
+                  }}
+                  className="flex items-center w-full text-left px-4 py-3 text-gray-600 dark:text-gray-300 hover:text-[#4a1d96] dark:hover:text-[#a78bfa] hover:bg-gray-100 dark:hover:bg-gray-800/50 rounded-lg text-sm font-medium transition-all"
+                >
+                  <ImageIcon className="w-4 h-4 mr-3" />
+                  Public Outputs
+                </button>
                 <a 
                   href="/auth/sign-in"
                   className="block w-full text-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:text-[#4a1d96] dark:hover:text-[#a78bfa] hover:bg-gray-100 dark:hover:bg-gray-800/50 rounded-lg text-sm font-medium transition-all"
