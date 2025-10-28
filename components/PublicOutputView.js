@@ -154,7 +154,7 @@ const PublicOutputView = ({ setCurrentView }) => {
                   className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
                 >
                   {/* Image */}
-                  <div className="relative group cursor-pointer" onClick={() => openImageModal(output.outputPhotoUrl)}>
+                  <div className="relative group cursor-pointer" onClick={() => openImageModal(output)}>
                     <img
                       src={output.outputPhotoUrl}
                       alt={output.outputTitle}
