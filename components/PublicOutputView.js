@@ -170,7 +170,7 @@ const PublicOutputView = ({ setCurrentView }) => {
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 truncate">
                       {output.outputTitle}
                     </h3>
-                    <div className="flex flex-col gap-2 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="flex flex-col gap-2 text-sm text-gray-600 dark:text-gray-400 mb-3">
                       <div className="flex items-center gap-1">
                         <User className="w-4 h-4 flex-shrink-0" />
                         <span className="truncate">{output.studentName}</span>
@@ -180,6 +180,21 @@ const PublicOutputView = ({ setCurrentView }) => {
                         <span>{new Date(output.createdAt).toLocaleDateString()}</span>
                       </div>
                     </div>
+                    
+                    {/* Download Button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDownloadImage(
+                          output.outputPhotoUrl, 
+                          `${output.outputTitle}-${output.studentName}.png`
+                        )
+                      }}
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[#4a1d96] hover:bg-[#5a2da6] text-white rounded-lg transition-colors text-sm font-medium"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Download</span>
+                    </button>
                   </div>
                 </div>
               ))}
