@@ -269,6 +269,98 @@ const HomePage = () => {
           </div>
         </div>
 
+        {/* Community Features Section - Highlighted */}
+        <div className="mb-12 bg-gradient-to-r from-[#4a1d96]/10 to-[#090f4f]/10 dark:from-[#4a1d96]/20 dark:to-[#090f4f]/20 rounded-2xl p-8 border-2 border-[#4a1d96]/30">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
+              🌟 Community Features
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300">
+              Share your code and outputs publicly - No login required!
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Public Codes Card */}
+            <div 
+              onClick={() => setCurrentView('public-view')}
+              className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border-2 border-[#090f4f] dark:border-[#5a6fd8] hover:shadow-xl transition-all cursor-pointer group"
+            >
+              <div className="flex items-start gap-4 mb-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-[#090f4f] to-[#02050e] rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                  <Code className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Public Codes</h3>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">
+                    Share your code solutions with the community. Browse and learn from others' implementations.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setCurrentView('public-submit')
+                  }}
+                  className="flex-1 bg-[#090f4f] hover:bg-[#0a1058] text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2"
+                >
+                  <Send className="w-4 h-4" />
+                  Submit Code
+                </button>
+                <button
+                  onClick={() => setCurrentView('public-view')}
+                  className="flex-1 border-2 border-[#090f4f] dark:border-[#5a6fd8] text-[#090f4f] dark:text-[#5a6fd8] hover:bg-[#090f4f] hover:text-white dark:hover:bg-[#5a6fd8] dark:hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                >
+                  Browse
+                </button>
+              </div>
+            </div>
+
+            {/* Public Output Photos Card */}
+            <div 
+              onClick={() => setCurrentView('public-output-view')}
+              className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border-2 border-[#4a1d96] dark:border-[#a78bfa] hover:shadow-xl transition-all cursor-pointer group"
+            >
+              <div className="flex items-start gap-4 mb-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-[#4a1d96] to-[#2d1055] rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                  <ImageIcon className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Public Output Photos</h3>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">
+                    Share screenshots of your program outputs. View results from the community.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setCurrentView('public-output-submit')
+                  }}
+                  className="flex-1 bg-[#4a1d96] hover:bg-[#5a2da6] text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2"
+                >
+                  <Send className="w-4 h-4" />
+                  Submit Output
+                </button>
+                <button
+                  onClick={() => setCurrentView('public-output-view')}
+                  className="flex-1 border-2 border-[#4a1d96] dark:border-[#a78bfa] text-[#4a1d96] dark:text-[#a78bfa] hover:bg-[#4a1d96] hover:text-white dark:hover:bg-[#a78bfa] dark:hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                >
+                  Browse
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+              💡 No account needed! Anyone can share and view public submissions
+            </p>
+          </div>
+        </div>
+
         {/* Recent Submissions */}
         {user && recentSubmissions.length > 0 && (
           <div className="mb-12">
