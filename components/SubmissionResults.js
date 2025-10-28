@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { CheckCircle, Clock, AlertCircle, Eye, Star, BookOpen, Code, FileText, Image as ImageIcon } from 'lucide-react'
+import { CheckCircle, Clock, AlertCircle, Eye, Star, BookOpen, Code, FileText, Image as ImageIcon, Download } from 'lucide-react'
 
 // Helper component to render a single submission card
 const SingleSubmissionCard = ({ submission, icon: Icon, title }) => {
