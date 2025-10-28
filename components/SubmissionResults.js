@@ -478,15 +478,29 @@ const SubmissionResults = ({ submissionId }) => {
         </h3>
         
         {submission.submissionType === 'flowchart' ? (
-          <div className="border rounded-lg p-4 bg-gray-50">
-            {submission.content.imageUrl ? (
-              <img 
-                src={submission.content.imageUrl} 
-                alt="Flowchart"
-                className="max-w-full h-auto rounded-md"
-              />
-            ) : (
-              <p className="text-gray-500">Image not available</p>
+          <div className="space-y-4">
+            <div className="border rounded-lg p-4 bg-gray-50">
+              {submission.content.imageUrl ? (
+                <img 
+                  src={submission.content.imageUrl} 
+                  alt="Flowchart"
+                  className="max-w-full h-auto rounded-md"
+                />
+              ) : (
+                <p className="text-gray-500">Image not available</p>
+              )}
+            </div>
+            {submission.content.imageUrl && (
+              <button
+                onClick={() => handleDownloadImage(
+                  submission.content.imageUrl, 
+                  `${submission.assignmentTitle || 'flowchart'}-${submission.studentName || 'submission'}.png`
+                )}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
+              >
+                <Download className="w-5 h-5" />
+                <span>Download Flowchart</span>
+              </button>
             )}
           </div>
         ) : (
