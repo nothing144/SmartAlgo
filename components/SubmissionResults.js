@@ -72,15 +72,29 @@ const SingleSubmissionCard = ({ submission, icon: Icon, title }) => {
           Content
         </h4>
         {submission.submissionType === 'flowchart' ? (
-          <div className="border dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900">
-            {submission.content?.imageUrl ? (
-              <img 
-                src={submission.content.imageUrl} 
-                alt="Flowchart"
-                className="max-w-full h-auto rounded-md"
-              />
-            ) : (
-              <p className="text-gray-500 dark:text-gray-400">Image not available</p>
+          <div className="space-y-3">
+            <div className="border dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900">
+              {submission.content?.imageUrl ? (
+                <img 
+                  src={submission.content.imageUrl} 
+                  alt="Flowchart"
+                  className="max-w-full h-auto rounded-md"
+                />
+              ) : (
+                <p className="text-gray-500 dark:text-gray-400">Image not available</p>
+              )}
+            </div>
+            {submission.content?.imageUrl && (
+              <button
+                onClick={() => handleDownloadImage(
+                  submission.content.imageUrl, 
+                  `${submission.assignmentTitle || 'flowchart'}-${submission.studentName || 'submission'}.png`
+                )}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                <span>Download Flowchart</span>
+              </button>
             )}
           </div>
         ) : (
