@@ -11,7 +11,7 @@ import uuid
 from typing import Dict, List, Any
 
 # Configuration
-BASE_URL = "https://lab-submissions.preview.emergentagent.com/api"
+BASE_URL = "https://open-submissions.preview.emergentagent.com/api"
 HEADERS = {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
