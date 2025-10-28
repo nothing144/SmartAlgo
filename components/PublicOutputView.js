@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ImageIcon, User, Calendar, Search, RefreshCw, ZoomIn } from 'lucide-react'
+import { ImageIcon, User, Calendar, Search, RefreshCw, ZoomIn, Download } from 'lucide-react'
 
 const PublicOutputView = ({ setCurrentView }) => {
   const [outputs, setOutputs] = useState([])
