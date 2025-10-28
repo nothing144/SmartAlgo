@@ -166,6 +166,54 @@ const PublicCodeSubmit = ({ setCurrentView }) => {
               </p>
             </div>
 
+            {/* Optional Output Photo */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Output Screenshot <span className="text-gray-500 text-xs">(Optional)</span>
+              </label>
+              
+              {!photoPreview ? (
+                <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-[#090f4f] dark:hover:border-[#5a6fd8] transition-colors bg-gray-50 dark:bg-gray-700/50">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <Upload className="w-8 h-8 mb-2 text-gray-400" />
+                    <p className="mb-1 text-sm text-gray-500 dark:text-gray-400">
+                      <span className="font-semibold">Click to upload output screenshot</span>
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      PNG, JPG (MAX. 10MB)
+                    </p>
+                  </div>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handlePhotoSelect}
+                  />
+                </label>
+              ) : (
+                <div className="relative">
+                  <img
+                    src={photoPreview}
+                    alt="Output preview"
+                    className="w-full h-40 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOutputPhoto(null)
+                      setPhotoPreview(null)
+                    }}
+                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+              <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                Attach a screenshot of your program's output (optional but recommended)
+              </p>
+            </div>
+
             {/* Submit Button */}
             <div className="flex gap-4">
               <button
