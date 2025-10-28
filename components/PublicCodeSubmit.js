@@ -57,7 +57,8 @@ const PublicCodeSubmit = ({ setCurrentView }) => {
         body: JSON.stringify({
           studentName: studentName.trim(),
           codeTitle: codeTitle.trim(),
-          codeContent: codeContent.trim()
+          codeContent: codeContent.trim(),
+          outputPhotoData: outputPhoto // Optional
         })
       })
 
@@ -67,6 +68,8 @@ const PublicCodeSubmit = ({ setCurrentView }) => {
         setStudentName('')
         setCodeTitle('')
         setCodeContent('')
+        setOutputPhoto(null)
+        setPhotoPreview(null)
         
         // Show success message and redirect
         setTimeout(() => {
