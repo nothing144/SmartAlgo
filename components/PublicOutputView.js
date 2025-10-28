@@ -235,24 +235,45 @@ const PublicOutputView = ({ setCurrentView }) => {
       </div>
 
       {/* Image Modal */}
-      {selectedImage && (
+      {selectedOutput && (
         <div 
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4"
           onClick={closeImageModal}
         >
-          <div className="relative max-w-6xl max-h-full">
-            <button
-              onClick={closeImageModal}
-              className="absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors"
-            >
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+          <div className="relative max-w-6xl max-h-full flex flex-col">
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-white">
+                <h3 className="text-xl font-semibold">{selectedOutput.outputTitle}</h3>
+                <p className="text-sm text-gray-300">{selectedOutput.studentName}</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleDownloadImage(
+                      selectedOutput.outputPhotoUrl, 
+                      `${selectedOutput.outputTitle}-${selectedOutput.studentName}.png`
+                    )
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 bg-[#4a1d96] hover:bg-[#5a2da6] text-white rounded-lg transition-colors"
+                >
+                  <Download className="w-5 h-5" />
+                  <span>Download</span>
+                </button>
+                <button
+                  onClick={closeImageModal}
+                  className="text-white hover:text-gray-300 transition-colors"
+                >
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
             <img
-              src={selectedImage}
-              alt="Full size output"
-              className="max-w-full max-h-[90vh] object-contain rounded-lg"
+              src={selectedOutput.outputPhotoUrl}
+              alt={selectedOutput.outputTitle}
+              className="max-w-full max-h-[80vh] object-contain rounded-lg"
               onClick={(e) => e.stopPropagation()}
             />
           </div>
