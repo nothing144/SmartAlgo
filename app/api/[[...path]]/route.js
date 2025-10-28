@@ -949,11 +949,32 @@ async function handleRoute(request, { params }) {
         ))
       }
 
+      // Handle optional output photo upload
+      let outputPhotoUrl = null
+      let outputPhotoCloudinaryData = null
+
+      if (body.outputPhotoData) {
+        try {
+          outputPhotoCloudinaryData = await uploadToCloudinary(body.outputPhotoData, {
+            folder: 'public-code-outputs',
+            public_id: `${body.studentName}_output_${Date.now()}`
+          })
+          outputPhotoUrl = outputPhotoCloudinaryData.secure_url
+        } catch (uploadError) {
+          return handleCORS(NextResponse.json(
+            { error: `Output photo upload failed: ${uploadError.message}` }, 
+            { status: 400 }
+          ))
+        }
+      }
+
       // Create public code submission object
       const submission = createPublicCodeSubmission({
         studentName: body.studentName,
         codeTitle: body.codeTitle,
-        codeContent: body.codeContent
+        codeContent: body.codeContent,
+        outputPhotoUrl: outputPhotoUrl,
+        outputPhotoCloudinaryData: outputPhotoCloudinaryData
       })
 
       // Insert into Supabase
