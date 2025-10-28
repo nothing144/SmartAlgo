@@ -7,7 +7,7 @@ const PublicOutputView = ({ setCurrentView }) => {
   const [outputs, setOutputs] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedImage, setSelectedImage] = useState(null)
+  const [selectedOutput, setSelectedOutput] = useState(null)
 
   useEffect(() => {
     fetchOutputs()
