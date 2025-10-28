@@ -1017,6 +1017,85 @@ async function handleRoute(request, { params }) {
       return handleCORS(NextResponse.json(transformedSubmissions))
     }
 
+    // ===== PUBLIC OUTPUT PHOTOS API (Anonymous, No Evaluation) =====
+    
+    // Create public output photo - POST /api/public-output-photos
+    if (route === '/public-output-photos' && method === 'POST') {
+      const body = await request.json()
+      
+      // Validate required fields
+      if (!body.studentName || !body.outputTitle || !body.outputPhotoData) {
+        return handleCORS(NextResponse.json(
+          { error: 'studentName, outputTitle, and outputPhotoData are required' }, 
+          { status: 400 }
+        ))
+      }
+
+      // Upload output photo to Cloudinary
+      let outputPhotoUrl = null
+      let outputPhotoCloudinaryData = null
+
+      try {
+        outputPhotoCloudinaryData = await uploadToCloudinary(body.outputPhotoData, {
+          folder: 'public-output-photos',
+          public_id: `${body.studentName}_${Date.now()}`
+        })
+        outputPhotoUrl = outputPhotoCloudinaryData.secure_url
+      } catch (uploadError) {
+        return handleCORS(NextResponse.json(
+          { error: `Photo upload failed: ${uploadError.message}` }, 
+          { status: 400 }
+        ))
+      }
+
+      // Create public output photo object
+      const outputPhoto = createPublicOutputPhoto({
+        studentName: body.studentName,
+        outputTitle: body.outputTitle,
+        outputPhotoUrl: outputPhotoUrl,
+        outputPhotoCloudinaryData: outputPhotoCloudinaryData
+      })
+
+      // Insert into Supabase
+      const { data: insertedPhoto, error: insertError } = await supabase
+        .from('public_output_photos')
+        .insert(outputPhoto)
+        .select()
+        .single()
+
+      if (insertError) {
+        return handleCORS(NextResponse.json(
+          { error: `Database error: ${insertError.message}` }, 
+          { status: 500 }
+        ))
+      }
+
+      // Transform to camelCase for frontend compatibility
+      const transformedPhoto = transformToCamelCase(insertedPhoto)
+      
+      return handleCORS(NextResponse.json(transformedPhoto))
+    }
+
+    // Get all public output photos - GET /api/public-output-photos
+    if (route === '/public-output-photos' && method === 'GET') {
+      const { data: photos, error } = await supabase
+        .from('public_output_photos')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        return handleCORS(NextResponse.json(
+          { error: `Database error: ${error.message}` }, 
+          { status: 500 }
+        ))
+      }
+      
+      // Transform photos to camelCase for frontend compatibility
+      const transformedPhotos = (photos || []).map(transformToCamelCase)
+      
+      return handleCORS(NextResponse.json(transformedPhotos))
+    }
+
     // Route not found
     return handleCORS(NextResponse.json(
       { error: `Route ${route} not found` }, 
