@@ -10,12 +10,14 @@ import MySubmissions from '../components/MySubmissions'
 import AllSubmissions from '../components/AllSubmissions'
 import PublicCodeSubmit from '../components/PublicCodeSubmit'
 import PublicCodeView from '../components/PublicCodeView'
+import PublicOutputSubmit from '../components/PublicOutputSubmit'
+import PublicOutputView from '../components/PublicOutputView'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { CodeBackground } from '../components/CodeBackground'
 
 const HomePage = () => {
   const { user, loading: authLoading } = useAuth()
-  const [currentView, setCurrentView] = useState('home') // 'home', 'submit', 'results', 'my-submissions', 'all-submissions', 'public-submit', 'public-view'
+  const [currentView, setCurrentView] = useState('home') // 'home', 'submit', 'results', 'my-submissions', 'all-submissions', 'public-submit', 'public-view', 'public-output-submit', 'public-output-view'
   const [recentSubmissions, setRecentSubmissions] = useState([])
   const [currentSubmissionId, setCurrentSubmissionId] = useState(null)
 
