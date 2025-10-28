@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Send, Code } from 'lucide-react'
+import { Send, Code, Upload, X } from 'lucide-react'
 
 const PublicCodeSubmit = ({ setCurrentView }) => {
   const [studentName, setStudentName] = useState('')
