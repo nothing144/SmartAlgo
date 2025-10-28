@@ -199,6 +199,20 @@ function createPublicCodeSubmission(data) {
     student_name: data.studentName,
     code_title: data.codeTitle,
     code_content: data.codeContent,
+    output_photo_url: data.outputPhotoUrl || null,
+    output_photo_cloudinary_data: data.outputPhotoCloudinaryData || null,
+    created_at: new Date().toISOString()
+  }
+}
+
+// Public Output Photo Submission Schema for Supabase
+function createPublicOutputPhoto(data) {
+  return {
+    id: uuidv4(),
+    student_name: data.studentName,
+    output_title: data.outputTitle,
+    output_photo_url: data.outputPhotoUrl,
+    output_photo_cloudinary_data: data.outputPhotoCloudinaryData,
     created_at: new Date().toISOString()
   }
 }
