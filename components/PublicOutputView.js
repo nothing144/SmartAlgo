@@ -53,12 +53,12 @@ const PublicOutputView = ({ setCurrentView }) => {
     output.outputTitle.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const openImageModal = (imageUrl) => {
-    setSelectedImage(imageUrl)
+  const openImageModal = (output) => {
+    setSelectedOutput(output)
   }
 
   const closeImageModal = () => {
-    setSelectedImage(null)
+    setSelectedOutput(null)
   }
 
   return (
