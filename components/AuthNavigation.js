@@ -52,6 +52,13 @@ export const AuthNavigation = ({ currentView, setCurrentView }) => {
                 <Code2 className="w-4 h-4 mr-2" />
                 Public Codes
               </button>
+              <button
+                onClick={() => setCurrentView('public-output-view')}
+                className="flex items-center text-gray-600 dark:text-gray-300 hover:text-[#090f4f] dark:hover:text-[#5a6fd8] px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                <ImageIcon className="w-4 h-4 mr-2" />
+                Public Outputs
+              </button>
               <ThemeToggle />
               <a 
                 href="/auth/sign-in"
