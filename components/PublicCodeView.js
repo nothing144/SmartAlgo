@@ -166,21 +166,37 @@ const PublicCodeView = ({ setCurrentView }) => {
 
                 {/* Code Content (Expandable) */}
                 {expandedId === submission.id && (
-                  <div className="p-4 sm:p-6 bg-gray-50 dark:bg-gray-900/50">
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Code:</span>
-                      <button
-                        onClick={() => copyToClipboard(submission.codeContent)}
-                        className="text-sm text-[#090f4f] dark:text-[#5a6fd8] hover:underline"
-                      >
-                        Copy to Clipboard
-                      </button>
+                  <div className="p-4 sm:p-6 bg-gray-50 dark:bg-gray-900/50 space-y-4">
+                    {/* Output Photo (if exists) */}
+                    {submission.outputPhotoUrl && (
+                      <div>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Output Screenshot:</span>
+                        <img
+                          src={submission.outputPhotoUrl}
+                          alt="Program output"
+                          className="w-full max-w-2xl h-auto rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer hover:opacity-90 transition-opacity"
+                          onClick={() => window.open(submission.outputPhotoUrl, '_blank')}
+                        />
+                      </div>
+                    )}
+                    
+                    {/* Code */}
+                    <div>
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Code:</span>
+                        <button
+                          onClick={() => copyToClipboard(submission.codeContent)}
+                          className="text-sm text-[#090f4f] dark:text-[#5a6fd8] hover:underline"
+                        >
+                          Copy to Clipboard
+                        </button>
+                      </div>
+                      <pre className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 overflow-x-auto">
+                        <code className="text-sm font-mono text-gray-800 dark:text-gray-200">
+                          {submission.codeContent}
+                        </code>
+                      </pre>
                     </div>
-                    <pre className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 overflow-x-auto">
-                      <code className="text-sm font-mono text-gray-800 dark:text-gray-200">
-                        {submission.codeContent}
-                      </code>
-                    </pre>
                   </div>
                 )}
               </div>
