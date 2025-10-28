@@ -7,6 +7,8 @@ const PublicCodeSubmit = ({ setCurrentView }) => {
   const [studentName, setStudentName] = useState('')
   const [codeTitle, setCodeTitle] = useState('')
   const [codeContent, setCodeContent] = useState('')
+  const [outputPhoto, setOutputPhoto] = useState(null)
+  const [photoPreview, setPhotoPreview] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
 
