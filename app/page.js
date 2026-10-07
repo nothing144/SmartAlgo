@@ -180,202 +180,252 @@ const HomePage = () => {
 
   // Home/Dashboard view
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
+    <div className="min-h-screen bg-background text-foreground">
       <AuthNavigation currentView={currentView} setCurrentView={setCurrentView} />
       
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-24">
-        {/* Welcome Section */}
-        <div className="max-w-2xl mb-24">
-          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-foreground mb-4">
-            Smart Evaluator
-          </h1>
-          <p className="text-lg text-muted-foreground mb-10 leading-relaxed">
-            A rubric-based assessment tool for flowcharts, algorithms, and pseudocode. Designed to provide consistent, actionable feedback.
-          </p>
+      <main>
+        {/* ─── Hero ─── */}
+        <section className="relative overflow-hidden border-b border-border">
+          {/* Dot grid background */}
+          <div className="absolute inset-0 bg-dot-pattern opacity-40 dark:opacity-20" />
+          {/* Subtle brand glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-primary/8 dark:bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
           
-          {user ? (
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={() => setCurrentView('submit')}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm"
-              >
-                <Plus className="w-4 h-4" />
-                New Submission
-              </button>
-              <button
-                onClick={() => setCurrentView('my-submissions')}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-secondary text-secondary-foreground rounded-md text-sm font-medium hover:bg-secondary/80 transition-colors border border-border"
-              >
-                <FileText className="w-4 h-4" />
-                View History
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col sm:flex-row gap-3">
-              <a
-                href="/auth/sign-up"
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm"
-              >
-                Get Started
-              </a>
-              <a
-                href="/auth/sign-in"
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-secondary text-secondary-foreground rounded-md text-sm font-medium hover:bg-secondary/80 transition-colors border border-border"
-              >
-                Sign In
-              </a>
-            </div>
-          )}
-        </div>
-
-        {/* Features Section */}
-        <div className="mb-24">
-          <h2 className="text-lg font-medium tracking-tight mb-8 text-foreground">Core concepts</h2>
-          <div className="grid md:grid-cols-3 gap-x-8 gap-y-10 border-t border-border pt-8">
-            <div>
-              <div className="w-8 h-8 rounded-md bg-muted flex items-center justify-center mb-4">
-                <FileText className="w-4 h-4 text-foreground" />
-              </div>
-              <h3 className="text-sm font-medium text-foreground mb-2">Multiple formats</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Submit flowcharts as images, or paste your algorithms and pseudocode directly into the editor.
-              </p>
-            </div>
-            
-            <div>
-              <div className="w-8 h-8 rounded-md bg-muted flex items-center justify-center mb-4">
-                <Star className="w-4 h-4 text-foreground" />
-              </div>
-              <h3 className="text-sm font-medium text-foreground mb-2">Standardized rubrics</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Submissions are evaluated against predefined criteria ensuring consistency across logic, structure, and syntax.
+          <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 md:pt-28 md:pb-32">
+            <div className="animate-fade-up">
+              <span className="inline-block text-xs font-medium tracking-widest uppercase text-primary mb-6">
+                Rubric-based AI evaluation
+              </span>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-[1.1] mb-6 max-w-3xl">
+                Get real feedback on your{' '}
+                <span className="text-primary">algorithms.</span>
+              </h1>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed mb-10">
+                Submit flowcharts, pseudocode, or algorithm code — get back detailed, rubric-based evaluation in seconds. Not a grade, a conversation.
               </p>
             </div>
 
-            <div>
-              <div className="w-8 h-8 rounded-md bg-muted flex items-center justify-center mb-4">
-                <Bot className="w-4 h-4 text-foreground" />
-              </div>
-              <h3 className="text-sm font-medium text-foreground mb-2">Immediate feedback</h3>
+            <div className="animate-fade-up-delay-1 flex flex-col sm:flex-row gap-3">
+              {user ? (
+                <>
+                  <button
+                    onClick={() => setCurrentView('submit')}
+                    className="inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm shadow-primary/25"
+                  >
+                    <Plus className="w-4 h-4" />
+                    New submission
+                  </button>
+                  <button
+                    onClick={() => setCurrentView('my-submissions')}
+                    className="inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-card text-foreground rounded-lg text-sm font-medium border border-border hover:bg-muted/60 transition-colors"
+                  >
+                    <FileText className="w-4 h-4" />
+                    View history
+                  </button>
+                </>
+              ) : (
+                <>
+                  <a
+                    href="/auth/sign-up"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm shadow-primary/25"
+                  >
+                    Start for free
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
+                  <a
+                    href="/auth/sign-in"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-card text-foreground rounded-lg text-sm font-medium border border-border hover:bg-muted/60 transition-colors"
+                  >
+                    Sign in
+                  </a>
+                </>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* ─── How it works ─── */}
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+          <div className="animate-fade-up-delay-2">
+            <span className="text-xs font-medium tracking-widest uppercase text-primary mb-3 block">How it works</span>
+            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground mb-16 max-w-md">
+              Three steps to better algorithms.
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-12 md:gap-8 animate-fade-up-delay-3">
+            {/* Step 1 */}
+            <div className="relative">
+              <span className="text-6xl font-bold text-border dark:text-muted leading-none select-none">01</span>
+              <h3 className="text-base font-semibold text-foreground mt-4 mb-2">Submit your work</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Receive detailed analysis and scoring within seconds to help identify areas for improvement.
+                Upload a flowchart image, paste pseudocode, or write algorithm text. Combine multiple formats in a single submission.
+              </p>
+            </div>
+
+            {/* Step 2 */}
+            <div className="relative">
+              <span className="text-6xl font-bold text-border dark:text-muted leading-none select-none">02</span>
+              <h3 className="text-base font-semibold text-foreground mt-4 mb-2">AI evaluates against rubrics</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Gemini AI scores your submission on logic accuracy, structural flow, syntax clarity, and completeness using predefined rubrics.
+              </p>
+            </div>
+
+            {/* Step 3 */}
+            <div className="relative">
+              <span className="text-6xl font-bold text-border dark:text-muted leading-none select-none">03</span>
+              <h3 className="text-base font-semibold text-foreground mt-4 mb-2">Get actionable feedback</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Receive detailed scores per criterion, specific suggestions for improvement, and an overall assessment — within seconds.
               </p>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Community & Public Sections */}
-        <div className="mb-24 pt-16 border-t border-border">
-          <div className="flex items-baseline justify-between mb-8">
-             <h2 className="text-lg font-medium tracking-tight text-foreground">Public directory</h2>
-             <span className="text-xs text-muted-foreground">No account required</span>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Public Codes */}
-            <div className="group border border-border rounded-lg p-5 hover:border-primary/30 transition-colors cursor-pointer bg-card flex flex-col" onClick={() => setCurrentView('public-view')}>
-              <div className="flex justify-between items-start mb-4">
-                 <div className="w-8 h-8 rounded-md bg-muted flex items-center justify-center">
-                   <Code className="w-4 h-4 text-foreground" />
-                 </div>
-                 <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+        {/* ─── Community ─── */}
+        <section className="border-t border-border">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12 gap-4">
+              <div>
+                <span className="text-xs font-medium tracking-widest uppercase text-primary mb-3 block">Community</span>
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground max-w-sm">
+                  Learn from others. Share yours.
+                </h2>
               </div>
-              <h3 className="text-sm font-medium text-foreground mb-1">Code submissions</h3>
-              <p className="text-sm text-muted-foreground mb-6 flex-grow">
-                Browse through diverse algorithms and implementations shared by the community.
+              <p className="text-sm text-muted-foreground max-w-xs">
+                Browse public code and visual outputs — no account needed.
               </p>
-              <div className="flex items-center gap-4 mt-auto">
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              {/* Code Card */}
+              <div
+                onClick={() => setCurrentView('public-view')}
+                className="group relative bg-card border border-border rounded-xl p-6 cursor-pointer hover:border-primary/40 transition-all duration-200"
+              >
+                <div className="flex items-start justify-between mb-8">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 dark:bg-primary/15 flex items-center justify-center">
+                    <Code className="w-5 h-5 text-primary" />
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+                </div>
+                <h3 className="text-base font-semibold text-foreground mb-1.5">Code directory</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+                  Algorithms, data structures, and solutions shared by the community.
+                </p>
                 <button
                   onClick={(e) => { e.stopPropagation(); setCurrentView('public-submit'); }}
-                  className="text-sm font-medium text-foreground hover:text-primary transition-colors flex items-center gap-1.5"
+                  className="text-sm font-medium text-primary hover:underline underline-offset-4"
                 >
-                  Submit code
+                  Submit your code →
                 </button>
               </div>
-            </div>
 
-            {/* Public Output Photos */}
-            <div className="group border border-border rounded-lg p-5 hover:border-primary/30 transition-colors cursor-pointer bg-card flex flex-col" onClick={() => setCurrentView('public-output-view')}>
-              <div className="flex justify-between items-start mb-4">
-                 <div className="w-8 h-8 rounded-md bg-muted flex items-center justify-center">
-                   <ImageIcon className="w-4 h-4 text-foreground" />
-                 </div>
-                 <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-              </div>
-              <h3 className="text-sm font-medium text-foreground mb-1">Visual outputs</h3>
-              <p className="text-sm text-muted-foreground mb-6 flex-grow">
-                Explore screenshots of program executions and visual results from other users.
-              </p>
-              <div className="flex items-center gap-4 mt-auto">
+              {/* Output Card */}
+              <div
+                onClick={() => setCurrentView('public-output-view')}
+                className="group relative bg-card border border-border rounded-xl p-6 cursor-pointer hover:border-primary/40 transition-all duration-200"
+              >
+                <div className="flex items-start justify-between mb-8">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 dark:bg-primary/15 flex items-center justify-center">
+                    <ImageIcon className="w-5 h-5 text-primary" />
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+                </div>
+                <h3 className="text-base font-semibold text-foreground mb-1.5">Visual outputs</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+                  Screenshots of program executions, flowchart diagrams, and visual results.
+                </p>
                 <button
                   onClick={(e) => { e.stopPropagation(); setCurrentView('public-output-submit'); }}
-                  className="text-sm font-medium text-foreground hover:text-primary transition-colors flex items-center gap-1.5"
+                  className="text-sm font-medium text-primary hover:underline underline-offset-4"
                 >
-                  Share output
+                  Share an output →
                 </button>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Recent Activity */}
+        {/* ─── Recent Activity ─── */}
         {user && recentSubmissions.length > 0 && (
-          <div className="pt-16 border-t border-border">
-            <div className="flex items-baseline justify-between mb-6">
-              <h2 className="text-lg font-medium tracking-tight text-foreground">Recent activity</h2>
-              <button
-                onClick={() => setCurrentView('my-submissions')}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-              >
-                View history <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-            
-            <div className="flex flex-col">
-              {recentSubmissions.map((submission) => (
-                <div
-                  key={submission.submissionId}
-                  className="flex items-center justify-between py-3 border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors cursor-pointer -mx-3 px-3 rounded-md"
-                  onClick={() => {
-                    setCurrentSubmissionId(submission.submissionId)
-                    setCurrentView('results')
-                  }}
+          <section className="border-t border-border">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
+              <div className="flex items-baseline justify-between mb-8">
+                <h2 className="text-lg font-semibold tracking-tight text-foreground">Recent activity</h2>
+                <button
+                  onClick={() => setCurrentView('my-submissions')}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
                 >
-                  <div className="flex items-center gap-3">
-                    {submission.status === 'completed' && <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-500" />}
-                    {submission.status === 'evaluating' && <Clock className="w-4 h-4 text-amber-600 dark:text-amber-500 animate-spin" />}
-                    {submission.status === 'error' && <Clock className="w-4 h-4 text-red-600 dark:text-red-500" />}
-                    
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
-                      <span className="text-sm font-medium text-foreground">
+                  All submissions <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+              
+              <div className="bg-card border border-border rounded-xl overflow-hidden divide-y divide-border">
+                {recentSubmissions.map((submission) => (
+                  <div
+                    key={submission.submissionId}
+                    className="flex items-center justify-between px-5 py-4 hover:bg-muted/40 transition-colors cursor-pointer"
+                    onClick={() => {
+                      setCurrentSubmissionId(submission.submissionId)
+                      setCurrentView('results')
+                    }}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      {submission.status === 'completed' && <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />}
+                      {submission.status === 'evaluating' && <Clock className="w-4 h-4 text-amber-600 dark:text-amber-400 animate-spin flex-shrink-0" />}
+                      {submission.status === 'error' && <Clock className="w-4 h-4 text-destructive flex-shrink-0" />}
+                      
+                      <span className="text-sm font-medium text-foreground truncate">
                         {submission.assignmentTitle}
                       </span>
-                      <span className="hidden sm:inline text-muted-foreground text-xs">•</span>
-                      <span className="text-xs text-muted-foreground">
-                        {submission.isCombined ? 'Combined Submission' : submission.submissionType}
+                      <span className="hidden sm:inline text-xs text-muted-foreground flex-shrink-0">
+                        {submission.isCombined ? 'Combined' : submission.submissionType}
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center gap-4 flex-shrink-0 ml-4">
+                      <span className="text-xs text-muted-foreground hidden sm:block">
+                        {new Date(submission.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                      </span>
+                      <span className={`text-[11px] font-medium px-2 py-0.5 rounded ${
+                        submission.status === 'completed' 
+                          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400'
+                          : submission.status === 'evaluating'
+                          ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400'
+                          : 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400'
+                      }`}>
+                        {submission.status === 'completed' ? 'Done' : 
+                         submission.status === 'evaluating' ? 'Running' : 'Failed'}
                       </span>
                     </div>
                   </div>
-                  
-                  <div className="flex items-center gap-4">
-                    <span className="text-xs text-muted-foreground hidden sm:block">
-                      {new Date(submission.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                    </span>
-                    <span className={`text-[11px] font-medium px-2 py-0.5 rounded-sm ${
-                      submission.status === 'completed' 
-                        ? 'bg-emerald-100/50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
-                        : submission.status === 'evaluating'
-                        ? 'bg-amber-100/50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400'
-                        : 'bg-red-100/50 text-red-700 dark:bg-red-500/10 dark:text-red-400'
-                    }`}>
-                      {submission.status === 'completed' ? 'Completed' : 
-                       submission.status === 'evaluating' ? 'Evaluating' : 'Failed'}
-                    </span>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          </section>
+        )}
+
+        {/* ─── Bottom CTA ─── */}
+        {!user && (
+          <section className="border-t border-border bg-muted/30">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-24 text-center">
+              <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground mb-4">
+                Ready to improve your code?
+              </h2>
+              <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+                Create a free account and get AI-powered feedback on your first submission in under a minute.
+              </p>
+              <a
+                href="/auth/sign-up"
+                className="inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm shadow-primary/25"
+              >
+                Get started
+                <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
+          </section>
         )}
       </main>
     </div>
