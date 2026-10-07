@@ -83,10 +83,10 @@ const HomePage = () => {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Loading...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-border border-t-primary mx-auto mb-3"></div>
+          <p className="text-sm text-muted-foreground">Loading…</p>
         </div>
       </div>
     )
@@ -95,7 +95,7 @@ const HomePage = () => {
   // Show different views based on currentView
   if (currentView === 'submit') {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-background">
         <AuthNavigation currentView={currentView} setCurrentView={setCurrentView} />
         <SubmissionForm 
           setCurrentView={setCurrentView} 
@@ -108,7 +108,7 @@ const HomePage = () => {
 
   if (currentView === 'results') {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-background">
         <AuthNavigation currentView={currentView} setCurrentView={setCurrentView} />
         <SubmissionResults 
           submissionId={currentSubmissionId} 
@@ -120,7 +120,7 @@ const HomePage = () => {
 
   if (currentView === 'my-submissions') {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-background">
         <AuthNavigation currentView={currentView} setCurrentView={setCurrentView} />
         <MySubmissions 
           setCurrentView={setCurrentView} 
@@ -132,7 +132,7 @@ const HomePage = () => {
 
   if (currentView === 'all-submissions') {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-background">
         <AuthNavigation currentView={currentView} setCurrentView={setCurrentView} />
         <AllSubmissions 
           setCurrentView={setCurrentView} 
@@ -144,7 +144,7 @@ const HomePage = () => {
 
   if (currentView === 'public-submit') {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-background">
         <AuthNavigation currentView={currentView} setCurrentView={setCurrentView} />
         <PublicCodeSubmit setCurrentView={setCurrentView} />
       </div>
@@ -153,7 +153,7 @@ const HomePage = () => {
 
   if (currentView === 'public-view') {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-background">
         <AuthNavigation currentView={currentView} setCurrentView={setCurrentView} />
         <PublicCodeView setCurrentView={setCurrentView} />
       </div>
@@ -162,7 +162,7 @@ const HomePage = () => {
 
   if (currentView === 'public-output-submit') {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-background">
         <AuthNavigation currentView={currentView} setCurrentView={setCurrentView} />
         <PublicOutputSubmit setCurrentView={setCurrentView} />
       </div>
@@ -171,7 +171,7 @@ const HomePage = () => {
 
   if (currentView === 'public-output-view') {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-background">
         <AuthNavigation currentView={currentView} setCurrentView={setCurrentView} />
         <PublicOutputView setCurrentView={setCurrentView} />
       </div>
