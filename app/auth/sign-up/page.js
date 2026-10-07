@@ -77,10 +77,7 @@ const SignUpPage = () => {
       setError(error)
     } else if (data?.user) {
       setSuccess(true)
-      // Show success message for a moment then redirect
-      setTimeout(() => {
-        router.push('/')
-      }, 2000)
+      // Require email confirmation - do not automatically log in or redirect
     }
     
     setLoading(false)
@@ -107,14 +104,17 @@ const SignUpPage = () => {
               <CheckCircle className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              Account Created Successfully!
+              Check your email
             </h1>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
-              Welcome to Smart Evaluator! You'll be redirected to the dashboard shortly.
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
+              We've sent you a confirmation link. Please verify your email address to continue.
             </p>
-            <div className="flex justify-center">
-              <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
-            </div>
+            <Link 
+              href="/auth/sign-in"
+              className="inline-block bg-gradient-to-r from-[#090f4f] to-[#02050e] hover:from-[#0a1058] hover:to-[#030714] text-white font-medium py-3 px-6 rounded-lg transition-all duration-200"
+            >
+              Go to Sign In
+            </Link>
           </div>
         </div>
       </div>

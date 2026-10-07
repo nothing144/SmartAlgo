@@ -57,8 +57,8 @@ export const AuthProvider = ({ children }) => {
       
       if (error) throw error
       
-      // If user is created, update the user state
-      if (data.user) {
+      // If user is created and a session exists, update the user state
+      if (data.session) {
         setUser(data.user)
       }
       
